@@ -289,6 +289,16 @@
                     </button>
                 </div>
 
+                <!-- Study Pass -->
+                <div id="study-pass-box" class="w-full bg-dark-900/80 border border-indigo-500/30 rounded-xl p-3 space-y-2">
+                    <div class="flex items-center justify-between gap-2">
+                        <p class="text-[11px] font-semibold text-indigo-300 flex items-center gap-1.5"><i data-lucide="book-open" class="w-3.5 h-3.5"></i> Study Pass (no strike)</p>
+                        <span id="pass-left-label" class="text-[11px] font-mono text-slate-400">15:00 left</span>
+                    </div>
+                    <div id="study-links-bar" class="flex flex-wrap gap-1.5"></div>
+                    <button type="button" id="btn-pass" onclick="toggleStudyPass()" class="w-full px-3 py-2 rounded-lg text-xs font-semibold bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/30 transition">Start pass</button>
+                </div>
+
                 <!-- 10-Second Hold "Abandon Session" Quit Friction Button -->
                 <div class="pt-2">
                     <button id="btn-abandon-hold"
@@ -672,7 +682,7 @@
 
     <!-- Settings Modal -->
     <div id="settings-modal" class="fixed inset-0 bg-dark-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-dark-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-5 shadow-2xl">
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-5 shadow-2xl max-h-[92vh] overflow-y-auto">
             <div class="flex items-center justify-between">
                 <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">
                     <i data-lucide="settings" class="w-5 h-5 text-indigo-400"></i> Enforcement & Timer Settings
@@ -714,6 +724,10 @@
                 </div>
             </div>
 
+            <div class="space-y-3 border-t border-slate-800 pt-4">
+                <div><label class="block text-xs font-medium text-slate-400 mb-1.5">Study Pass per Hardcore block (minutes, 0 = off)</label><input type="number" id="setting-pass" min="0" max="120" class="w-full bg-dark-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"></div>
+                <div><label class="block text-xs font-medium text-slate-400 mb-1.5">Study links (one per line: Name | https://link)</label><textarea id="setting-links" rows="4" class="w-full bg-dark-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"></textarea></div>
+            </div>
             <div class="flex justify-end space-x-3 pt-2">
                 <button onclick="closeSettingsModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-dark-800 text-slate-300 hover:bg-slate-800 transition">Cancel</button>
                 <button onclick="saveSettings()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition shadow-lg shadow-indigo-600/20">Save Changes</button>
@@ -743,7 +757,8 @@
             longBreak: 15,
             penaltyType: 'add5', // 'add5' or 'reset'
             escalateMinutes: 25,
-            dailyGoal: 120, examName: 'HSC Exam', examDate: '2027-06-01'
+            dailyGoal: 120, examName: 'HSC Exam', examDate: '2027-06-01', passMinutes: 15,
+            studyLinks: [{ name: '10 Minute School', url: 'https://10minuteschool.com' }, { name: 'NCTB Books', url: 'https://nctb.gov.bd' }, { name: 'YouTube', url: 'https://www.youtube.com' }]
         };
 
         let timerState = {
@@ -821,6 +836,7 @@
         function setupAntiDistractionListeners() {
             // Detect Tab Switching / Minimizing
             document.addEventListener('visibilitychange', () => {
+                if (!document.hidden && timerState.passActive) { endStudyPass(false); keepAwake(true); }
                 if (document.hidden && timerState.isRunning && timerState.mode === 'work' && timerState.hardcore) {
                     triggerLockdownBreach("You switched tabs or minimized the browser!");
                 }
@@ -847,7 +863,7 @@
         }
 
         function triggerLockdownBreach(reason) {
-            if (timerState.breachActive) return;
+            if (timerState.breachActive || timerState.passActive) return;
             timerState.breachActive = true;
 
             // 1. Increment Strikes
@@ -871,6 +887,7 @@
             }
             updateTimerDisplay();
 
+            timerState.endAt = Date.now() + timerState.timeLeft * 1000;
             // 3. Loud Warning Alarm & Red Screen Flash
             playAlarmSiren();
             const body = document.getElementById('app-body');
@@ -1007,6 +1024,7 @@
 
             errorEl.classList.add('hidden');
             timerState.microGoal = goalInput;
+            timerState.passUsed = 0; timerState.passActive = false;
             document.getElementById('current-task-title').innerText = goalInput;
             
             closeCommitmentModal();
@@ -1050,6 +1068,7 @@
 
         function startTimer() {
             timerState.isRunning = true;
+            timerState.endAt = Date.now() + timerState.timeLeft * 1000;
             timerState.sessionStrikes = 0;
             timerState.sessionUrges = 0;
             document.getElementById('live-strikes-count').innerText = '0';
@@ -1065,6 +1084,8 @@
                 document.getElementById('main-nav').classList.add('opacity-20', 'pointer-events-none');
                 document.getElementById('btn-settings').classList.add('hidden');
                 document.getElementById('hardcore-active-panel').classList.remove('hidden');
+                document.getElementById('study-pass-box').classList.toggle('hidden', !(settings.passMinutes > 0));
+                updatePassUI(); renderStudyLinks();
                 document.getElementById('timer-status-text').innerText = "LOCKDOWN ACTIVE • DO NOT LEAVE";
                 document.getElementById('timer-status-text').className = "text-[11px] uppercase tracking-widest text-rose-400 font-bold mt-2 animate-pulse";
             } else {
@@ -1076,7 +1097,7 @@
 
             timerState.interval = setInterval(() => {
                 if (timerState.timeLeft > 0) {
-                    timerState.timeLeft--;
+                    timerState.timeLeft = Math.max(0, Math.ceil((timerState.endAt - Date.now()) / 1000));
                     updateTimerDisplay();
                 } else {
                     clearInterval(timerState.interval);
@@ -1115,6 +1136,7 @@
             document.getElementById('hardcore-active-panel').classList.add('hidden');
             document.getElementById('timer-glow').classList.remove('opacity-100');
             keepAwake(false);
+            clearInterval(timerState.passTick); timerState.passActive = false;
             document.getElementById('timer-status-text').className = "text-[11px] uppercase tracking-widest text-slate-400 font-semibold mt-2";
             toggleHardcoreUI();
         }
@@ -1760,6 +1782,8 @@
             settings.dailyGoal = parseInt(document.getElementById('setting-goal').value) || 120;
             settings.examName = document.getElementById('setting-exam-name').value.trim();
             settings.examDate = document.getElementById('setting-exam-date').value;
+            settings.passMinutes = Math.max(0, parseInt(document.getElementById('setting-pass').value) || 0);
+            settings.studyLinks = document.getElementById('setting-links').value.split('\n').map(l => { const [n, ...u] = l.split('|'); return { name: (n || '').trim(), url: u.join('|').trim() }; }).filter(l => l.name && /^https?:\/\//i.test(l.url));
             renderHud();
 
             localStorage.setItem('lockin_settings', JSON.stringify(settings));
@@ -1824,6 +1848,8 @@
             document.getElementById('setting-goal').value = settings.dailyGoal || 120;
             document.getElementById('setting-exam-name').value = settings.examName || '';
             document.getElementById('setting-exam-date').value = settings.examDate || '';
+            document.getElementById('setting-pass').value = settings.passMinutes ?? 15;
+            document.getElementById('setting-links').value = (settings.studyLinks || []).map(l => l.name + ' | ' + l.url).join('\n');
             renderHud();
         }
         function renderHud() {
@@ -1913,6 +1939,58 @@
         if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
             navigator.serviceWorker.register('sw.js').catch(() => {});
         }
+
+        // --- Study Pass: leave the lockdown for study material, within a time budget ---
+        function passBudgetSec() { return (settings.passMinutes || 0) * 60; }
+        function passLeftSec() {
+            const live = timerState.passActive ? Math.floor((Date.now() - timerState.passStart) / 1000) : 0;
+            return Math.max(0, passBudgetSec() - (timerState.passUsed || 0) - live);
+        }
+        function fmtSec(s) { return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
+        function updatePassUI() {
+            const label = document.getElementById('pass-left-label'), btn = document.getElementById('btn-pass');
+            if (!label || !btn) return;
+            label.innerText = fmtSec(passLeftSec()) + ' left';
+            btn.innerText = timerState.passActive ? 'End pass and return to lockdown' : 'Start pass (then switch to any app or tab)';
+        }
+        function startStudyPass() {
+            if (!timerState.isRunning || timerState.mode !== 'work') return false;
+            if (timerState.passActive) return true;
+            if (passLeftSec() <= 0) { showToast('No pass time left', 'Your study pass for this block is used up.'); return false; }
+            timerState.passActive = true;
+            timerState.passStart = Date.now();
+            if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+            clearInterval(timerState.passTick);
+            timerState.passTick = setInterval(() => { updatePassUI(); if (passLeftSec() <= 0) endStudyPass(true); }, 1000);
+            updatePassUI();
+            return true;
+        }
+        function endStudyPass(expired) {
+            if (!timerState.passActive) return;
+            timerState.passUsed = (timerState.passUsed || 0) + Math.floor((Date.now() - timerState.passStart) / 1000);
+            timerState.passActive = false;
+            clearInterval(timerState.passTick);
+            updatePassUI();
+            if (timerState.isRunning && (expired || timerState.passUsed > passBudgetSec() + 2)) {
+                triggerLockdownBreach("Study pass time ran out. Back to work!");
+            } else {
+                showToast('Welcome back', fmtSec(passLeftSec()) + ' of study pass left. Tap anywhere to re-enter fullscreen.');
+                document.addEventListener('click', enterFullscreenSafe, { once: true });
+            }
+        }
+        function toggleStudyPass() {
+            if (timerState.passActive) { endStudyPass(false); enterFullscreenSafe(); } else startStudyPass();
+        }
+        function openStudyLink(i) {
+            const l = (settings.studyLinks || [])[i];
+            if (l && startStudyPass()) window.open(l.url, '_blank', 'noopener');
+        }
+        function renderStudyLinks() {
+            const bar = document.getElementById('study-links-bar');
+            if (!bar) return;
+            bar.innerHTML = (settings.studyLinks || []).map((l, i) => `<button type="button" onclick="openStudyLink(${i})" title="${escapeHtml(l.url)}" class="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-dark-800 border border-slate-700 text-slate-300 hover:border-indigo-500 hover:text-indigo-300 transition truncate max-w-[10rem]">${escapeHtml(l.name)}</button>`).join('');
+        }
+        window.addEventListener('focus', () => { if (timerState.passActive) { endStudyPass(false); keepAwake(true); } });
 
         // --- Fullscreen Toggle ---
         function toggleFullscreen() {
