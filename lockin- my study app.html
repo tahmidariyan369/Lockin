@@ -1,0 +1,1884 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LockIn // Minimalist Focus & Pomodoro</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#090a0f">
+    <link rel="icon" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-180.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="LockIn">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            950: '#090a0f',
+                            900: '#0f111a',
+                            800: '#181b28',
+                            700: '#232738',
+                        },
+                        accent: {
+                            work: '#6366f1', // Indigo
+                            rest: '#10b981', // Emerald
+                            long: '#3b82f6', // Blue
+                            hardcore: '#e11d48', // Rose/Crimson
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #090a0f;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f111a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #232738;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #333a52;
+        }
+        @keyframes alarmFlash {
+            0%, 100% { box-shadow: inset 0 0 0 0px rgba(225, 29, 72, 0); background-color: #090a0f; }
+            50% { box-shadow: inset 0 0 120px 30px rgba(225, 29, 72, 0.45); background-color: #1f070e; }
+        }
+        .alarm-flash {
+            animation: alarmFlash 0.6s ease-in-out 3;
+        }
+        /* Custom Range Slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 14px;
+            width: 14px;
+            border-radius: 50%;
+            background: #6366f1;
+            cursor: pointer;
+            margin-top: -5px;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #232738;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body id="app-body" class="min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white transition-colors duration-300">
+
+    <!-- Top Navigation / Header -->
+    <header id="main-header" class="w-full border-b border-slate-800/60 bg-dark-900/80 backdrop-blur-md sticky top-0 z-40 transition-all">
+        <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div id="brand-icon" class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 transition-all">
+                    <i data-lucide="target" class="w-5 h-5 text-white"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold tracking-tight text-lg text-slate-100 flex items-center gap-2">
+                        LockIn <span id="mode-badge" class="text-[11px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-mono">DEEP WORK</span>
+                    </h1>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <nav id="main-nav" class="flex items-center space-x-1 sm:space-x-2 bg-dark-800/80 p-1 rounded-xl border border-slate-800">
+                <button onclick="switchTab('timer')" id="tab-btn-timer" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 bg-indigo-600 text-white shadow-sm">
+                    <i data-lucide="timer" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Timer</span>
+                </button>
+                <button onclick="switchTab('tasks')" id="tab-btn-tasks" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800">
+                    <i data-lucide="check-square" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Tasks</span>
+                    <span id="task-badge" class="ml-1 px-1.5 py-0.2 text-[10px] bg-slate-700 text-slate-300 rounded-full">0</span>
+                </button>
+                <button onclick="switchTab('ambient')" id="tab-btn-ambient" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800">
+                    <i data-lucide="headphones" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Audio</span>
+                </button>
+                <button onclick="switchTab('stats')" id="tab-btn-stats" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800">
+                    <i data-lucide="bar-chart-2" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Accountability</span>
+                </button>
+            </nav>
+
+            <!-- Quick Actions -->
+            <div class="flex items-center space-x-2">
+                <button onclick="installApp()" id="btn-install" title="Install app" class="hidden px-3 py-2 text-xs font-semibold text-emerald-400 border border-emerald-500/30 rounded-xl hover:bg-emerald-500/10 flex items-center gap-1.5"><i data-lucide="download" class="w-4 h-4"></i><span class="hidden sm:inline">Install</span></button>
+                <button onclick="toggleFullscreen()" title="Toggle Fullscreen" class="p-2 text-slate-400 hover:text-slate-200 hover:bg-dark-800 rounded-xl transition border border-transparent hover:border-slate-800">
+                    <i data-lucide="maximize" class="w-4 h-4"></i>
+                </button>
+                <button onclick="openSettingsModal()" id="btn-settings" title="Settings" class="p-2 text-slate-400 hover:text-slate-200 hover:bg-dark-800 rounded-xl transition border border-transparent hover:border-slate-800">
+                    <i data-lucide="settings" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-6 flex flex-col justify-center">
+
+        <!-- TAB 1: TIMER VIEW -->
+        <div id="view-timer" class="tab-content flex flex-col items-center justify-center my-auto py-2">
+            
+            <!-- Top Enforcement & Intensity Bar (Hidden while locked in) -->
+            <div id="setup-controls" class="w-full max-w-xl flex flex-col items-center space-y-4 mb-6">
+                <!-- Exam countdown + today's goal -->
+                <div class="w-full grid grid-cols-2 gap-3">
+                    <div class="bg-dark-900 border border-slate-800 rounded-2xl px-4 py-3">
+                        <p class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Countdown</p>
+                        <p id="hud-exam" class="text-sm font-bold text-amber-400 font-mono mt-0.5">-</p>
+                    </div>
+                    <div class="bg-dark-900 border border-slate-800 rounded-2xl px-4 py-3">
+                        <p class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Today's Focus</p>
+                        <p id="hud-today" class="text-sm font-bold text-slate-100 font-mono mt-0.5">0 / 120m</p>
+                        <div class="h-1 bg-dark-700 rounded mt-2 overflow-hidden"><div id="hud-bar" class="h-full bg-emerald-500 transition-all" style="width:0%"></div></div>
+                    </div>
+                </div>
+                
+                <!-- Intensity Tiers (Progressive Overload) -->
+                <div class="flex flex-wrap items-center justify-center gap-2 bg-dark-900 p-1.5 rounded-2xl border border-slate-800 shadow-inner">
+                    <button onclick="selectTier('standard', 25)" id="tier-standard" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all bg-indigo-600 text-white shadow">
+                        Standard (25m)
+                    </button>
+                    <button onclick="selectTier('deep', 50)" id="tier-deep" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-slate-200">
+                        Deep (50m)
+                    </button>
+                    <button onclick="selectTier('monk', 90)" id="tier-monk" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-slate-200">
+                        Monk Mode (90m)
+                    </button>
+                    <button onclick="selectTier('escalate', null)" id="tier-escalate" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all text-amber-400 hover:bg-amber-500/10 flex items-center gap-1">
+                        <i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Auto-Escalate (<span id="escalate-mins-label">25</span>m)
+                    </button>
+                </div>
+
+                <!-- Hardcore Lockdown & Break Switcher -->
+                <div class="flex flex-wrap items-center justify-center gap-3">
+                    <!-- Hardcore Toggle -->
+                    <label class="flex items-center space-x-2.5 bg-dark-900 border border-slate-800 px-3.5 py-2 rounded-xl cursor-pointer hover:border-rose-500/40 transition select-none">
+                        <input type="checkbox" id="hardcore-toggle" checked onchange="toggleHardcoreUI()" class="w-4 h-4 rounded border-slate-700 bg-dark-800 text-rose-600 focus:ring-rose-500/20">
+                        <span class="text-xs font-semibold text-rose-400 flex items-center gap-1.5">
+                            <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Hardcore Lockdown
+                        </span>
+                    </label>
+
+                    <!-- Quick Break Pills -->
+                    <div class="flex items-center space-x-1 bg-dark-900 p-1 rounded-xl border border-slate-800">
+                        <button onclick="setMode('shortBreak')" id="mode-shortBreak" class="px-3 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-emerald-400 transition">
+                            5m Break
+                        </button>
+                        <button onclick="setMode('longBreak')" id="mode-longBreak" class="px-3 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-blue-400 transition">
+                            15m Break
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Micro-Goal & Live Telemetry Banner -->
+            <div class="mb-6 w-full max-w-lg bg-dark-900/80 border border-slate-800 rounded-2xl p-3.5 flex items-center justify-between shadow-sm">
+                <div class="flex items-center space-x-3 overflow-hidden">
+                    <div id="goal-icon-box" class="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center shrink-0">
+                        <i data-lucide="crosshair" class="w-4 h-4"></i>
+                    </div>
+                    <div class="truncate">
+                        <p class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Locked Micro-Goal</p>
+                        <p id="current-task-title" class="text-sm font-medium text-slate-200 truncate">Set goal before starting session...</p>
+                    </div>
+                </div>
+                
+                <!-- Live Session Strikes & Urges Counter -->
+                <div class="flex items-center space-x-2 shrink-0 ml-3">
+                    <div title="Distraction Strikes this session" class="px-2.5 py-1 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-mono flex items-center gap-1">
+                        <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i>
+                        <span id="live-strikes-count">0</span>
+                    </div>
+                    <div title="Urges Resisted this session" class="px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono flex items-center gap-1">
+                        <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+                        <span id="live-urges-count">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timer Circle / Display Card -->
+            <div id="timer-card" class="relative w-64 h-64 sm:w-76 sm:h-76 rounded-full bg-gradient-to-b from-dark-900 to-dark-950 border border-slate-800/80 flex flex-col items-center justify-center shadow-2xl shadow-indigo-950/20 mb-6">
+                <!-- Circular Progress Ring SVG -->
+                <svg class="absolute inset-0 w-full h-full -rotate-90 pointer-events-none p-3.5" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="44" class="text-dark-800" stroke-width="3" stroke="currentColor" fill="none"></circle>
+                    <circle id="progress-ring" cx="50" cy="50" r="44" class="text-indigo-500 transition-all duration-1000" stroke-width="3" stroke-dasharray="276.46" stroke-dashoffset="0" stroke-linecap="round" fill="none"></circle>
+                </svg>
+
+                <!-- Time readout -->
+                <div class="text-center z-10 px-4">
+                    <span id="timer-display" class="font-mono text-5xl sm:text-6xl font-bold tracking-tight text-white drop-shadow-md">25:00</span>
+                    <p id="timer-status-text" class="text-[11px] uppercase tracking-widest text-slate-400 font-semibold mt-2">Ready to Lock In</p>
+                </div>
+
+                <!-- Subtle Pulsing Glow when running -->
+                <div id="timer-glow" class="absolute inset-0 rounded-full bg-indigo-500/5 blur-xl pointer-events-none opacity-0 transition-opacity duration-500"></div>
+            </div>
+
+            <!-- Timer Action Controls -->
+            <div id="standard-controls" class="flex items-center space-x-3">
+                <button onclick="initiateStartFlow()" id="btn-start" class="px-8 py-3.5 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-sm sm:text-base shadow-lg shadow-rose-600/30 flex items-center gap-2 transition-all transform active:scale-95">
+                    <i data-lucide="lock" id="btn-start-icon" class="w-4 h-4"></i>
+                    <span id="btn-start-text">Enter Lockdown</span>
+                </button>
+                <button onclick="resetTimer()" id="btn-reset" title="Reset Timer" class="p-3.5 rounded-2xl bg-dark-900 hover:bg-dark-800 text-slate-400 hover:text-slate-200 border border-slate-800 transition-all active:scale-95">
+                    <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- HARDCORE ACTIVE CONTROLS (Visible ONLY during active Hardcore Lockdown) -->
+            <div id="hardcore-active-panel" class="hidden w-full max-w-md flex flex-col items-center space-y-4 mt-1">
+                
+                <!-- Rapid Distraction Parking Lot Input -->
+                <form onsubmit="parkDistractionUrge(event)" class="w-full flex gap-2">
+                    <div class="relative flex-1">
+                        <input type="text" id="rapid-urge-input" placeholder="Intrusive urge? Park it here & stay locked in..."
+                            class="w-full bg-dark-900/90 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition">
+                    </div>
+                    <button type="submit" class="bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/30 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition shrink-0 flex items-center gap-1.5">
+                        <i data-lucide="shield" class="w-3.5 h-3.5"></i> Park Urge
+                    </button>
+                </form>
+
+                <!-- Quick Audio Toggle Pill while Locked In -->
+                <div class="flex items-center space-x-2 text-xs">
+                    <button onclick="toggleSound('gamma')" id="quick-sound-gamma" class="px-3 py-1.5 rounded-lg bg-dark-900 border border-slate-800 text-slate-400 hover:text-indigo-400 transition flex items-center gap-1.5">
+                        <i data-lucide="activity" class="w-3.5 h-3.5"></i> 40Hz Gamma
+                    </button>
+                    <button onclick="toggleSound('brown')" id="quick-sound-brown" class="px-3 py-1.5 rounded-lg bg-dark-900 border border-slate-800 text-slate-400 hover:text-amber-400 transition flex items-center gap-1.5">
+                        <i data-lucide="volume-2" class="w-3.5 h-3.5"></i> Brown Noise
+                    </button>
+                </div>
+
+                <!-- 10-Second Hold "Abandon Session" Quit Friction Button -->
+                <div class="pt-2">
+                    <button id="btn-abandon-hold"
+                        onmousedown="startAbandonHold()" onmouseup="cancelAbandonHold()" onmouseleave="cancelAbandonHold()"
+                        ontouchstart="startAbandonHold(event)" ontouchend="cancelAbandonHold()"
+                        class="relative overflow-hidden px-5 py-2.5 rounded-xl bg-dark-900 border border-rose-900/60 text-rose-500/80 hover:text-rose-400 text-xs font-mono uppercase tracking-wider select-none transition">
+                        <div id="abandon-progress-bar" class="absolute inset-y-0 left-0 bg-rose-600/30 w-0 pointer-events-none"></div>
+                        <span id="abandon-btn-label" class="relative z-10 flex items-center gap-1.5">
+                            <i data-lucide="skull" class="w-3.5 h-3.5"></i> Hold 10s to Abandon Session
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TAB 2: TASKS VIEW -->
+        <div id="view-tasks" class="tab-content hidden flex-col space-y-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-100">Tasks & Backlog</h2>
+                    <p class="text-xs text-slate-400">Organize your study backlog and select a focus task.</p>
+                </div>
+                <button onclick="clearCompletedTasks()" class="text-xs text-slate-400 hover:text-rose-400 transition flex items-center gap-1">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Clear Finished
+                </button>
+            </div>
+
+            <!-- Add Task Form -->
+            <form id="task-form" onsubmit="addTask(event)" class="flex gap-2">
+                <div class="relative flex-1">
+                    <input type="text" id="task-input" placeholder="Next action, e.g. Open Physics Ch.3 and write key formulas" required
+                        class="w-full bg-dark-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition">
+                </div>
+                <select id="task-subject" class="bg-dark-900 border border-slate-800 rounded-xl px-3 text-sm text-slate-300 focus:outline-none focus:border-indigo-500"></select>
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-3 rounded-xl font-semibold text-sm transition shadow-lg shadow-indigo-600/20 flex items-center gap-2 shrink-0">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Add Task
+                </button>
+            </form>
+
+            <!-- Tasks List Container -->
+            <div class="space-y-3" id="task-list-container">
+                <!-- Dynamically populated tasks -->
+            </div>
+        </div>
+
+        <!-- TAB 3: AUDIO & DISTRACTION PARKING LOT VIEW -->
+        <div id="view-ambient" class="tab-content hidden flex-col space-y-6">
+            <div>
+                <h2 class="text-xl font-bold text-slate-100">Neuro-Audio & Distraction Parking Lot</h2>
+                <p class="text-xs text-slate-400">Synthesized acoustic entrainment & intrusive urge quarantine.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Synthesized Soundscapes -->
+                <div class="bg-dark-900/60 border border-slate-800 rounded-2xl p-5 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm font-semibold text-slate-300 flex items-center gap-2">
+                            <i data-lucide="headphones" class="w-4 h-4 text-indigo-400"></i> Web Audio Engine
+                        </h3>
+                        <!-- Master Volume Control -->
+                        <div class="flex items-center space-x-2 w-28">
+                            <i data-lucide="volume-1" class="w-3.5 h-3.5 text-slate-400"></i>
+                            <input type="range" id="audio-volume-slider" min="0" max="1" step="0.05" value="0.25" oninput="updateAudioVolume(this.value)" class="w-full">
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <!-- 40Hz Gamma Binaural Beats -->
+                        <div class="flex items-center justify-between bg-dark-800/60 p-3 rounded-xl border border-indigo-500/20">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-lg bg-indigo-500/15 text-indigo-400 flex items-center justify-center">
+                                    <i data-lucide="activity" class="w-4 h-4"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-slate-200">40Hz Gamma Binaural</p>
+                                    <p class="text-[11px] text-slate-400">200Hz L / 240Hz R peak cognitive focus</p>
+                                </div>
+                            </div>
+                            <button onclick="toggleSound('gamma')" id="sound-btn-gamma" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-dark-700 text-slate-300 hover:bg-indigo-600 hover:text-white transition">
+                                Play
+                            </button>
+                        </div>
+
+                        <!-- Deep Brown Noise -->
+                        <div class="flex items-center justify-between bg-dark-800/60 p-3 rounded-xl border border-slate-800/80">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+                                    <i data-lucide="waves" class="w-4 h-4"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-slate-200">Deep Brown Noise</p>
+                                    <p class="text-[11px] text-slate-400">Low-frequency rumble to block room noise</p>
+                                </div>
+                            </div>
+                            <button onclick="toggleSound('brown')" id="sound-btn-brown" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-dark-700 text-slate-300 hover:bg-amber-600 hover:text-white transition">
+                                Play
+                            </button>
+                        </div>
+
+                        <!-- Rainfall / Pink Noise -->
+                        <div class="flex items-center justify-between bg-dark-800/60 p-3 rounded-xl border border-slate-800/80">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                                    <i data-lucide="cloud-rain" class="w-4 h-4"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-slate-200">Heavy Rainfall</p>
+                                    <p class="text-[11px] text-slate-400">Filtered pink noise acoustic shield</p>
+                                </div>
+                            </div>
+                            <button onclick="toggleSound('rain')" id="sound-btn-rain" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-dark-700 text-slate-300 hover:bg-emerald-600 hover:text-white transition">
+                                Play
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Distraction Parking Lot & Urge Log -->
+                <div class="bg-dark-900/60 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <h3 class="text-sm font-semibold text-slate-300 flex items-center gap-2">
+                                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i> Distraction Parking Lot
+                            </h3>
+                            <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
+                                Total Resisted: <span id="total-urges-badge">0</span>
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-400 mb-3">Dump impulsive urges here instead of switching tabs. Deal with them after your block.</p>
+                        
+                        <form onsubmit="parkDistractionUrgeFromTab(event)" class="flex gap-2 mb-3">
+                            <input type="text" id="tab-urge-input" placeholder="e.g., Check messages, search YouTube..."
+                                class="flex-1 bg-dark-800/80 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+                            <button type="submit" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold transition">
+                                Park
+                            </button>
+                        </form>
+                    </div>
+
+                    <div id="parked-urges-list" class="h-36 overflow-y-auto space-y-1.5 pr-1">
+                        <!-- Parked urges list -->
+                    </div>
+
+                    <div class="flex justify-between items-center mt-3 pt-2 border-t border-slate-800/80 text-xs text-slate-500">
+                        <span>Quarantined locally</span>
+                        <button onclick="clearParkedUrges()" class="hover:text-rose-400 transition">Clear list</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: ACCOUNTABILITY & STATS VIEW -->
+        <div id="view-stats" class="tab-content hidden flex-col space-y-6">
+            <div>
+                <h2 class="text-xl font-bold text-slate-100">Accountability & Discipline Ledger</h2>
+                <p class="text-xs text-slate-400">Permanent record of deep work blocks, clean streaks, distraction strikes, and abandoned sessions.</p>
+            </div>
+
+            <!-- 4-Card Accountability Metrics -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                <div class="bg-dark-900/60 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-3">
+                        <i data-lucide="clock" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <p class="text-[11px] text-slate-400 font-medium">Deep Work Minutes</p>
+                        <p id="stat-total-time" class="text-xl font-bold text-slate-100 font-mono mt-0.5">0m</p>
+                    </div>
+                </div>
+
+                <div class="bg-dark-900/60 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-3">
+                        <i data-lucide="flame" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <p class="text-[11px] text-slate-400 font-medium">Clean Streak (0 Strikes)</p>
+                        <p id="stat-clean-streak" class="text-xl font-bold text-emerald-400 font-mono mt-0.5">0</p>
+                    </div>
+                </div>
+
+                <div class="bg-dark-900/60 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
+                    <div class="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center mb-3">
+                        <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <p class="text-[11px] text-slate-400 font-medium">Distraction Strikes</p>
+                        <p id="stat-total-strikes" class="text-xl font-bold text-amber-400 font-mono mt-0.5">0</p>
+                    </div>
+                </div>
+
+                <div class="bg-dark-900/60 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
+                    <div class="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center mb-3">
+                        <i data-lucide="skull" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <p class="text-[11px] text-slate-400 font-medium">Failed / Abandoned</p>
+                        <p id="stat-failed-sessions" class="text-xl font-bold text-rose-400 font-mono mt-0.5">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-dark-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-semibold text-slate-300">Last 7 Days (focus minutes)</h3>
+                    <div class="flex items-center gap-3">
+                        <span id="week-summary" class="text-xs font-mono text-emerald-400"></span>
+                        <button onclick="exportData()" class="text-xs text-slate-400 hover:text-indigo-400 flex items-center gap-1"><i data-lucide="download" class="w-3.5 h-3.5"></i> Export JSON</button>
+                    </div>
+                </div>
+                <div id="week-chart" class="flex items-end gap-2"></div>
+            </div>
+            <!-- History Table -->
+            <div class="bg-dark-900/60 border border-slate-800 rounded-2xl p-5 space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-semibold text-slate-300">Permanent Session Ledger</h3>
+                    <button onclick="clearHistory()" class="text-xs text-slate-400 hover:text-rose-400 transition flex items-center gap-1">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Reset Ledger
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="text-xs uppercase text-slate-500 border-b border-slate-800">
+                            <tr>
+                                <th class="pb-3 font-semibold">Status</th>
+                                <th class="pb-3 font-semibold">Micro-Goal / Shame Reason</th>
+                                <th class="pb-3 font-semibold">Duration</th>
+                                <th class="pb-3 font-semibold">Strikes</th>
+                                <th class="pb-3 font-semibold">Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body" class="divide-y divide-slate-800/50 text-slate-300">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer Quote -->
+    <footer id="main-footer" class="w-full border-t border-slate-800/60 bg-dark-900/40 py-3.5 mt-6">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <p id="motivational-quote" class="text-xs text-slate-400 italic">"Discipline is choosing between what you want now and what you want most."</p>
+        </div>
+    </footer>
+
+    <!-- MODAL 1: PRE-SESSION COMMITMENT CONTRACT -->
+    <div id="commitment-modal" class="fixed inset-0 bg-dark-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-dark-900 border border-rose-500/30 rounded-2xl w-full max-w-lg p-6 space-y-5 shadow-2xl shadow-rose-950/30">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-rose-500/15 text-rose-400 flex items-center justify-center">
+                        <i data-lucide="file-signature" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-100">Hardcore Commitment Contract</h3>
+                        <p class="text-xs text-slate-400">Fullscreen lockdown will engage immediately upon signing.</p>
+                    </div>
+                </div>
+                <button onclick="closeCommitmentModal()" class="text-slate-400 hover:text-slate-200">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form onsubmit="signContractAndStart(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">1. Concrete Micro-Goal for this <span id="contract-mins-label" class="text-indigo-400 font-mono">25m</span> block:</label>
+                    <input type="text" id="contract-micro-goal" required placeholder="Next action, e.g. Open Math Ch.3 and solve 10 problems"
+                        class="w-full bg-dark-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">
+                        2. Type the exact commitment phrase below <span class="text-rose-400">(Paste disabled)</span>:
+                    </label>
+                    <div class="bg-dark-950 border border-slate-800 rounded-xl px-3.5 py-2 mb-2 select-none">
+                        <code id="commitment-target-phrase" class="text-xs sm:text-sm font-mono text-rose-400 font-semibold">I will not quit until the timer hits zero</code>
+                    </div>
+                    <input type="text" id="contract-phrase-input" required autocomplete="off"
+                        onpaste="return false;" ondrop="return false;"
+                        placeholder="Type the exact phrase above..."
+                        class="w-full bg-dark-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm font-mono text-slate-100 placeholder-slate-500 focus:outline-none focus:border-rose-500">
+                    <p id="contract-error-msg" class="text-xs text-rose-400 mt-1.5 hidden">Phrase does not match exactly. Type every word accurately.</p>
+                </div>
+
+                <div class="bg-rose-500/5 border border-rose-500/20 rounded-xl p-3 text-xs text-slate-400 space-y-1">
+                    <p class="font-semibold text-rose-300 flex items-center gap-1.5"><i data-lucide="alert-octagon" class="w-3.5 h-3.5"></i> Lockdown Rules:</p>
+                    <p>• Exiting fullscreen or switching tabs triggers an alarm, adds a strike, and penalizes your timer.</p>
+                    <p>• Standard pause is disabled. Quitting requires a 10-second hold + permanent Shame Log.</p>
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button type="button" onclick="closeCommitmentModal()" class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-dark-800 text-slate-300 hover:bg-slate-800 transition">Cancel</button>
+                    <button type="submit" class="px-6 py-2.5 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white transition shadow-lg shadow-rose-600/30 flex items-center gap-1.5">
+                        <i data-lucide="lock" class="w-3.5 h-3.5"></i> Sign & Lock In
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: VIOLATION / BREACH OVERLAY (Triggered on Tab Blur or Fullscreen Exit) -->
+    <div id="breach-modal" class="fixed inset-0 bg-rose-950/95 backdrop-blur-lg z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-dark-950 border-2 border-rose-500 rounded-2xl w-full max-w-md p-6 text-center space-y-5 shadow-2xl">
+            <div class="w-16 h-16 rounded-full bg-rose-500/20 text-rose-500 flex items-center justify-center mx-auto animate-bounce">
+                <i data-lucide="siren" class="w-9 h-9"></i>
+            </div>
+            <div>
+                <h3 class="text-xl font-extrabold text-white tracking-tight uppercase">Lockdown Breach Detected!</h3>
+                <p id="breach-reason-text" class="text-sm text-rose-300 mt-1">You left the focus environment during an active block.</p>
+            </div>
+            <div class="bg-rose-500/10 border border-rose-500/30 rounded-xl p-3 text-xs text-rose-200 font-mono">
+                +1 Distraction Strike Recorded • Penalty Applied (<span id="breach-penalty-label">+5m</span>)
+            </div>
+            <button onclick="acknowledgeBreachAndRelock()" class="w-full py-3.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow-lg shadow-rose-600/40 transition flex items-center justify-center gap-2">
+                <i data-lucide="maximize" class="w-4 h-4"></i> Return to Fullscreen & Resume
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 3: QUIT FRICTION SHAME LOG (Triggered after 10s Hold) -->
+    <div id="shame-modal" class="fixed inset-0 bg-dark-950/95 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-dark-900 border border-rose-500/40 rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl">
+            <div class="flex items-center gap-3 text-rose-400">
+                <i data-lucide="skull" class="w-6 h-6"></i>
+                <h3 class="text-lg font-bold text-white">Abandon Session — Shame Log</h3>
+            </div>
+            <p class="text-xs text-slate-400">
+                You are breaking your commitment contract before zero. State honestly why you succumbed to distraction. This will be permanently logged as a <span class="text-rose-400 font-bold">FAILED</span> block.
+            </p>
+            <form onsubmit="confirmAbandonSession(event)" class="space-y-4">
+                <textarea id="shame-reason-input" required minlength="10" rows="3"
+                    placeholder="e.g., Gave in to urge to check social media because problem #4 felt hard..."
+                    class="w-full bg-dark-800 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-rose-500 resize-none"></textarea>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeShameModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition">
+                        Keep Fighting (Resume)
+                    </button>
+                    <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white transition">
+                        Record Failure & Quit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Post-session Reflection -->
+    <div id="reflection-modal" class="fixed inset-0 bg-dark-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <form onsubmit="saveReflection(event)" class="bg-dark-900 border border-emerald-500/30 rounded-2xl w-full max-w-md p-6 space-y-3 shadow-2xl">
+            <h3 class="text-base font-bold text-slate-100 flex items-center gap-2"><i data-lucide="notebook-pen" class="w-5 h-5 text-emerald-400"></i> Block complete. 60-second reflection</h3>
+            <input id="refl-win" class="w-full bg-dark-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500" placeholder="Win: what got done?">
+            <input id="refl-block" class="w-full bg-dark-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500" placeholder="Blocker: what slowed you down?">
+            <input id="refl-next" class="w-full bg-dark-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500" placeholder="Next action: the very next step">
+            <input id="refl-recall" class="w-full bg-dark-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500" placeholder="Active recall: 1 thing you remember without looking">
+            <select id="refl-focus" class="w-full bg-dark-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"><option>Locked in</option><option>Decent</option><option>Distracted</option></select>
+            <div class="flex justify-end gap-3 pt-1">
+                <button type="button" onclick="closeReflection()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-dark-800 text-slate-300">Skip</button>
+                <button type="submit" class="px-5 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white">Save</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="fixed inset-0 bg-dark-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-5 shadow-2xl">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                    <i data-lucide="settings" class="w-5 h-5 text-indigo-400"></i> Enforcement & Timer Settings
+                </h3>
+                <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-slate-200">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1.5">Breach Penalty Mode (On Tab Switch / Exit Fullscreen)</label>
+                    <select id="setting-penalty-type" class="w-full bg-dark-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                        <option value="add5">Add +5 Penalty Minutes to Timer</option>
+                        <option value="reset">Reset Session Timer Back to Zero</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <div><label class="block text-xs font-medium text-slate-400 mb-1.5">Daily goal (m)</label><input type="number" id="setting-goal" min="10" max="720" class="w-full bg-dark-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"></div>
+                    <div><label class="block text-xs font-medium text-slate-400 mb-1.5">Exam name</label><input type="text" id="setting-exam-name" class="w-full bg-dark-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"></div>
+                    <div><label class="block text-xs font-medium text-slate-400 mb-1.5">Exam date</label><input type="date" id="setting-exam-date" style="color-scheme:dark" class="w-full bg-dark-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"></div>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1.5">Standard (m)</label>
+                        <input type="number" id="setting-work" min="1" max="180" value="25"
+                            class="w-full bg-dark-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1.5">Short Break</label>
+                        <input type="number" id="setting-short" min="1" max="30" value="5"
+                            class="w-full bg-dark-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1.5">Long Break</label>
+                        <input type="number" id="setting-long" min="1" max="60" value="15"
+                            class="w-full bg-dark-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-3 pt-2">
+                <button onclick="closeSettingsModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-dark-800 text-slate-300 hover:bg-slate-800 transition">Cancel</button>
+                <button onclick="saveSettings()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition shadow-lg shadow-indigo-600/20">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast Message Box -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-dark-900 border border-slate-700 text-slate-200 px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3 transition-all duration-300 transform translate-y-20 opacity-0 z-50">
+        <div id="toast-icon" class="text-indigo-400">
+            <i data-lucide="bell" class="w-5 h-5"></i>
+        </div>
+        <div>
+            <p id="toast-title" class="text-xs font-bold text-slate-100">Notification</p>
+            <p id="toast-desc" class="text-xs text-slate-400">Session completed successfully.</p>
+        </div>
+    </div>
+
+    <!-- Application JavaScript Logic -->
+    <script>
+        // --- App State ---
+        const COMMITMENT_PHRASE = "I will not quit until the timer hits zero";
+
+        let settings = {
+            work: 25,
+            shortBreak: 5,
+            longBreak: 15,
+            penaltyType: 'add5', // 'add5' or 'reset'
+            escalateMinutes: 25,
+            dailyGoal: 120, examName: 'HSC Exam', examDate: '2027-06-01'
+        };
+
+        let timerState = {
+            mode: 'work', // 'work', 'shortBreak', 'longBreak'
+            tier: 'standard', // 'standard', 'deep', 'monk', 'escalate'
+            hardcore: true,
+            plannedMinutes: 25,
+            totalSeconds: 25 * 60,
+            timeLeft: 25 * 60,
+            isRunning: false,
+            interval: null,
+            activeTaskId: null,
+            microGoal: '',
+            sessionStrikes: 0,
+            sessionUrges: 0,
+            breachActive: false
+        };
+
+        let tasks = JSON.parse(localStorage.getItem('lockin_tasks')) || [];
+        let sessions = JSON.parse(localStorage.getItem('lockin_sessions')) || [];
+        let parkedUrges = JSON.parse(localStorage.getItem('lockin_urges')) || [];
+        let accountability = JSON.parse(localStorage.getItem('lockin_accountability')) || {
+            totalMinutes: 0,
+            cleanStreak: 0,
+            totalStrikes: 0,
+            failedSessions: 0,
+            totalUrgesResisted: 0
+        };
+
+        // Web Audio API Context & Nodes
+        let audioCtx = null;
+        let ambientActiveSound = null;
+        let ambientNodes = [];
+        let masterGainNode = null;
+        let currentVolume = 0.25;
+
+        // Abandon Hold State
+        let abandonHoldTimer = null;
+        let abandonHoldStart = 0;
+        const ABANDON_HOLD_DURATION = 10000; // 10 seconds
+
+        // --- Initialization ---
+        window.onload = function() {
+            const savedSettings = localStorage.getItem('lockin_settings');
+            if (savedSettings) {
+                settings = { ...settings, ...JSON.parse(savedSettings) };
+                document.getElementById('setting-work').value = settings.work;
+                document.getElementById('setting-short').value = settings.shortBreak;
+                document.getElementById('setting-long').value = settings.longBreak;
+                document.getElementById('setting-penalty-type').value = settings.penaltyType || 'add5';
+            }
+
+            document.getElementById('escalate-mins-label').innerText = settings.escalateMinutes || 25;
+            initExtras();
+            selectTier('standard', settings.work);
+
+            renderTasks();
+            renderParkedUrges();
+            renderStats();
+            updateTimerDisplay();
+            toggleHardcoreUI();
+            setupAntiDistractionListeners();
+            lucide.createIcons();
+
+            const quotes = [
+                "\"Comfort is the enemy of achievement. Stay locked in.\"",
+                "\"Every urge you resist rewires your brain for deeper focus.\"",
+                "\"You don't rise to the level of your goals; you fall to the level of your enforcement.\"",
+                "\"Protect your attention like your future depends on it—because it does.\""
+            ];
+            document.getElementById('motivational-quote').innerText = quotes[Math.floor(Math.random() * quotes.length)];
+        };
+
+        // --- Anti-Distraction Enforcement Listeners ---
+        function setupAntiDistractionListeners() {
+            // Detect Tab Switching / Minimizing
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden && timerState.isRunning && timerState.mode === 'work' && timerState.hardcore) {
+                    triggerLockdownBreach("You switched tabs or minimized the browser!");
+                }
+            });
+
+            // Detect Window Blur (clicking another app/monitor)
+            window.addEventListener('blur', () => {
+                if (timerState.isRunning && timerState.mode === 'work' && timerState.hardcore && !timerState.breachActive) {
+                    // Slight delay to avoid false positives when fullscreen prompt opens
+                    setTimeout(() => {
+                        if (!document.hasFocus() && timerState.isRunning && timerState.hardcore && !timerState.breachActive) {
+                            triggerLockdownBreach("Window focus lost! You clicked outside the study environment.");
+                        }
+                    }, 300);
+                }
+            });
+
+            // Detect Fullscreen Exit
+            document.addEventListener('fullscreenchange', () => {
+                if (!document.fullscreenElement && timerState.isRunning && timerState.mode === 'work' && timerState.hardcore && !timerState.breachActive) {
+                    triggerLockdownBreach("You exited Fullscreen Lockdown early!");
+                }
+            });
+        }
+
+        function triggerLockdownBreach(reason) {
+            if (timerState.breachActive) return;
+            timerState.breachActive = true;
+
+            // 1. Increment Strikes
+            timerState.sessionStrikes++;
+            accountability.totalStrikes++;
+            accountability.cleanStreak = 0; // Streak broken!
+            saveAccountability();
+            renderStats();
+            document.getElementById('live-strikes-count').innerText = timerState.sessionStrikes;
+
+            // 2. Apply Timer Penalty
+            const penaltyTextEl = document.getElementById('breach-penalty-label');
+            if (settings.penaltyType === 'reset') {
+                timerState.timeLeft = timerState.totalSeconds;
+                penaltyTextEl.innerText = "Timer Reset to Start";
+            } else {
+                const penaltySecs = 5 * 60;
+                timerState.timeLeft += penaltySecs;
+                timerState.totalSeconds += penaltySecs;
+                penaltyTextEl.innerText = "+5 Penalty Minutes";
+            }
+            updateTimerDisplay();
+
+            // 3. Loud Warning Alarm & Red Screen Flash
+            playAlarmSiren();
+            const body = document.getElementById('app-body');
+            body.classList.remove('alarm-flash');
+            void body.offsetWidth; // trigger reflow
+            body.classList.add('alarm-flash');
+
+            // 4. Show Breach Overlay
+            document.getElementById('breach-reason-text').innerText = reason;
+            document.getElementById('breach-modal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function acknowledgeBreachAndRelock() {
+            document.getElementById('breach-modal').classList.add('hidden');
+            timerState.breachActive = false;
+            enterFullscreenSafe();
+        }
+
+        function enterFullscreenSafe() {
+            if (!document.fullscreenElement) {
+                reqFS().catch(() => {
+                    // Fallback if browser blocks fullscreen without direct gesture
+                });
+            }
+        }
+
+        // --- Intensity Tiers & Hardcore Mode Toggle ---
+        function selectTier(tier, mins) {
+            if (timerState.isRunning) return;
+            timerState.tier = tier;
+            timerState.mode = 'work';
+
+            ['standard', 'deep', 'monk', 'escalate'].forEach(t => {
+                const btn = document.getElementById(`tier-${t}`);
+                if (t === tier) {
+                    btn.className = t === 'escalate'
+                        ? "px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all bg-amber-500 text-dark-950 shadow"
+                        : "px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all bg-indigo-600 text-white shadow";
+                } else {
+                    btn.className = t === 'escalate'
+                        ? "px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all text-amber-400 hover:bg-amber-500/10 flex items-center gap-1"
+                        : "px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-slate-200";
+                }
+            });
+
+            // Reset break button styles
+            ['shortBreak', 'longBreak'].forEach(b => {
+                document.getElementById(`mode-${b}`).className = "px-3 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-emerald-400 transition";
+            });
+
+            const duration = tier === 'escalate' ? (settings.escalateMinutes || 25) : mins;
+            timerState.plannedMinutes = duration;
+            timerState.totalSeconds = duration * 60;
+            timerState.timeLeft = duration * 60;
+            updateTimerDisplay();
+            document.getElementById('timer-status-text').innerText = "Ready to Lock In";
+            toggleHardcoreUI();
+        }
+
+        function toggleHardcoreUI() {
+            const isHardcore = document.getElementById('hardcore-toggle').checked;
+            timerState.hardcore = isHardcore;
+
+            const btnStart = document.getElementById('btn-start');
+            const btnStartText = document.getElementById('btn-start-text');
+            const btnStartIcon = document.getElementById('btn-start-icon');
+            const badge = document.getElementById('mode-badge');
+
+            if (timerState.mode !== 'work') {
+                btnStart.className = "px-8 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm sm:text-base shadow-lg shadow-emerald-600/30 flex items-center gap-2 transition-all";
+                btnStartText.innerText = "Start Break";
+                btnStartIcon.setAttribute('data-lucide', 'play');
+                lucide.createIcons();
+                return;
+            }
+
+            if (isHardcore) {
+                btnStart.className = "px-8 py-3.5 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-sm sm:text-base shadow-lg shadow-rose-600/30 flex items-center gap-2 transition-all transform active:scale-95";
+                btnStartText.innerText = "Enter Lockdown";
+                btnStartIcon.setAttribute('data-lucide', 'lock');
+                badge.innerText = "HARDCORE";
+                badge.className = "text-[11px] px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-400 border border-rose-500/30 font-mono";
+            } else {
+                btnStart.className = "px-8 py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm sm:text-base shadow-lg shadow-indigo-600/30 flex items-center gap-2 transition-all transform active:scale-95";
+                btnStartText.innerText = "Start Focus";
+                btnStartIcon.setAttribute('data-lucide', 'play');
+                badge.innerText = "STANDARD";
+                badge.className = "text-[11px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-mono";
+            }
+            lucide.createIcons();
+        }
+
+        // --- Pre-Session Commitment Contract Flow ---
+        function initiateStartFlow() {
+            if (timerState.isRunning) {
+                if (!timerState.hardcore || timerState.mode !== 'work') {
+                    pauseTimer();
+                }
+                return;
+            }
+
+            if (timerState.mode === 'work' && timerState.hardcore) {
+                // Open Pre-Session Friction & Commitment Modal
+                document.getElementById('contract-mins-label').innerText = `${timerState.plannedMinutes}m`;
+                
+                // Pre-fill micro-goal if user selected an active task
+                const activeTask = tasks.find(t => t.id === timerState.activeTaskId);
+                document.getElementById('contract-micro-goal').value = activeTask ? activeTask.text : (timerState.microGoal || (sessions[0] && sessions[0].next) || '');
+                
+                document.getElementById('contract-phrase-input').value = '';
+                document.getElementById('contract-error-msg').classList.add('hidden');
+                document.getElementById('commitment-modal').classList.remove('hidden');
+                setTimeout(() => document.getElementById('contract-micro-goal').focus(), 50);
+            } else {
+                startTimer();
+            }
+        }
+
+        function closeCommitmentModal() {
+            document.getElementById('commitment-modal').classList.add('hidden');
+        }
+
+        function signContractAndStart(e) {
+            e.preventDefault();
+            const goalInput = document.getElementById('contract-micro-goal').value.trim();
+            const phraseInput = document.getElementById('contract-phrase-input').value.trim();
+            const errorEl = document.getElementById('contract-error-msg');
+
+            if (phraseInput !== COMMITMENT_PHRASE) {
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            errorEl.classList.add('hidden');
+            timerState.microGoal = goalInput;
+            document.getElementById('current-task-title').innerText = goalInput;
+            
+            closeCommitmentModal();
+            enterFullscreenSafe();
+            startTimer();
+        }
+
+        // --- Core Timer Engine ---
+        function setMode(mode) {
+            if (timerState.isRunning) return;
+            timerState.mode = mode;
+
+            if (mode === 'work') {
+                selectTier(timerState.tier, timerState.plannedMinutes);
+                return;
+            }
+
+            // Deselect work tiers visually
+            ['standard', 'deep', 'monk', 'escalate'].forEach(t => {
+                const btn = document.getElementById(`tier-${t}`);
+                btn.className = t === 'escalate'
+                    ? "px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all text-amber-400 hover:bg-amber-500/10 flex items-center gap-1"
+                    : "px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all text-slate-400 hover:text-slate-200";
+            });
+
+            ['shortBreak', 'longBreak'].forEach(b => {
+                const btn = document.getElementById(`mode-${b}`);
+                btn.className = b === mode
+                    ? "px-3 py-1 rounded-lg text-xs font-semibold bg-emerald-600 text-white transition"
+                    : "px-3 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-emerald-400 transition";
+            });
+
+            const mins = mode === 'shortBreak' ? settings.shortBreak : settings.longBreak;
+            timerState.plannedMinutes = mins;
+            timerState.totalSeconds = mins * 60;
+            timerState.timeLeft = mins * 60;
+            updateTimerDisplay();
+            document.getElementById('timer-status-text').innerText = "Recovery Break";
+            toggleHardcoreUI();
+        }
+
+        function startTimer() {
+            timerState.isRunning = true;
+            timerState.sessionStrikes = 0;
+            timerState.sessionUrges = 0;
+            document.getElementById('live-strikes-count').innerText = '0';
+            document.getElementById('live-urges-count').innerText = '0';
+
+            document.getElementById('timer-glow').classList.add('opacity-100');
+            keepAwake(true);
+
+            if (timerState.mode === 'work' && timerState.hardcore) {
+                // Engage Strict Lockdown UI
+                document.getElementById('setup-controls').classList.add('hidden');
+                document.getElementById('standard-controls').classList.add('hidden');
+                document.getElementById('main-nav').classList.add('opacity-20', 'pointer-events-none');
+                document.getElementById('btn-settings').classList.add('hidden');
+                document.getElementById('hardcore-active-panel').classList.remove('hidden');
+                document.getElementById('timer-status-text').innerText = "LOCKDOWN ACTIVE • DO NOT LEAVE";
+                document.getElementById('timer-status-text').className = "text-[11px] uppercase tracking-widest text-rose-400 font-bold mt-2 animate-pulse";
+            } else {
+                document.getElementById('btn-start-text').innerText = "Pause";
+                document.getElementById('btn-start-icon').setAttribute('data-lucide', 'pause');
+                document.getElementById('timer-status-text').innerText = timerState.mode === 'work' ? "Focusing..." : "Resting...";
+                lucide.createIcons();
+            }
+
+            timerState.interval = setInterval(() => {
+                if (timerState.timeLeft > 0) {
+                    timerState.timeLeft--;
+                    updateTimerDisplay();
+                } else {
+                    clearInterval(timerState.interval);
+                    timerState.isRunning = false;
+                    handleTimerComplete();
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            timerState.isRunning = false;
+            clearInterval(timerState.interval);
+            restoreNormalUI();
+            document.getElementById('btn-start-text').innerText = "Resume";
+            document.getElementById('btn-start-icon').setAttribute('data-lucide', 'play');
+            document.getElementById('timer-status-text').innerText = "Paused";
+            lucide.createIcons();
+        }
+
+        function resetTimer() {
+            if (timerState.isRunning && timerState.hardcore && timerState.mode === 'work') return;
+            pauseTimer();
+            restoreNormalUI();
+            if (timerState.mode === 'work') {
+                selectTier(timerState.tier, timerState.plannedMinutes);
+            } else {
+                setMode(timerState.mode);
+            }
+        }
+
+        function restoreNormalUI() {
+            document.getElementById('setup-controls').classList.remove('hidden');
+            document.getElementById('standard-controls').classList.remove('hidden');
+            document.getElementById('main-nav').classList.remove('opacity-20', 'pointer-events-none');
+            document.getElementById('btn-settings').classList.remove('hidden');
+            document.getElementById('hardcore-active-panel').classList.add('hidden');
+            document.getElementById('timer-glow').classList.remove('opacity-100');
+            keepAwake(false);
+            document.getElementById('timer-status-text').className = "text-[11px] uppercase tracking-widest text-slate-400 font-semibold mt-2";
+            toggleHardcoreUI();
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timerState.timeLeft / 60);
+            const seconds = timerState.timeLeft % 60;
+            const timeString = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            document.getElementById('timer-display').innerText = timeString;
+            document.title = `${timeString} - LockIn`;
+
+            const progress = timerState.totalSeconds > 0 ? (timerState.timeLeft / timerState.totalSeconds) : 0;
+            const circumference = 276.46;
+            const offset = circumference - (Math.min(1, progress) * circumference);
+            
+            const ring = document.getElementById('progress-ring');
+            ring.style.strokeDashoffset = offset;
+            
+            if (timerState.mode !== 'work') {
+                ring.className = "text-emerald-500 transition-all duration-1000";
+            } else if (timerState.hardcore) {
+                ring.className = "text-rose-500 transition-all duration-1000";
+            } else {
+                ring.className = "text-indigo-500 transition-all duration-1000";
+            }
+        }
+
+        function handleTimerComplete() {
+            playBellChime();
+            restoreNormalUI();
+
+            if (document.fullscreenElement) {
+                document.exitFullscreen().catch(() => {});
+            }
+
+            if (timerState.mode === 'work') {
+                const completedMins = Math.round(timerState.totalSeconds / 60);
+                const goalLabel = timerState.microGoal || "Deep Work Session";
+
+                if (timerState.activeTaskId) {
+                    const task = tasks.find(t => t.id === timerState.activeTaskId);
+                    if (task) {
+                        task.completedPomodoros = (task.completedPomodoros || 0) + 1;
+                        saveTasks();
+                        renderTasks();
+                    }
+                }
+
+                // Update Accountability Stats
+                accountability.totalMinutes += completedMins;
+                if (timerState.sessionStrikes === 0) {
+                    accountability.cleanStreak++;
+                    // Progressive Overload: Auto-Escalate +5m if strike-free
+                    if (timerState.tier === 'escalate') {
+                        settings.escalateMinutes = (settings.escalateMinutes || 25) + 5;
+                        localStorage.setItem('lockin_settings', JSON.stringify(settings));
+                        document.getElementById('escalate-mins-label').innerText = settings.escalateMinutes;
+                    }
+                }
+                saveAccountability();
+
+                // Log Completed Session
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                sessions.unshift({
+                    status: 'COMPLETED', date: todayKey(), mins: completedMins, subject: ((tasks.find(t => t.id === timerState.activeTaskId) || {}).subject) || '',
+                    task: goalLabel,
+                    duration: `${completedMins}m`,
+                    strikes: timerState.sessionStrikes,
+                    timestamp: timeStr
+                });
+                saveSessions();
+                renderStats();
+
+                const escalateNotice = (timerState.tier === 'escalate' && timerState.sessionStrikes === 0)
+                    ? ` Next Auto-Escalate block leveled up to ${settings.escalateMinutes}m!`
+                    : "";
+                showToast("Lockdown Conquered!", `Completed ${completedMins}m (${timerState.sessionStrikes} strikes).${escalateNotice}`);
+                setMode('shortBreak'); openReflection();
+            } else {
+                showToast("Break Over", "Time to re-enter the comfort-zone crusher.");
+                selectTier(timerState.tier, timerState.plannedMinutes);
+            }
+        }
+
+        // --- Quit Friction: 10-Second Hold + Shame Log ---
+        function startAbandonHold(e) {
+            if (e) e.preventDefault();
+            if (abandonHoldTimer) return;
+
+            abandonHoldStart = Date.now();
+            const bar = document.getElementById('abandon-progress-bar');
+            const label = document.getElementById('abandon-btn-label');
+
+            abandonHoldTimer = setInterval(() => {
+                const elapsed = Date.now() - abandonHoldStart;
+                const pct = Math.min(100, (elapsed / ABANDON_HOLD_DURATION) * 100);
+                bar.style.width = `${pct}%`;
+                
+                const remainingSecs = Math.ceil((ABANDON_HOLD_DURATION - elapsed) / 1000);
+                label.innerHTML = `<i data-lucide="skull" class="w-3.5 h-3.5"></i> Keep holding... ${remainingSecs}s`;
+
+                if (elapsed >= ABANDON_HOLD_DURATION) {
+                    cancelAbandonHold();
+                    openShameModal();
+                }
+            }, 50);
+        }
+
+        function cancelAbandonHold() {
+            if (abandonHoldTimer) {
+                clearInterval(abandonHoldTimer);
+                abandonHoldTimer = null;
+            }
+            const bar = document.getElementById('abandon-progress-bar');
+            const label = document.getElementById('abandon-btn-label');
+            if (bar) bar.style.width = '0%';
+            if (label) {
+                label.innerHTML = `<i data-lucide="skull" class="w-3.5 h-3.5"></i> Hold 10s to Abandon Session`;
+                lucide.createIcons();
+            }
+        }
+
+        function openShameModal() {
+            timerState.breachActive = true; // Prevent blur trigger while typing shame log
+            document.getElementById('shame-reason-input').value = '';
+            document.getElementById('shame-modal').classList.remove('hidden');
+            setTimeout(() => document.getElementById('shame-reason-input').focus(), 50);
+        }
+
+        function closeShameModal() {
+            document.getElementById('shame-modal').classList.add('hidden');
+            timerState.breachActive = false;
+            enterFullscreenSafe();
+        }
+
+        function confirmAbandonSession(e) {
+            e.preventDefault();
+            const shameReason = document.getElementById('shame-reason-input').value.trim();
+            if (!shameReason) return;
+
+            // Stop timer and exit lockdown
+            clearInterval(timerState.interval);
+            timerState.isRunning = false;
+            timerState.breachActive = false;
+            document.getElementById('shame-modal').classList.add('hidden');
+            
+            if (document.fullscreenElement) {
+                document.exitFullscreen().catch(() => {});
+            }
+
+            // Record Permanent Failure
+            accountability.failedSessions++;
+            accountability.cleanStreak = 0;
+            saveAccountability();
+
+            const elapsedMins = Math.max(1, Math.round((timerState.totalSeconds - timerState.timeLeft) / 60));
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            sessions.unshift({
+                status: 'FAILED',
+                task: `QUIT: "${shameReason}" (Goal: ${timerState.microGoal || 'None'})`,
+                duration: `${elapsedMins}/${timerState.plannedMinutes}m`,
+                strikes: timerState.sessionStrikes,
+                timestamp: timeStr
+            });
+            saveSessions();
+            renderStats();
+
+            restoreNormalUI();
+            selectTier(timerState.tier, timerState.plannedMinutes);
+            showToast("Session Abandoned", "Failure permanently recorded in Accountability Ledger.");
+        }
+
+        // --- Rapid Distraction Parking Lot & Urge Resisted Counter ---
+        function parkDistractionUrge(e) {
+            e.preventDefault();
+            const input = document.getElementById('rapid-urge-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            recordParkedUrge(text);
+            input.value = '';
+            showToast("Urge Quarantined!", "Intrusive thought parked. Stay locked in!");
+        }
+
+        function parkDistractionUrgeFromTab(e) {
+            e.preventDefault();
+            const input = document.getElementById('tab-urge-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            recordParkedUrge(text);
+            input.value = '';
+        }
+
+        function recordParkedUrge(text) {
+            const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            parkedUrges.unshift({ id: Date.now(), text, time: now });
+            localStorage.setItem('lockin_urges', JSON.stringify(parkedUrges));
+
+            timerState.sessionUrges++;
+            accountability.totalUrgesResisted++;
+            saveAccountability();
+
+            document.getElementById('live-urges-count').innerText = timerState.sessionUrges;
+            renderParkedUrges();
+        }
+
+        function renderParkedUrges() {
+            const list = document.getElementById('parked-urges-list');
+            document.getElementById('total-urges-badge').innerText = accountability.totalUrgesResisted || 0;
+
+            if (parkedUrges.length === 0) {
+                list.innerHTML = `<p class="text-xs text-slate-500 text-center py-8">No urges parked yet. Keep your focus clean.</p>`;
+                return;
+            }
+
+            list.innerHTML = parkedUrges.map(u => `
+                <div class="flex items-center justify-between bg-dark-800/70 border border-slate-800 rounded-lg px-3 py-2 text-xs">
+                    <span class="text-slate-200 truncate pr-2">${escapeHtml(u.text)}</span>
+                    <span class="text-[10px] font-mono text-slate-500 shrink-0">${u.time}</span>
+                </div>
+            `).join('');
+        }
+
+        function clearParkedUrges() {
+            parkedUrges = [];
+            localStorage.setItem('lockin_urges', JSON.stringify(parkedUrges));
+            renderParkedUrges();
+        }
+
+        // --- Navigation Tabs ---
+        function switchTab(tabName) {
+            if (timerState.isRunning && timerState.hardcore && timerState.mode === 'work') return;
+
+            ['timer', 'tasks', 'ambient', 'stats'].forEach(t => {
+                document.getElementById(`view-${t}`).classList.add('hidden');
+                document.getElementById(`view-${t}`).classList.remove('flex');
+                
+                const btn = document.getElementById(`tab-btn-${t}`);
+                btn.className = "px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800";
+            });
+
+            const activeView = document.getElementById(`view-${tabName}`);
+            activeView.classList.remove('hidden');
+            activeView.classList.add('flex');
+
+            const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+            activeBtn.className = "px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 bg-indigo-600 text-white shadow-sm";
+
+            lucide.createIcons();
+        }
+
+        // --- Task Tracker ---
+        function addTask(e) {
+            e.preventDefault();
+            const input = document.getElementById('task-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const newTask = {
+                id: Date.now(),
+                text: text, subject: (document.getElementById('task-subject') || {}).value || '',
+                completed: false,
+                completedPomodoros: 0
+            };
+
+            tasks.push(newTask);
+            input.value = '';
+            saveTasks();
+            renderTasks();
+
+            if (!timerState.activeTaskId) {
+                setActiveTask(newTask.id);
+            }
+        }
+
+        function toggleTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.completed = !task.completed;
+                saveTasks();
+                renderTasks();
+            }
+        }
+
+        function deleteTask(id) {
+            tasks = tasks.filter(t => t.id !== id);
+            if (timerState.activeTaskId === id) {
+                timerState.activeTaskId = null;
+                updateActiveTaskDisplay();
+            }
+            saveTasks();
+            renderTasks();
+        }
+
+        function clearCompletedTasks() {
+            tasks = tasks.filter(t => !t.completed);
+            saveTasks();
+            renderTasks();
+        }
+
+        function setActiveTask(id) {
+            timerState.activeTaskId = id;
+            updateActiveTaskDisplay();
+            renderTasks();
+        }
+
+        function updateActiveTaskDisplay() {
+            const titleEl = document.getElementById('current-task-title');
+            if (!timerState.activeTaskId) {
+                titleEl.innerText = "Set goal before starting session...";
+                return;
+            }
+            const task = tasks.find(t => t.id === timerState.activeTaskId);
+            if (task) {
+                timerState.microGoal = task.text;
+                titleEl.innerText = task.text;
+            } else {
+                timerState.activeTaskId = null;
+                titleEl.innerText = "Set goal before starting session...";
+            }
+        }
+
+        function renderTasks() {
+            const container = document.getElementById('task-list-container');
+            const badge = document.getElementById('task-badge');
+            
+            const activeCount = tasks.filter(t => !t.completed).length;
+            badge.innerText = activeCount;
+
+            if (tasks.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 bg-dark-900/30 border border-slate-800 rounded-2xl">
+                        <i data-lucide="check-square" class="w-8 h-8 text-slate-600 mx-auto mb-2"></i>
+                        <p class="text-sm text-slate-400">No tasks in your backlog yet.</p>
+                        <p class="text-xs text-slate-500 mt-1">Add your study topics above to get started.</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            container.innerHTML = tasks.map(task => `
+                <div class="bg-dark-900/60 border ${task.id === timerState.activeTaskId ? 'border-indigo-500/60 bg-indigo-500/5' : 'border-slate-800'} rounded-2xl p-4 flex items-center justify-between transition group">
+                    <div class="flex items-center space-x-3.5 flex-1 min-w-0">
+                        <input type="checkbox" ${task.completed ? 'checked' : ''} onclick="toggleTask(${task.id})"
+                            class="w-4 h-4 rounded border-slate-700 bg-dark-800 text-indigo-600 focus:ring-indigo-500/20 cursor-pointer">
+                        ${task.subject ? `<span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 shrink-0">${escapeHtml(task.subject)}</span>` : ''}
+                        <span class="text-sm font-medium ${task.completed ? 'line-through text-slate-500' : 'text-slate-200'} truncate">${escapeHtml(task.text)}</span>
+                    </div>
+                    <div class="flex items-center space-x-2 shrink-0 ml-3">
+                        <span class="text-xs font-mono bg-dark-800 px-2.5 py-1 rounded-lg text-indigo-400 border border-slate-700">
+                            🔥 ${task.completedPomodoros || 0}
+                        </span>
+                        ${task.id !== timerState.activeTaskId && !task.completed ? `
+                            <button onclick="setActiveTask(${task.id})" title="Load as Micro-Goal" class="p-1.5 text-slate-400 hover:text-indigo-400 hover:bg-dark-800 rounded-lg transition">
+                                <i data-lucide="crosshair" class="w-4 h-4"></i>
+                            </button>
+                        ` : ''}
+                        <button onclick="deleteTask(${task.id})" title="Delete Task" class="p-1.5 text-slate-500 hover:text-rose-400 hover:bg-dark-800 rounded-lg transition">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        // --- Web Audio API: 40Hz Gamma Binaural Beats, Brown Noise & Rainfall ---
+        function toggleSound(type) {
+            if (ambientActiveSound === type) {
+                stopAmbientSound();
+                return;
+            }
+            stopAmbientSound();
+            startAmbientSound(type);
+        }
+
+        function updateAudioVolume(val) {
+            currentVolume = parseFloat(val);
+            if (masterGainNode && audioCtx) {
+                masterGainNode.gain.setTargetAtTime(currentVolume, audioCtx.currentTime, 0.05);
+            }
+        }
+
+        function startAmbientSound(type) {
+            ambientActiveSound = type;
+
+            // Update Audio Tab Buttons & Lockdown Quick Buttons
+            ['gamma', 'brown', 'rain'].forEach(t => {
+                const btn = document.getElementById(`sound-btn-${t}`);
+                if (btn) {
+                    if (t === type) {
+                        btn.innerText = "Playing";
+                        btn.className = "px-4 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white shadow-md transition animate-pulse";
+                    } else {
+                        btn.innerText = "Play";
+                        btn.className = "px-4 py-1.5 rounded-lg text-xs font-semibold bg-dark-700 text-slate-300 hover:bg-indigo-600 hover:text-white transition";
+                    }
+                }
+            });
+
+            const qGamma = document.getElementById('quick-sound-gamma');
+            const qBrown = document.getElementById('quick-sound-brown');
+            if (qGamma) qGamma.className = type === 'gamma'
+                ? "px-3 py-1.5 rounded-lg bg-indigo-600 text-white border border-indigo-400 transition flex items-center gap-1.5"
+                : "px-3 py-1.5 rounded-lg bg-dark-900 border border-slate-800 text-slate-400 hover:text-indigo-400 transition flex items-center gap-1.5";
+            if (qBrown) qBrown.className = type === 'brown'
+                ? "px-3 py-1.5 rounded-lg bg-amber-600 text-white border border-amber-400 transition flex items-center gap-1.5"
+                : "px-3 py-1.5 rounded-lg bg-dark-900 border border-slate-800 text-slate-400 hover:text-amber-400 transition flex items-center gap-1.5";
+
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                masterGainNode = audioCtx.createGain();
+                masterGainNode.gain.value = currentVolume;
+                masterGainNode.connect(audioCtx.destination);
+
+                if (type === 'gamma') {
+                    // True Stereo 40Hz Gamma Binaural Beat: 200Hz Left Ear, 240Hz Right Ear
+                    const merger = audioCtx.createChannelMerger(2);
+                    
+                    const oscLeft = audioCtx.createOscillator();
+                    oscLeft.type = 'sine';
+                    oscLeft.frequency.value = 200;
+
+                    const oscRight = audioCtx.createOscillator();
+                    oscRight.type = 'sine';
+                    oscRight.frequency.value = 240; // 40Hz difference
+
+                    // Subtle soft brown noise bed underneath binaural tones for comfort
+                    const bedGain = audioCtx.createGain();
+                    bedGain.gain.value = 0.25;
+
+                    oscLeft.connect(merger, 0, 0);
+                    oscRight.connect(merger, 0, 1);
+                    merger.connect(masterGainNode);
+
+                    oscLeft.start();
+                    oscRight.start();
+                    ambientNodes.push(oscLeft, oscRight);
+                } else {
+                    // Noise Buffer Generation (Brown Noise or Rainfall)
+                    const bufferSize = audioCtx.sampleRate * 3;
+                    const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                    const output = noiseBuffer.getChannelData(0);
+
+                    let lastOut = 0.0;
+                    for (let i = 0; i < bufferSize; i++) {
+                        const white = Math.random() * 2 - 1;
+                        if (type === 'brown') {
+                            // True Brownian integration
+                            output[i] = (lastOut + (0.02 * white)) / 1.02;
+                            lastOut = output[i];
+                            output[i] *= 3.5; // Gain compensation
+                        } else {
+                            // Rainfall (Pinkish noise)
+                            output[i] = white * 0.5;
+                        }
+                    }
+
+                    const source = audioCtx.createBufferSource();
+                    source.buffer = noiseBuffer;
+                    source.loop = true;
+
+                    const filter = audioCtx.createBiquadFilter();
+                    filter.type = 'lowpass';
+                    filter.frequency.value = type === 'brown' ? 320 : 950;
+
+                    source.connect(filter);
+                    filter.connect(masterGainNode);
+                    source.start(0);
+                    ambientNodes.push(source);
+                }
+            } catch (e) {
+                console.error("Audio engine error:", e);
+            }
+        }
+
+        function stopAmbientSound() {
+            ambientNodes.forEach(node => {
+                try {
+                    node.stop();
+                    node.disconnect();
+                } catch (e) {}
+            });
+            ambientNodes = [];
+            ambientActiveSound = null;
+
+            ['gamma', 'brown', 'rain'].forEach(t => {
+                const btn = document.getElementById(`sound-btn-${t}`);
+                if (btn) {
+                    btn.innerText = "Play";
+                    btn.className = "px-4 py-1.5 rounded-lg text-xs font-semibold bg-dark-700 text-slate-300 hover:bg-indigo-600 hover:text-white transition";
+                }
+            });
+
+            const qGamma = document.getElementById('quick-sound-gamma');
+            const qBrown = document.getElementById('quick-sound-brown');
+            if (qGamma) qGamma.className = "px-3 py-1.5 rounded-lg bg-dark-900 border border-slate-800 text-slate-400 hover:text-indigo-400 transition flex items-center gap-1.5";
+            if (qBrown) qBrown.className = "px-3 py-1.5 rounded-lg bg-dark-900 border border-slate-800 text-slate-400 hover:text-amber-400 transition flex items-center gap-1.5";
+        }
+
+        // --- Loud Breach Warning Siren & Completion Bell ---
+        function playAlarmSiren() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const now = ctx.currentTime;
+                
+                for (let i = 0; i < 3; i++) {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(880, now + i * 0.25);
+                    osc.frequency.linearRampToValueAtTime(440, now + i * 0.25 + 0.2);
+
+                    gain.gain.setValueAtTime(0.45, now + i * 0.25);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.25 + 0.22);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now + i * 0.25);
+                    osc.stop(now + i * 0.25 + 0.23);
+                }
+            } catch (e) {}
+        }
+
+        function playBellChime() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.5);
+
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start();
+                osc.stop(ctx.currentTime + 1.5);
+            } catch (e) {}
+        }
+
+        // --- Accountability Stats & Persistence ---
+        function saveTasks() {
+            localStorage.setItem('lockin_tasks', JSON.stringify(tasks));
+        }
+
+        function saveSessions() {
+            localStorage.setItem('lockin_sessions', JSON.stringify(sessions));
+        }
+
+        function saveAccountability() {
+            localStorage.setItem('lockin_accountability', JSON.stringify(accountability));
+        }
+
+        function renderStats() {
+            const mins = accountability.totalMinutes || 0;
+            document.getElementById('stat-total-time').innerText = mins >= 60 ? `${(mins / 60).toFixed(1)}h` : `${mins}m`;
+            document.getElementById('stat-clean-streak').innerText = accountability.cleanStreak || 0;
+            document.getElementById('stat-total-strikes').innerText = accountability.totalStrikes || 0;
+            document.getElementById('stat-failed-sessions').innerText = accountability.failedSessions || 0;
+            renderHud();
+            document.getElementById('total-urges-badge').innerText = accountability.totalUrgesResisted || 0;
+
+            const tbody = document.getElementById('history-table-body');
+            if (sessions.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="py-8 text-center text-slate-500 text-xs">No blocks recorded yet. Enter Hardcore Lockdown to build your discipline record.</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = sessions.map(s => {
+                const isFailed = s.status === 'FAILED';
+                const statusBadge = isFailed
+                    ? `<span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-500/15 text-rose-400 border border-rose-500/30">FAILED</span>`
+                    : `<span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">LOCKED</span>`;
+
+                return `
+                    <tr class="hover:bg-dark-800/40 transition">
+                        <td class="py-3 pr-2">${statusBadge}</td>
+                        <td class="py-3 pr-2 font-medium ${isFailed ? 'text-rose-300' : 'text-slate-200'} max-w-xs truncate" title="${escapeHtml(s.task)}">${escapeHtml(s.task)}${(s.win || s.next) ? `<div class="text-[10px] text-slate-500 truncate">${s.focus ? escapeHtml(s.focus) + ' | ' : ''}Win: ${escapeHtml(s.win || '-')} | Next: ${escapeHtml(s.next || '-')}</div>` : ''}</td>
+                        <td class="py-3 pr-2 text-indigo-400 font-mono text-xs">${s.duration}</td>
+                        <td class="py-3 pr-2 font-mono text-xs ${s.strikes > 0 ? 'text-amber-400' : 'text-slate-500'}">${s.strikes || 0}</td>
+                        <td class="py-3 text-slate-400 font-mono text-xs">${s.timestamp}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function clearHistory() {
+            sessions = [];
+            accountability = { totalMinutes: 0, cleanStreak: 0, totalStrikes: 0, failedSessions: 0, totalUrgesResisted: 0 };
+            saveSessions();
+            saveAccountability();
+            renderStats();
+            showToast("Ledger Reset", "All accountability records cleared.");
+        }
+
+        // --- Settings Modal ---
+        function openSettingsModal() {
+            if (timerState.isRunning && timerState.hardcore) return;
+            document.getElementById('settings-modal').classList.remove('hidden');
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settings-modal').classList.add('hidden');
+        }
+
+        function saveSettings() {
+            const workVal = parseInt(document.getElementById('setting-work').value);
+            const shortVal = parseInt(document.getElementById('setting-short').value);
+            const longVal = parseInt(document.getElementById('setting-long').value);
+            const penaltyType = document.getElementById('setting-penalty-type').value;
+
+            if (isNaN(workVal) || isNaN(shortVal) || isNaN(longVal) || workVal < 1 || shortVal < 1 || longVal < 1) {
+                showToast("Invalid Input", "Please enter valid positive numbers.");
+                return;
+            }
+
+            settings.work = workVal;
+            settings.shortBreak = shortVal;
+            settings.longBreak = longVal;
+            settings.penaltyType = penaltyType;
+            settings.dailyGoal = parseInt(document.getElementById('setting-goal').value) || 120;
+            settings.examName = document.getElementById('setting-exam-name').value.trim();
+            settings.examDate = document.getElementById('setting-exam-date').value;
+            renderHud();
+
+            localStorage.setItem('lockin_settings', JSON.stringify(settings));
+            closeSettingsModal();
+            selectTier('standard', settings.work);
+            showToast("Settings Saved", "Enforcement rules and durations updated.");
+        }
+
+        // --- Study extras: subjects, exam countdown, reflection, weekly chart, export ---
+        const SUBJECTS = ['General', 'Bangla', 'English', 'Math', 'Physics', 'Chemistry', 'Biology', 'ICT', 'Accounting'];
+        function todayKey(d = new Date()) {
+            return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        }
+        function minsOn(key) {
+            return sessions.filter(s => s.status === 'COMPLETED' && s.date === key).reduce((a, s) => a + (s.mins || 0), 0);
+        }
+        function initExtras() {
+            document.getElementById('task-subject').innerHTML = SUBJECTS.map(s => `<option>${s}</option>`).join('');
+            document.getElementById('setting-goal').value = settings.dailyGoal || 120;
+            document.getElementById('setting-exam-name').value = settings.examName || '';
+            document.getElementById('setting-exam-date').value = settings.examDate || '';
+            renderHud();
+        }
+        function renderHud() {
+            const el = document.getElementById('hud-exam');
+            if (!el) return;
+            const d = settings.examDate ? Math.ceil((new Date(settings.examDate + 'T00:00:00') - new Date(todayKey() + 'T00:00:00')) / 864e5) : null;
+            el.innerText = (settings.examName || 'Exam') + ': ' + (d === null ? 'set date' : d > 0 ? d + ' days' : d === 0 ? 'TODAY' : 'passed');
+            const t = minsOn(todayKey()), g = settings.dailyGoal || 120;
+            document.getElementById('hud-today').innerText = t + ' / ' + g + 'm';
+            document.getElementById('hud-bar').style.width = Math.min(100, t / g * 100) + '%';
+            renderWeek();
+        }
+        function renderWeek() {
+            const box = document.getElementById('week-chart');
+            if (!box) return;
+            const g = settings.dailyGoal || 120;
+            const days = [...Array(7)].map((_, i) => { const d = new Date(); d.setDate(d.getDate() - 6 + i); return d; });
+            const vals = days.map(d => minsOn(todayKey(d)));
+            const max = Math.max(g, ...vals);
+            document.getElementById('week-summary').innerText = vals.filter(v => v >= g).length + '/7 days hit goal';
+            box.innerHTML = days.map((d, i) => `
+                <div class="flex-1 flex flex-col items-center gap-1">
+                    <span class="text-[10px] font-mono text-slate-500">${vals[i]}</span>
+                    <div class="w-full h-24 flex items-end"><div class="w-full rounded-t ${vals[i] >= g ? 'bg-emerald-500' : 'bg-indigo-500/70'}" style="height:${Math.max(2, vals[i] / max * 100)}%"></div></div>
+                    <span class="text-[10px] text-slate-400">${d.toLocaleDateString('en', { weekday: 'short' })}</span>
+                </div>`).join('');
+        }
+        function openReflection() {
+            ['refl-win', 'refl-block', 'refl-next', 'refl-recall'].forEach(i => document.getElementById(i).value = '');
+            document.getElementById('reflection-modal').classList.remove('hidden');
+            lucide.createIcons();
+            setTimeout(() => document.getElementById('refl-win').focus(), 50);
+        }
+        function closeReflection() { document.getElementById('reflection-modal').classList.add('hidden'); }
+        function saveReflection(e) {
+            e.preventDefault();
+            const s = sessions[0];
+            if (s && s.status === 'COMPLETED') {
+                s.win = document.getElementById('refl-win').value.trim();
+                s.blocker = document.getElementById('refl-block').value.trim();
+                s.next = document.getElementById('refl-next').value.trim();
+                s.recall = document.getElementById('refl-recall').value.trim();
+                s.focus = document.getElementById('refl-focus').value;
+                saveSessions();
+                renderStats();
+            }
+            closeReflection();
+            showToast("Reflection saved", s && s.next ? "Next block starts with: " + s.next : "Take your break.");
+        }
+        function exportData() {
+            const blob = new Blob([JSON.stringify({ settings, tasks, sessions, parkedUrges, accountability }, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'lockin-backup-' + todayKey() + '.json';
+            a.click();
+        }
+
+        // --- PWA: install, offline, fullscreen guard, wake lock ---
+        function reqFS() {
+            const el = document.documentElement, f = el.requestFullscreen || el.webkitRequestFullscreen;
+            try { return f ? Promise.resolve(f.call(el)) : Promise.reject(); } catch (e) { return Promise.reject(e); }
+        }
+        let wakeLock = null;
+        async function keepAwake(on) {
+            try {
+                if (on && 'wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen');
+                else if (wakeLock) { await wakeLock.release(); wakeLock = null; }
+            } catch (e) {}
+        }
+        let deferredInstall = null;
+        const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+        const isStandalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+        window.addEventListener('beforeinstallprompt', e => {
+            e.preventDefault(); deferredInstall = e;
+            document.getElementById('btn-install').classList.remove('hidden');
+        });
+        window.addEventListener('appinstalled', () => document.getElementById('btn-install').classList.add('hidden'));
+        if (isIOS && !isStandalone) window.addEventListener('load', () => document.getElementById('btn-install').classList.remove('hidden'));
+        function installApp() {
+            if (deferredInstall) {
+                deferredInstall.prompt(); deferredInstall = null;
+                document.getElementById('btn-install').classList.add('hidden');
+            } else {
+                showToast("Install on iPhone", "In Safari: tap Share, then Add to Home Screen.");
+            }
+        }
+        if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+            navigator.serviceWorker.register('sw.js').catch(() => {});
+        }
+
+        // --- Fullscreen Toggle ---
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                reqFS().catch(() => {});
+            } else if (!timerState.isRunning || !timerState.hardcore) {
+                document.exitFullscreen().catch(() => {});
+            }
+        }
+
+        // --- Toast Notification ---
+        function showToast(title, desc) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-desc').innerText = desc;
+            
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3500);
+        }
+
+        function escapeHtml(text) {
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return String(text).replace(/[&<>"']/g, m => map[m]);
+        }
+    </script>
+</body>
+</html>
