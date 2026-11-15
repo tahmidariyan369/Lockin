@@ -101,6 +101,11 @@
             border-radius: 2px;
         }
     </style>
+    <script>
+        // Pre-bind safe inline handler stubs so early mouse/touch events never throw ReferenceError before main script parses
+        window.cancelAbandonHold = window.cancelAbandonHold || function() {};
+        window.startAbandonHold = window.startAbandonHold || function() {};
+    </script>
 </head>
 <body id="app-body" class="min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white transition-colors duration-300">
 
@@ -123,6 +128,11 @@
                 <button onclick="switchTab('timer')" id="tab-btn-timer" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 bg-indigo-600 text-white shadow-sm">
                     <i data-lucide="timer" class="w-4 h-4"></i>
                     <span class="hidden sm:inline">Timer</span>
+                </button>
+                <button onclick="switchTab('defiance')" id="tab-btn-defiance" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800">
+                    <i data-lucide="zap" class="w-4 h-4 text-amber-400"></i>
+                    <span class="hidden sm:inline">Defiance</span>
+                    <span id="defiance-nav-badge" class="ml-1 px-1.5 py-0.2 text-[10px] bg-amber-500/20 text-amber-300 rounded-full">0</span>
                 </button>
                 <button onclick="switchTab('tasks')" id="tab-btn-tasks" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800">
                     <i data-lucide="check-square" class="w-4 h-4"></i>
@@ -172,6 +182,20 @@
                         <div class="h-1 bg-dark-700 rounded mt-2 overflow-hidden"><div id="hud-bar" class="h-full bg-emerald-500 transition-all" style="width:0%"></div></div>
                     </div>
                 </div>
+
+                <!-- Emergency Active Defiance Trigger Banner -->
+                <button type="button" onclick="switchTab('defiance')" class="w-full bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-rose-500/15 hover:from-amber-500/25 hover:to-rose-500/25 border border-amber-500/30 rounded-2xl px-4 py-2.5 flex items-center justify-between transition group">
+                    <div class="flex items-center gap-2.5 text-left">
+                        <div class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+                            <i data-lucide="zap" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-amber-300">Feeling Lazy or Tempted to Scroll?</p>
+                            <p class="text-[11px] text-slate-400">Use the Active Defiance Method to flip that excuse into a trigger right now.</p>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-amber-400 group-hover:translate-x-0.5 transition shrink-0 ml-2">Defy Now →</span>
+                </button>
                 
                 <!-- Intensity Tiers (Progressive Overload) -->
                 <div class="flex flex-wrap items-center justify-center gap-2 bg-dark-900 p-1.5 rounded-2xl border border-slate-800 shadow-inner">
@@ -187,6 +211,13 @@
                     <button onclick="selectTier('escalate', null)" id="tier-escalate" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all text-amber-400 hover:bg-amber-500/10 flex items-center gap-1">
                         <i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Auto-Escalate (<span id="escalate-mins-label">25</span>m)
                     </button>
+                </div>
+
+                <!-- Sessions in a row (auto-continue) -->
+                <div class="flex flex-wrap items-center justify-center gap-2 bg-dark-900 border border-slate-800 rounded-xl px-3 py-2">
+                    <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Sessions in a row</span>
+                    <div id="session-picker" class="flex gap-1"></div>
+                    <span class="text-[10px] text-slate-500 w-full text-center">Breaks and next blocks start by themselves</span>
                 </div>
 
                 <!-- Hardcore Lockdown & Break Switcher -->
@@ -295,7 +326,9 @@
                         <p class="text-[11px] font-semibold text-indigo-300 flex items-center gap-1.5"><i data-lucide="book-open" class="w-3.5 h-3.5"></i> Study Pass (no strike)</p>
                         <span id="pass-left-label" class="text-[11px] font-mono text-slate-400">15:00 left</span>
                     </div>
+                    <div id="app-launch-bar" class="flex flex-wrap gap-1.5"></div>
                     <div id="study-links-bar" class="flex flex-wrap gap-1.5"></div>
+                    <p class="text-[10px] text-slate-500">App buttons open the real app on your phone. On PC, links open in the browser LockIn runs in.</p>
                     <button type="button" id="btn-pass" onclick="toggleStudyPass()" class="w-full px-3 py-2 rounded-lg text-xs font-semibold bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/30 transition">Start pass</button>
                 </div>
 
@@ -313,6 +346,101 @@
                 </div>
             </div>
 
+        </div>
+
+        <!-- TAB: THE ACTIVE DEFIANCE METHOD (ANTI-LAZINESS ENGINE) -->
+        <div id="view-defiance" class="tab-content hidden flex-col space-y-6">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+                        <i data-lucide="zap" class="w-5 h-5 text-amber-400"></i> The Active Defiance Method
+                    </h2>
+                    <p class="text-xs text-slate-400">Catch a lazy thought, flip it into a trigger, and do the opposite action right now.</p>
+                </div>
+                <div class="flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 px-3.5 py-2 rounded-xl">
+                    <i data-lucide="flame" class="w-4 h-4 text-amber-400"></i>
+                    <div>
+                        <p class="text-[10px] uppercase tracking-wider text-amber-300/80 font-semibold">Defiance Streak</p>
+                        <p class="text-sm font-bold font-mono text-amber-300"><span id="defiance-streak-days">0</span> / 14 Days</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive 3-Step Trigger Flipper -->
+            <div class="bg-dark-900/80 border border-amber-500/30 rounded-2xl p-5 space-y-5 shadow-xl shadow-amber-950/10">
+                <!-- Step 1: Recognise the Lazy Thought -->
+                <div class="space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                            <span class="w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 inline-flex items-center justify-center font-mono text-[11px]">1</span>
+                            Recognise the Lazy Thought (Trigger)
+                        </span>
+                        <span class="text-[11px] text-slate-500">Tap a preset or type yours</span>
+                    </div>
+
+                    <div class="flex flex-wrap gap-1.5">
+                        <button type="button" onclick="selectLazyTrigger('Scroll phone / Reels instead of studying', 'Open my book & complete a 15m Hardcore Sprint', true)" class="px-2.5 py-1.5 rounded-lg text-xs bg-dark-800 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-slate-700 hover:border-amber-500/40 transition">📱 Scroll phone / Reels</button>
+                        <button type="button" onclick="selectLazyTrigger('Snooze alarm & stay in bed', 'Feet on the floor immediately + wash face + start 15m study block', true)" class="px-2.5 py-1.5 rounded-lg text-xs bg-dark-800 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-slate-700 hover:border-amber-500/40 transition">⏰ Snooze / stay in bed</button>
+                        <button type="button" onclick="selectLazyTrigger('I do not feel like studying today', 'Lock into a 25m Hardcore Focus block right now anyway', true)" class="px-2.5 py-1.5 rounded-lg text-xs bg-dark-800 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-slate-700 hover:border-amber-500/40 transition">📚 Skip today's study</button>
+                        <button type="button" onclick="selectLazyTrigger('This chapter feels too hard, I will quit', 'Solve 5 problems from this exact chapter in Lockdown', true)" class="px-2.5 py-1.5 rounded-lg text-xs bg-dark-800 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-slate-700 hover:border-amber-500/40 transition">🧠 Chapter feels too hard</button>
+                        <button type="button" onclick="selectLazyTrigger('I will start in 10 minutes (procrastinating)', 'Zero delay — enter Hardcore Lockdown this exact second', true)" class="px-2.5 py-1.5 rounded-lg text-xs bg-dark-800 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-slate-700 hover:border-amber-500/40 transition">⏳ "I'll start in 10 mins"</button>
+                        <button type="button" onclick="selectLazyTrigger('Skip workout / physical exercise', 'Do 20 pushups / 15-min workout right now', false)" class="px-2.5 py-1.5 rounded-lg text-xs bg-dark-800 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-slate-700 hover:border-amber-500/40 transition">💪 Skip workout</button>
+                    </div>
+
+                    <input type="text" id="defiance-excuse-input" oninput="autoFlipDefianceText()" placeholder="What lazy thought just popped into your head? (e.g., I'm too tired to revise Accounting...)"
+                        class="w-full bg-dark-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500 transition">
+                </div>
+
+                <!-- Step 2: Turn It Into a Trigger (Do the Opposite) -->
+                <div class="space-y-2.5 pt-2 border-t border-slate-800">
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                        <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-300 inline-flex items-center justify-center font-mono text-[11px]">2</span>
+                        Flip Into Opposite Action (The Defiance Challenge)
+                    </span>
+                    <input type="text" id="defiance-action-input" oninput="this.dataset.manual = this.value ? '1' : ''" placeholder="Your opposite action (e.g., Do a 25m Hardcore block on Accounting Ch.2 right now)"
+                        class="w-full bg-dark-950 border border-emerald-500/40 rounded-xl px-4 py-2.5 text-sm font-medium text-emerald-200 placeholder-slate-500 focus:outline-none focus:border-emerald-400 transition">
+
+                    <div class="flex flex-wrap items-center gap-2 pt-1">
+                        <button type="button" onclick="executeStudyDefiance(15)" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg shadow-rose-600/25 flex items-center gap-1.5 transition active:scale-95">
+                            <i data-lucide="lock" class="w-3.5 h-3.5"></i> Defy & Lock In (15m Sprint)
+                        </button>
+                        <button type="button" onclick="executeStudyDefiance(25)" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/25 flex items-center gap-1.5 transition active:scale-95">
+                            <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Defy & Lock In (25m Block)
+                        </button>
+                        <button type="button" onclick="executeStudyDefiance(50)" class="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-dark-950 font-bold text-xs flex items-center gap-1.5 transition active:scale-95">
+                            <i data-lucide="flame" class="w-3.5 h-3.5"></i> Defy & Lock In (50m Deep)
+                        </button>
+                        <button type="button" onclick="logLifestyleDefiance()" class="px-4 py-2.5 rounded-xl bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/40 font-semibold text-xs flex items-center gap-1.5 transition">
+                            <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Log Daily Life Win (Woke Up / Workout)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: 14-Day Mind Rewiring Protocol & Victory Log -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-dark-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-300 inline-flex items-center justify-center font-mono text-[11px]">3</span>
+                            14-Day Defiance Grid
+                        </h3>
+                        <span class="text-xs font-mono text-amber-400">Total Wins: <span id="defiance-total-count">0</span></span>
+                    </div>
+                    <p class="text-xs text-slate-400">Defy at least one lazy urge a day. Habits take weeks to settle, so treat 14 days as a first milestone, not a finish line.</p>
+                    <div id="defiance-14day-grid" class="grid grid-cols-7 gap-2 pt-1"></div>
+                </div>
+
+                <div class="bg-dark-900/60 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                            <i data-lucide="trophy" class="w-4 h-4 text-amber-400"></i> Defiance Victory Ledger
+                        </h3>
+                        <button type="button" onclick="clearDefianceLogs()" class="text-xs text-slate-500 hover:text-rose-400 transition">Clear</button>
+                    </div>
+                    <div id="defiance-history-list" class="h-40 overflow-y-auto space-y-2 pr-1"></div>
+                </div>
+            </div>
         </div>
 
         <!-- TAB 2: TASKS VIEW -->
@@ -475,8 +603,8 @@
                 <p class="text-xs text-slate-400">Permanent record of deep work blocks, clean streaks, distraction strikes, and abandoned sessions.</p>
             </div>
 
-            <!-- 4-Card Accountability Metrics -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+            <!-- 5-Card Accountability Metrics -->
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4">
                 <div class="bg-dark-900/60 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
                     <div class="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-3">
                         <i data-lucide="clock" class="w-5 h-5"></i>
@@ -514,6 +642,16 @@
                     <div>
                         <p class="text-[11px] text-slate-400 font-medium">Failed / Abandoned</p>
                         <p id="stat-failed-sessions" class="text-xl font-bold text-rose-400 font-mono mt-0.5">0</p>
+                    </div>
+                </div>
+
+                <div class="bg-dark-900/60 border border-amber-500/30 rounded-2xl p-4 flex flex-col justify-between col-span-2 sm:col-span-1">
+                    <div class="w-9 h-9 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center mb-3">
+                        <i data-lucide="zap" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <p class="text-[11px] text-slate-400 font-medium">Defiance Wins</p>
+                        <p id="stat-defiance-wins" class="text-xl font-bold text-amber-300 font-mono mt-0.5">0</p>
                     </div>
                 </div>
             </div>
@@ -726,7 +864,7 @@
 
             <div class="space-y-3 border-t border-slate-800 pt-4">
                 <div><label class="block text-xs font-medium text-slate-400 mb-1.5">Study Pass per Hardcore block (minutes, 0 = off)</label><input type="number" id="setting-pass" min="0" max="120" class="w-full bg-dark-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"></div>
-                <div><label class="block text-xs font-medium text-slate-400 mb-1.5">Study links (one per line: Name | https://link)</label><textarea id="setting-links" rows="4" class="w-full bg-dark-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"></textarea></div>
+                <div><label class="block text-xs font-medium text-slate-400 mb-1.5">Study links, one per line: Name | https://link | app (optional: brave, chrome, edge, firefox, youtube, whatsapp)</label><textarea id="setting-links" rows="4" class="w-full bg-dark-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"></textarea></div>
             </div>
             <div class="flex justify-end space-x-3 pt-2">
                 <button onclick="closeSettingsModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-dark-800 text-slate-300 hover:bg-slate-800 transition">Cancel</button>
@@ -757,7 +895,7 @@
             longBreak: 15,
             penaltyType: 'add5', // 'add5' or 'reset'
             escalateMinutes: 25,
-            dailyGoal: 120, examName: 'HSC Exam', examDate: '2027-06-01', passMinutes: 15,
+            dailyGoal: 120, examName: 'HSC Exam', examDate: '2027-06-01', passMinutes: 15, sessions: 1,
             studyLinks: [{ name: '10 Minute School', url: 'https://10minuteschool.com' }, { name: 'NCTB Books', url: 'https://nctb.gov.bd' }, { name: 'YouTube', url: 'https://www.youtube.com' }]
         };
 
@@ -780,12 +918,14 @@
         let tasks = JSON.parse(localStorage.getItem('lockin_tasks')) || [];
         let sessions = JSON.parse(localStorage.getItem('lockin_sessions')) || [];
         let parkedUrges = JSON.parse(localStorage.getItem('lockin_urges')) || [];
+        let defianceLogs = JSON.parse(localStorage.getItem('lockin_defiance')) || [];
         let accountability = JSON.parse(localStorage.getItem('lockin_accountability')) || {
             totalMinutes: 0,
             cleanStreak: 0,
             totalStrikes: 0,
             failedSessions: 0,
-            totalUrgesResisted: 0
+            totalUrgesResisted: 0,
+            defianceWins: 0
         };
 
         // Web Audio API Context & Nodes
@@ -817,6 +957,7 @@
 
             renderTasks();
             renderParkedUrges();
+            renderDefiance();
             renderStats();
             updateTimerDisplay();
             toggleHardcoreUI();
@@ -824,10 +965,10 @@
             lucide.createIcons();
 
             const quotes = [
+                "\"Active Defiance: Every lazy thought is just a trigger to do the exact opposite.\"",
                 "\"Comfort is the enemy of achievement. Stay locked in.\"",
                 "\"Every urge you resist rewires your brain for deeper focus.\"",
-                "\"You don't rise to the level of your goals; you fall to the level of your enforcement.\"",
-                "\"Protect your attention like your future depends on it—because it does.\""
+                "\"Don't negotiate with laziness—flip the trigger and start immediately.\""
             ];
             document.getElementById('motivational-quote').innerText = quotes[Math.floor(Math.random() * quotes.length)];
         };
@@ -941,6 +1082,7 @@
 
             const duration = tier === 'escalate' ? (settings.escalateMinutes || 25) : mins;
             timerState.plannedMinutes = duration;
+            timerState.workMinutes = duration;
             timerState.totalSeconds = duration * 60;
             timerState.timeLeft = duration * 60;
             updateTimerDisplay();
@@ -992,11 +1134,11 @@
 
             if (timerState.mode === 'work' && timerState.hardcore) {
                 // Open Pre-Session Friction & Commitment Modal
-                document.getElementById('contract-mins-label').innerText = `${timerState.plannedMinutes}m`;
+                document.getElementById('contract-mins-label').innerText = `${timerState.plannedMinutes}m` + ((settings.sessions || 1) > 1 ? ` x ${settings.sessions}` : '');
                 
                 // Pre-fill micro-goal if user selected an active task
                 const activeTask = tasks.find(t => t.id === timerState.activeTaskId);
-                document.getElementById('contract-micro-goal').value = activeTask ? activeTask.text : (timerState.microGoal || (sessions[0] && sessions[0].next) || '');
+                document.getElementById('contract-micro-goal').value = timerState.pendingDefiance ? timerState.microGoal : activeTask ? activeTask.text : (timerState.microGoal || (sessions[0] && sessions[0].next) || '');
                 
                 document.getElementById('contract-phrase-input').value = '';
                 document.getElementById('contract-error-msg').classList.add('hidden');
@@ -1008,6 +1150,7 @@
         }
 
         function closeCommitmentModal() {
+            timerState.pendingDefiance = null;
             document.getElementById('commitment-modal').classList.add('hidden');
         }
 
@@ -1025,6 +1168,7 @@
             errorEl.classList.add('hidden');
             timerState.microGoal = goalInput;
             timerState.passUsed = 0; timerState.passActive = false;
+            timerState.sessionDefiance = timerState.pendingDefiance || null;
             document.getElementById('current-task-title').innerText = goalInput;
             
             closeCommitmentModal();
@@ -1038,7 +1182,7 @@
             timerState.mode = mode;
 
             if (mode === 'work') {
-                selectTier(timerState.tier, timerState.plannedMinutes);
+                selectTier(timerState.tier, timerState.workMinutes || timerState.plannedMinutes);
                 return;
             }
 
@@ -1069,6 +1213,9 @@
         function startTimer() {
             timerState.isRunning = true;
             timerState.endAt = Date.now() + timerState.timeLeft * 1000;
+            if (timerState.mode === 'work' && !timerState.seriesActive) {
+                timerState.seriesActive = true; timerState.seriesDone = 0; timerState.seriesTotal = settings.sessions || 1;
+            }
             timerState.sessionStrikes = 0;
             timerState.sessionUrges = 0;
             document.getElementById('live-strikes-count').innerText = '0';
@@ -1086,7 +1233,7 @@
                 document.getElementById('hardcore-active-panel').classList.remove('hidden');
                 document.getElementById('study-pass-box').classList.toggle('hidden', !(settings.passMinutes > 0));
                 updatePassUI(); renderStudyLinks();
-                document.getElementById('timer-status-text').innerText = "LOCKDOWN ACTIVE • DO NOT LEAVE";
+                document.getElementById('timer-status-text').innerText = "LOCKDOWN ACTIVE" + (timerState.seriesTotal > 1 ? ` • BLOCK ${timerState.seriesDone + 1}/${timerState.seriesTotal}` : " • DO NOT LEAVE");
                 document.getElementById('timer-status-text').className = "text-[11px] uppercase tracking-widest text-rose-400 font-bold mt-2 animate-pulse";
             } else {
                 document.getElementById('btn-start-text').innerText = "Pause";
@@ -1119,10 +1266,11 @@
 
         function resetTimer() {
             if (timerState.isRunning && timerState.hardcore && timerState.mode === 'work') return;
+            endSeries();
             pauseTimer();
             restoreNormalUI();
             if (timerState.mode === 'work') {
-                selectTier(timerState.tier, timerState.plannedMinutes);
+                selectTier(timerState.tier, timerState.workMinutes || timerState.plannedMinutes);
             } else {
                 setMode(timerState.mode);
             }
@@ -1215,11 +1363,21 @@
                 const escalateNotice = (timerState.tier === 'escalate' && timerState.sessionStrikes === 0)
                     ? ` Next Auto-Escalate block leveled up to ${settings.escalateMinutes}m!`
                     : "";
+                if (timerState.sessionDefiance) { const d = timerState.sessionDefiance; timerState.sessionDefiance = null; recordDefianceVictory(d.excuse, d.action, d.category); }
                 showToast("Lockdown Conquered!", `Completed ${completedMins}m (${timerState.sessionStrikes} strikes).${escalateNotice}`);
-                setMode('shortBreak'); openReflection();
+                timerState.seriesDone = (timerState.seriesDone || 0) + 1;
+                setMode('shortBreak');
+                if (timerState.seriesActive && timerState.seriesDone < timerState.seriesTotal) {
+                    showToast(`Block ${timerState.seriesDone}/${timerState.seriesTotal} done`, 'Your break starts automatically.');
+                    setTimeout(autoStartBreak, 1500);
+                } else {
+                    endSeries();
+                    openReflection();
+                }
             } else {
                 showToast("Break Over", "Time to re-enter the comfort-zone crusher.");
-                selectTier(timerState.tier, timerState.plannedMinutes);
+                if (timerState.seriesActive && timerState.seriesDone < timerState.seriesTotal) setTimeout(autoNextBlock, 1500);
+                selectTier(timerState.tier, timerState.workMinutes || timerState.plannedMinutes);
             }
         }
 
@@ -1260,6 +1418,8 @@
                 lucide.createIcons();
             }
         }
+        window.startAbandonHold = startAbandonHold;
+        window.cancelAbandonHold = cancelAbandonHold;
 
         function openShameModal() {
             timerState.breachActive = true; // Prevent blur trigger while typing shame log
@@ -1291,6 +1451,8 @@
 
             // Record Permanent Failure
             accountability.failedSessions++;
+            endSeries();
+            timerState.sessionDefiance = null;
             accountability.cleanStreak = 0;
             saveAccountability();
 
@@ -1309,7 +1471,7 @@
             renderStats();
 
             restoreNormalUI();
-            selectTier(timerState.tier, timerState.plannedMinutes);
+            selectTier(timerState.tier, timerState.workMinutes || timerState.plannedMinutes);
             showToast("Session Abandoned", "Failure permanently recorded in Accountability Ledger.");
         }
 
@@ -1371,11 +1533,153 @@
             renderParkedUrges();
         }
 
+        // --- THE ACTIVE DEFIANCE METHOD ENGINE ---
+        function selectLazyTrigger(excuse, oppositeAction) {
+            document.getElementById('defiance-action-input').dataset.manual = '';
+            document.getElementById('defiance-excuse-input').value = excuse;
+            document.getElementById('defiance-action-input').value = oppositeAction;
+        }
+
+        function autoFlipDefianceText() {
+            const excuse = document.getElementById('defiance-excuse-input').value.trim();
+            const actionInput = document.getElementById('defiance-action-input');
+            if (!excuse || actionInput.dataset.manual === '1') return;
+            actionInput.value = `Defy "${excuse}" → Lock in & execute the exact opposite right now`;
+        }
+
+        function recordDefianceVictory(excuse, action, category) {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            defianceLogs.unshift({
+                id: Date.now(),
+                date: todayKey(),
+                time: timeStr,
+                excuse: excuse,
+                action: action,
+                category: category
+            });
+            localStorage.setItem('lockin_defiance', JSON.stringify(defianceLogs));
+            accountability.defianceWins = (accountability.defianceWins || 0) + 1;
+            saveAccountability();
+            renderDefiance();
+            renderStats();
+        }
+
+        function executeStudyDefiance(mins) {
+            if (timerState.isRunning) { showToast("A block is already running", "Finish it before starting a new sprint."); return; }
+            const excuse = document.getElementById('defiance-excuse-input').value.trim() || "Felt lazy / wanted to procrastinate";
+            const action = document.getElementById('defiance-action-input').value.trim() || `Immediate ${mins}m Anti-Laziness Study Sprint`;
+
+            timerState.pendingDefiance = { excuse, action, category: `${mins}m STUDY SPRINT` };
+            document.getElementById('defiance-excuse-input').value = '';
+            document.getElementById('defiance-action-input').value = ''; document.getElementById('defiance-action-input').dataset.manual = '';
+
+            // Switch to timer, force Hardcore mode, preload micro-goal, and open commitment contract
+            switchTab('timer');
+            document.getElementById('hardcore-toggle').checked = true;
+            toggleHardcoreUI();
+            const tierName = mins === 50 ? 'deep' : mins === 90 ? 'monk' : 'standard';
+            selectTier(tierName, mins);
+            timerState.microGoal = `[DEFIED] ${action}`;
+            document.getElementById('current-task-title').innerText = timerState.microGoal;
+
+            showToast("Lazy Thought Flipped!", "Sign the contract. The win is logged when you finish the block.");
+            initiateStartFlow();
+        }
+
+        function logLifestyleDefiance() {
+            const excuse = document.getElementById('defiance-excuse-input').value.trim();
+            const action = document.getElementById('defiance-action-input').value.trim();
+            if (!excuse || !action) {
+                showToast("Enter Trigger & Action", "Write the lazy thought and the opposite action you took.");
+                return;
+            }
+            recordDefianceVictory(excuse, action, "DAILY LIFE WIN");
+            document.getElementById('defiance-excuse-input').value = '';
+            document.getElementById('defiance-action-input').value = ''; document.getElementById('defiance-action-input').dataset.manual = '';
+            playBellChime();
+            showToast("Defiance Victory Logged!", "You beat your own excuse. Keep the streak going!");
+        }
+
+        function getDefianceStreak() {
+            const dates = new Set(defianceLogs.map(d => d.date));
+            let streak = 0;
+            const cursor = new Date();
+            // Allow streak to stay alive if user hasn't logged yet today but logged yesterday
+            if (!dates.has(todayKey(cursor))) {
+                cursor.setDate(cursor.getDate() - 1);
+            }
+            while (dates.has(todayKey(cursor))) {
+                streak++;
+                cursor.setDate(cursor.getDate() - 1);
+            }
+            return streak;
+        }
+
+        function renderDefiance() {
+            const todayCount = defianceLogs.filter(d => d.date === todayKey()).length;
+            const navBadge = document.getElementById('defiance-nav-badge');
+            if (navBadge) navBadge.innerText = todayCount;
+
+            const totalEl = document.getElementById('defiance-total-count');
+            if (totalEl) totalEl.innerText = defianceLogs.length;
+
+            const streak = getDefianceStreak();
+            const streakEl = document.getElementById('defiance-streak-days');
+            if (streakEl) streakEl.innerText = streak;
+
+            const grid = document.getElementById('defiance-14day-grid');
+            if (grid) {
+                const days = [...Array(14)].map((_, i) => {
+                    const d = new Date();
+                    d.setDate(d.getDate() - 13 + i);
+                    return d;
+                });
+                grid.innerHTML = days.map((d, idx) => {
+                    const key = todayKey(d);
+                    const wins = defianceLogs.filter(l => l.date === key).length;
+                    const isToday = key === todayKey();
+                    return `
+                        <div title="${key}: ${wins} defiance wins" class="rounded-xl p-2 text-center border ${wins > 0 ? 'bg-amber-500/20 border-amber-500/50 text-amber-300' : isToday ? 'bg-dark-800 border-slate-600 text-slate-300' : 'bg-dark-950/60 border-slate-800/80 text-slate-600'}">
+                            <p class="text-[9px] font-mono uppercase">D${idx + 1}</p>
+                            <p class="text-xs font-bold mt-0.5">${wins > 0 ? '⚡' + wins : '·'}</p>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            const list = document.getElementById('defiance-history-list');
+            if (list) {
+                if (defianceLogs.length === 0) {
+                    list.innerHTML = `<p class="text-xs text-slate-500 text-center py-8">No triggers flipped yet. Catch your next lazy thought above!</p>`;
+                } else {
+                    list.innerHTML = defianceLogs.map(item => `
+                        <div class="bg-dark-800/70 border border-slate-800 rounded-xl p-2.5 text-xs space-y-1">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30">${escapeHtml(item.category)}</span>
+                                <span class="text-[10px] font-mono text-slate-500">${item.date} ${item.time}</span>
+                            </div>
+                            <p class="text-rose-300/80 line-through truncate">Trigger: ${escapeHtml(item.excuse)}</p>
+                            <p class="text-emerald-300 font-medium truncate">Defied: ${escapeHtml(item.action)}</p>
+                        </div>
+                    `).join('');
+                }
+            }
+        }
+
+        function clearDefianceLogs() {
+            defianceLogs = [];
+            accountability.defianceWins = 0; saveAccountability(); renderStats();
+            localStorage.setItem('lockin_defiance', JSON.stringify(defianceLogs));
+            renderDefiance();
+            showToast("Defiance Log Cleared", "Victory ledger reset.");
+        }
+
         // --- Navigation Tabs ---
         function switchTab(tabName) {
             if (timerState.isRunning && timerState.hardcore && timerState.mode === 'work') return;
 
-            ['timer', 'tasks', 'ambient', 'stats'].forEach(t => {
+            ['timer', 'defiance', 'tasks', 'ambient', 'stats'].forEach(t => {
                 document.getElementById(`view-${t}`).classList.add('hidden');
                 document.getElementById(`view-${t}`).classList.remove('flex');
                 
@@ -1577,10 +1881,6 @@
                     oscRight.type = 'sine';
                     oscRight.frequency.value = 240; // 40Hz difference
 
-                    // Subtle soft brown noise bed underneath binaural tones for comfort
-                    const bedGain = audioCtx.createGain();
-                    bedGain.gain.value = 0.25;
-
                     oscLeft.connect(merger, 0, 0);
                     oscRight.connect(merger, 0, 1);
                     merger.connect(masterGainNode);
@@ -1714,6 +2014,8 @@
             document.getElementById('stat-clean-streak').innerText = accountability.cleanStreak || 0;
             document.getElementById('stat-total-strikes').innerText = accountability.totalStrikes || 0;
             document.getElementById('stat-failed-sessions').innerText = accountability.failedSessions || 0;
+            const defStatEl = document.getElementById('stat-defiance-wins');
+            if (defStatEl) defStatEl.innerText = accountability.defianceWins || defianceLogs.length || 0;
             renderHud();
             document.getElementById('total-urges-badge').innerText = accountability.totalUrgesResisted || 0;
 
@@ -1747,7 +2049,7 @@
 
         function clearHistory() {
             sessions = [];
-            accountability = { totalMinutes: 0, cleanStreak: 0, totalStrikes: 0, failedSessions: 0, totalUrgesResisted: 0 };
+            accountability = { totalMinutes: 0, cleanStreak: 0, totalStrikes: 0, failedSessions: 0, totalUrgesResisted: 0, defianceWins: defianceLogs.length };
             saveSessions();
             saveAccountability();
             renderStats();
@@ -1783,7 +2085,7 @@
             settings.examName = document.getElementById('setting-exam-name').value.trim();
             settings.examDate = document.getElementById('setting-exam-date').value;
             settings.passMinutes = Math.max(0, parseInt(document.getElementById('setting-pass').value) || 0);
-            settings.studyLinks = document.getElementById('setting-links').value.split('\n').map(l => { const [n, ...u] = l.split('|'); return { name: (n || '').trim(), url: u.join('|').trim() }; }).filter(l => l.name && /^https?:\/\//i.test(l.url));
+            settings.studyLinks = document.getElementById('setting-links').value.split('\n').map(l => { const [n, u, a] = l.split('|').map(s => s.trim()); const k = (a || '').toLowerCase(); return { name: n, url: u, app: APPS[k] ? k : '' }; }).filter(l => l.name && /^https?:\/\//i.test(l.url));
             renderHud();
 
             localStorage.setItem('lockin_settings', JSON.stringify(settings));
@@ -1845,11 +2147,12 @@
         }
         function initExtras() {
             loadSubjects();
+            renderSessionPicker();
             document.getElementById('setting-goal').value = settings.dailyGoal || 120;
             document.getElementById('setting-exam-name').value = settings.examName || '';
             document.getElementById('setting-exam-date').value = settings.examDate || '';
             document.getElementById('setting-pass').value = settings.passMinutes ?? 15;
-            document.getElementById('setting-links').value = (settings.studyLinks || []).map(l => l.name + ' | ' + l.url).join('\n');
+            document.getElementById('setting-links').value = (settings.studyLinks || []).map(l => l.name + ' | ' + l.url + (l.app ? ' | ' + l.app : '')).join('\n');
             renderHud();
         }
         function renderHud() {
@@ -1900,7 +2203,7 @@
             showToast("Reflection saved", s && s.next ? "Next block starts with: " + s.next : "Take your break.");
         }
         function exportData() {
-            const blob = new Blob([JSON.stringify({ settings, tasks, sessions, parkedUrges, accountability }, null, 2)], { type: 'application/json' });
+            const blob = new Blob([JSON.stringify({ settings, tasks, sessions, parkedUrges, defianceLogs, accountability }, null, 2)], { type: 'application/json' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
             a.download = 'lockin-backup-' + todayKey() + '.json';
@@ -1981,16 +2284,76 @@
         function toggleStudyPass() {
             if (timerState.passActive) { endStudyPass(false); enterFullscreenSafe(); } else startStudyPass();
         }
+        window.addEventListener('focus', () => { if (timerState.passActive) { endStudyPass(false); keepAwake(true); } });
+
+        // --- Open real apps / chosen browser from the Study Pass ---
+        const isAndroid = /android/i.test(navigator.userAgent);
+        const APPS = {
+            brave:    { label: 'Brave',    pkg: 'com.brave.browser',          ios: u => 'brave://open-url?url=' + encodeURIComponent(u) },
+            chrome:   { label: 'Chrome',   pkg: 'com.android.chrome',         ios: u => 'googlechromes://' + u.replace(/^https?:\/\//, '') },
+            edge:     { label: 'Edge',     pkg: 'com.microsoft.emmx',         ios: u => 'microsoft-edge-https://' + u.replace(/^https?:\/\//, '') },
+            firefox:  { label: 'Firefox',  pkg: 'org.mozilla.firefox',        ios: u => 'firefox://open-url?url=' + encodeURIComponent(u) },
+            youtube:  { label: 'YouTube',  pkg: 'com.google.android.youtube', ios: u => u.replace(/^https?:/, 'youtube:'), home: 'https://www.youtube.com/' },
+            whatsapp: { label: 'WhatsApp', pkg: 'com.whatsapp', scheme: 'whatsapp', host: 'send/', ios: () => 'whatsapp://', home: 'https://web.whatsapp.com/' }
+        };
+        function guessApp(u) { return /(^|\.)youtube\.com|youtu\.be/i.test(u) ? 'youtube' : /wa\.me|whatsapp\.com/i.test(u) ? 'whatsapp' : ''; }
+        function launchApp(key, url) {
+            const a = APPS[key];
+            const target = url || (a && a.home) || 'https://www.google.com/';
+            if (!startStudyPass()) return;
+            if (a && isAndroid) {
+                let u; try { u = new URL(target); } catch (e) { u = new URL('https://www.google.com/'); }
+                const intent = a.scheme
+                    ? `intent://${a.host}#Intent;scheme=${a.scheme};package=${a.pkg};end`
+                    : `intent://${u.host}${u.pathname}${u.search}#Intent;scheme=${u.protocol.replace(':', '')};package=${a.pkg};end`;
+                const el = document.createElement('a'); el.href = intent; document.body.appendChild(el); el.click(); el.remove();
+            } else if (a && isIOS) {
+                location.href = a.ios(target);
+            } else {
+                window.open(target, '_blank', 'noopener');
+                if (a && !a.home) showToast('Opened in this browser', 'On PC, links open in the browser LockIn runs in. Run LockIn in ' + a.label + ' to use it.');
+            }
+        }
         function openStudyLink(i) {
             const l = (settings.studyLinks || [])[i];
-            if (l && startStudyPass()) window.open(l.url, '_blank', 'noopener');
+            if (l) launchApp(l.app || guessApp(l.url), l.url);
         }
         function renderStudyLinks() {
+            const btn = (fn, label, title, cls) => `<button type="button" onclick="${fn}" title="${escapeHtml(title)}" class="px-2.5 py-1 rounded-lg text-[11px] font-medium border transition truncate max-w-[10rem] ${cls}">${escapeHtml(label)}</button>`;
+            const apps = document.getElementById('app-launch-bar');
+            if (apps) apps.innerHTML = ((isAndroid || isIOS) ? ['brave', 'chrome', 'youtube', 'whatsapp'] : ['youtube', 'whatsapp'])
+                .map(k => btn(`launchApp('${k}')`, APPS[k].label, 'Open ' + APPS[k].label, 'bg-indigo-600/20 border-indigo-500/40 text-indigo-200 hover:bg-indigo-600 hover:text-white')).join('');
             const bar = document.getElementById('study-links-bar');
-            if (!bar) return;
-            bar.innerHTML = (settings.studyLinks || []).map((l, i) => `<button type="button" onclick="openStudyLink(${i})" title="${escapeHtml(l.url)}" class="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-dark-800 border border-slate-700 text-slate-300 hover:border-indigo-500 hover:text-indigo-300 transition truncate max-w-[10rem]">${escapeHtml(l.name)}</button>`).join('');
+            if (bar) bar.innerHTML = (settings.studyLinks || []).map((l, i) => btn(`openStudyLink(${i})`, l.name, l.url, 'bg-dark-800 border-slate-700 text-slate-300 hover:border-indigo-500 hover:text-indigo-300')).join('');
         }
-        window.addEventListener('focus', () => { if (timerState.passActive) { endStudyPass(false); keepAwake(true); } });
+
+        // --- Auto-continue: N sessions in a row with automatic breaks ---
+        function endSeries() { timerState.seriesActive = false; timerState.seriesDone = 0; }
+        function autoStartBreak() {
+            if (!timerState.isRunning && timerState.mode === 'shortBreak') startTimer();
+        }
+        function autoNextBlock() {
+            if (timerState.isRunning || timerState.mode !== 'work') return;
+            timerState.passUsed = 0; timerState.passActive = false;
+            playBellChime();
+            startTimer();
+            if (timerState.hardcore) {
+                showToast(`Block ${timerState.seriesDone + 1}/${timerState.seriesTotal} started`, 'Tap anywhere to re-enter fullscreen.');
+                document.addEventListener('click', enterFullscreenSafe, { once: true });
+            }
+        }
+        function setSessions(n) {
+            if (timerState.isRunning) return;
+            settings.sessions = n;
+            localStorage.setItem('lockin_settings', JSON.stringify(settings));
+            renderSessionPicker();
+        }
+        function renderSessionPicker() {
+            const box = document.getElementById('session-picker');
+            if (!box) return;
+            const cur = settings.sessions || 1;
+            box.innerHTML = [1, 2, 3, 4, 5, 6].map(n => `<button type="button" onclick="setSessions(${n})" class="w-7 h-7 rounded-lg text-xs font-bold transition ${n === cur ? 'bg-indigo-600 text-white' : 'bg-dark-800 text-slate-400 hover:text-slate-200'}">${n}</button>`).join('');
+        }
 
         // --- Fullscreen Toggle ---
         function toggleFullscreen() {
