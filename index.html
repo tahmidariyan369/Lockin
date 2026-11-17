@@ -1,57 +1,36 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
+    <script>(function(){var P='lockin_demo:',g=Storage.prototype.getItem,s=Storage.prototype.setItem,r=Storage.prototype.removeItem;
+for(var i=localStorage.length-1;i>=0;i--){var k=localStorage.key(i);if(k&&k.indexOf(P)===0)r.call(localStorage,k)}
+Storage.prototype.getItem=function(k){return g.call(this,P+k)};Storage.prototype.setItem=function(k,v){return s.call(this,P+k,v)};Storage.prototype.removeItem=function(k){return r.call(this,P+k)};})();</script>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LockIn // Minimalist Focus & Pomodoro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>LockIn | Study Focus</title>
     <link rel="manifest" href="manifest.webmanifest">
-    <meta name="theme-color" content="#090a0f">
+    <meta name="theme-color" content="#060c13">
+    <script>try{document.documentElement.dataset.mode=localStorage.getItem("lockin_mode")||"dark"}catch(e){}</script>
     <link rel="icon" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-180.png">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="LockIn">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        dark: {
-                            950: '#090a0f',
-                            900: '#0f111a',
-                            800: '#181b28',
-                            700: '#232738',
-                        },
-                        accent: {
-                            work: '#6366f1', // Indigo
-                            rest: '#10b981', // Emerald
-                            long: '#3b82f6', // Blue
-                            hardcore: '#e11d48', // Rose/Crimson
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace']
-                    }
-                }
-            }
-        }
-    </script>
+    <style id="tw">/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */@layer properties;@layer theme,base,components,utilities;@layer theme{:root,:host{--font-sans: Inter, "Noto Sans Bengali", "Hind Siliguri", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;--font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;--color-orange-500: oklch(70.5% .213 47.604);--color-amber-200: #f6e0a6;--color-amber-300: #f2cd78;--color-amber-400: #ecb94a;--color-amber-500: #e0a526;--color-amber-600: #b9841c;--color-amber-950: #2b1f09;--color-emerald-200: #a7f3d0;--color-emerald-300: #6ee7b7;--color-emerald-400: #34d399;--color-emerald-500: #12b383;--color-emerald-600: #08895f;--color-sky-400: oklch(74.6% .16 232.661);--color-blue-400: oklch(70.7% .165 254.624);--color-indigo-200: #a7f3d0;--color-indigo-300: #6ee7b7;--color-indigo-400: #34d399;--color-indigo-500: #12b383;--color-indigo-600: #08895f;--color-indigo-950: #022c22;--color-rose-300: #ee9f9a;--color-rose-400: #e5807a;--color-rose-500: #d4625c;--color-rose-600: #bd4d48;--color-rose-900: #5a2523;--color-slate-100: #e4ecf3;--color-slate-200: #c9d6e2;--color-slate-300: #a3b4c5;--color-slate-400: #7b8ea3;--color-slate-500: #5a6d83;--color-slate-600: #415368;--color-slate-700: #2a3b50;--color-slate-800: #1b2a3b;--color-white: #fff;--spacing: .25rem;--container-xs: 20rem;--container-md: 28rem;--container-lg: 32rem;--container-xl: 36rem;--container-4xl: 56rem;--text-xs: .75rem;--text-xs--line-height: calc(1 / .75);--text-sm: .875rem;--text-sm--line-height: calc(1.25 / .875);--text-base: 1rem;--text-base--line-height: 1.5 ;--text-lg: 1.125rem;--text-lg--line-height: calc(1.75 / 1.125);--text-xl: 1.25rem;--text-xl--line-height: calc(1.75 / 1.25);--text-2xl: 1.5rem;--text-2xl--line-height: calc(2 / 1.5);--text-5xl: 3rem;--text-5xl--line-height: 1;--text-6xl: 3.75rem;--text-6xl--line-height: 1;--font-weight-medium: 500;--font-weight-semibold: 600;--font-weight-bold: 700;--tracking-tight: -.025em;--tracking-wider: .05em;--tracking-widest: .1em;--radius-md: .375rem;--radius-lg: .5rem;--radius-xl: .75rem;--radius-2xl: 1rem;--ease-in-out: cubic-bezier(.4, 0, .2, 1);--animate-pulse: pulse 2s cubic-bezier(.4, 0, .6, 1) infinite;--blur-sm: 8px;--blur-md: 12px;--blur-xl: 24px;--default-transition-duration: .15s;--default-transition-timing-function: cubic-bezier(.4, 0, .2, 1);--default-font-family: var(--font-sans);--default-mono-font-family: var(--font-mono);--color-dark-950: #060c13;--color-dark-900: #0a121b;--color-dark-800: #0f1b27;--color-dark-700: #16283a}}@layer base{*,:after,:before,::backdrop,::file-selector-button{box-sizing:border-box;margin:0;padding:0;border:0 solid}html,:host{line-height:1.5;-webkit-text-size-adjust:100%;tab-size:4;font-family:var(--default-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");font-feature-settings:var(--default-font-feature-settings, normal);font-variation-settings:var(--default-font-variation-settings, normal);-webkit-tap-highlight-color:transparent}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;-webkit-text-decoration:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace);font-feature-settings:var(--default-mono-font-feature-settings, normal);font-variation-settings:var(--default-mono-font-variation-settings, normal);font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}:-moz-focusring:where(:not(iframe)){outline:auto}progress{vertical-align:baseline}summary{display:list-item}ol,ul,menu{list-style:none}img,svg,video,canvas,audio,iframe,embed,object{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}button,input,select,optgroup,textarea,::file-selector-button{font:inherit;font-feature-settings:inherit;font-variation-settings:inherit;letter-spacing:inherit;color:inherit;border-radius:0;background-color:transparent;opacity:1}:where(select:is([multiple],[size])) optgroup{font-weight:bolder}:where(select:is([multiple],[size])) optgroup option{padding-inline-start:20px}::file-selector-button{margin-inline-end:4px}::placeholder{opacity:1}@supports (not (-webkit-appearance: -apple-pay-button)) or (contain-intrinsic-size: 1px){::placeholder{color:currentcolor;@supports (color: color-mix(in lab,red,red)){color:color-mix(in oklab,currentcolor 50%,transparent)}}}textarea{resize:vertical}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-date-and-time-value{min-height:1lh;text-align:inherit}::-webkit-datetime-edit{display:inline-flex}::-webkit-datetime-edit-fields-wrapper{padding:0}::-webkit-datetime-edit,::-webkit-datetime-edit-year-field,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute-field,::-webkit-datetime-edit-second-field,::-webkit-datetime-edit-millisecond-field,::-webkit-datetime-edit-meridiem-field{padding-block:0}::-webkit-calendar-picker-indicator{line-height:1}:-moz-ui-invalid{box-shadow:none}button,input:where([type=button],[type=reset],[type=submit]),::file-selector-button{appearance:button}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[hidden]:where(:not([hidden=until-found])){display:none!important}}@layer utilities{.pointer-events-none{pointer-events:none}.visible{visibility:visible}.absolute{position:absolute}.fixed{position:fixed}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0}.inset-y-0{inset-block:0px}.top-0{top:0}.right-6{right:calc(var(--spacing) * 6)}.bottom-6{bottom:calc(var(--spacing) * 6)}.left-0{left:0}.z-10{z-index:10}.z-40{z-index:40}.z-50{z-index:50}.col-span-2{grid-column:span 2 / span 2}.container{width:100%;@media(width>=40rem){max-width:40rem}@media(width>=48rem){max-width:48rem}@media(width>=64rem){max-width:64rem}@media(width>=80rem){max-width:80rem}@media(width>=96rem){max-width:96rem}}.mx-auto{margin-inline:auto}.my-auto{margin-block:auto}.mt-0\.5{margin-top:calc(var(--spacing) * .5)}.mt-1{margin-top:var(--spacing)}.mt-1\.5{margin-top:calc(var(--spacing) * 1.5)}.mt-2{margin-top:calc(var(--spacing) * 2)}.mt-3{margin-top:calc(var(--spacing) * 3)}.mt-6{margin-top:calc(var(--spacing) * 6)}.mb-1{margin-bottom:var(--spacing)}.mb-1\.5{margin-bottom:calc(var(--spacing) * 1.5)}.mb-2{margin-bottom:calc(var(--spacing) * 2)}.mb-3{margin-bottom:calc(var(--spacing) * 3)}.mb-4{margin-bottom:calc(var(--spacing) * 4)}.mb-6{margin-bottom:calc(var(--spacing) * 6)}.ml-1{margin-left:var(--spacing)}.ml-2{margin-left:calc(var(--spacing) * 2)}.ml-3{margin-left:calc(var(--spacing) * 3)}.block{display:block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.inline{display:inline}.inline-block{display:inline-block}.inline-flex{display:inline-flex}.table{display:table}.h-1{height:var(--spacing)}.h-3\.5{height:calc(var(--spacing) * 3.5)}.h-4{height:calc(var(--spacing) * 4)}.h-5{height:calc(var(--spacing) * 5)}.h-6{height:calc(var(--spacing) * 6)}.h-7{height:calc(var(--spacing) * 7)}.h-8{height:calc(var(--spacing) * 8)}.h-9{height:calc(var(--spacing) * 9)}.h-12{height:calc(var(--spacing) * 12)}.h-16{height:calc(var(--spacing) * 16)}.h-24{height:calc(var(--spacing) * 24)}.h-36{height:calc(var(--spacing) * 36)}.h-40{height:calc(var(--spacing) * 40)}.h-64{height:calc(var(--spacing) * 64)}.h-full{height:100%}.max-h-\[92vh\]{max-height:92vh}.max-h-\[94dvh\]{max-height:94dvh}.min-h-0{min-height:0px}.min-h-screen{min-height:100vh}.w-0{width:0px}.w-3\.5{width:calc(var(--spacing) * 3.5)}.w-4{width:calc(var(--spacing) * 4)}.w-5{width:calc(var(--spacing) * 5)}.w-6{width:calc(var(--spacing) * 6)}.w-7{width:calc(var(--spacing) * 7)}.w-8{width:calc(var(--spacing) * 8)}.w-9{width:calc(var(--spacing) * 9)}.w-12{width:calc(var(--spacing) * 12)}.w-28{width:calc(var(--spacing) * 28)}.w-64{width:calc(var(--spacing) * 64)}.w-full{width:100%}.max-w-4xl{max-width:var(--container-4xl)}.max-w-\[8\.5rem\]{max-width:8.5rem}.max-w-\[8rem\]{max-width:8rem}.max-w-\[10rem\]{max-width:10rem}.max-w-full{max-width:100%}.max-w-lg{max-width:var(--container-lg)}.max-w-md{max-width:var(--container-md)}.max-w-xl{max-width:var(--container-xl)}.max-w-xs{max-width:var(--container-xs)}.min-w-0{min-width:0px}.flex-1{flex:1}.shrink-0{flex-shrink:0}.translate-y-20{--tw-translate-y: calc(var(--spacing) * 20);translate:var(--tw-translate-x) var(--tw-translate-y)}.-rotate-90{rotate:-90deg}.transform{transform:var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,)}.animate-pulse{animation:var(--animate-pulse)}.cursor-help{cursor:help}.cursor-pointer{cursor:pointer}.resize-none{resize:none}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid-cols-7{grid-template-columns:repeat(7,minmax(0,1fr))}.grid-cols-\[1fr_auto\]{grid-template-columns:1fr auto}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.items-end{align-items:flex-end}.justify-between{justify-content:space-between}.justify-center{justify-content:center}.justify-end{justify-content:flex-end}.gap-1{gap:var(--spacing)}.gap-1\.5{gap:calc(var(--spacing) * 1.5)}.gap-2{gap:calc(var(--spacing) * 2)}.gap-2\.5{gap:calc(var(--spacing) * 2.5)}.gap-3{gap:calc(var(--spacing) * 3)}.gap-4{gap:calc(var(--spacing) * 4)}.gap-6{gap:calc(var(--spacing) * 6)}:where(.space-y-1>:not(:last-child)){--tw-space-y-reverse: 0;margin-block-start:calc(var(--spacing) * var(--tw-space-y-reverse));margin-block-end:calc(var(--spacing) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-1\.5>:not(:last-child)){--tw-space-y-reverse: 0;margin-block-start:calc(calc(var(--spacing) * 1.5) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 1.5) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-2>:not(:last-child)){--tw-space-y-reverse: 0;margin-block-start:calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-2\.5>:not(:last-child)){--tw-space-y-reverse: 0;margin-block-start:calc(calc(var(--spacing) * 2.5) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 2.5) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-3>:not(:last-child)){--tw-space-y-reverse: 0;margin-block-start:calc(calc(var(--spacing) * 3) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 3) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-4>:not(:last-child)){--tw-space-y-reverse: 0;margin-block-start:calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-5>:not(:last-child)){--tw-space-y-reverse: 0;margin-block-start:calc(calc(var(--spacing) * 5) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 5) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-y-6>:not(:last-child)){--tw-space-y-reverse: 0;margin-block-start:calc(calc(var(--spacing) * 6) * var(--tw-space-y-reverse));margin-block-end:calc(calc(var(--spacing) * 6) * calc(1 - var(--tw-space-y-reverse)))}:where(.space-x-1>:not(:last-child)){--tw-space-x-reverse: 0;margin-inline-start:calc(var(--spacing) * var(--tw-space-x-reverse));margin-inline-end:calc(var(--spacing) * calc(1 - var(--tw-space-x-reverse)))}:where(.space-x-2>:not(:last-child)){--tw-space-x-reverse: 0;margin-inline-start:calc(calc(var(--spacing) * 2) * var(--tw-space-x-reverse));margin-inline-end:calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-x-reverse)))}:where(.space-x-2\.5>:not(:last-child)){--tw-space-x-reverse: 0;margin-inline-start:calc(calc(var(--spacing) * 2.5) * var(--tw-space-x-reverse));margin-inline-end:calc(calc(var(--spacing) * 2.5) * calc(1 - var(--tw-space-x-reverse)))}:where(.space-x-3>:not(:last-child)){--tw-space-x-reverse: 0;margin-inline-start:calc(calc(var(--spacing) * 3) * var(--tw-space-x-reverse));margin-inline-end:calc(calc(var(--spacing) * 3) * calc(1 - var(--tw-space-x-reverse)))}:where(.space-x-3\.5>:not(:last-child)){--tw-space-x-reverse: 0;margin-inline-start:calc(calc(var(--spacing) * 3.5) * var(--tw-space-x-reverse));margin-inline-end:calc(calc(var(--spacing) * 3.5) * calc(1 - var(--tw-space-x-reverse)))}:where(.divide-y>:not(:last-child)){--tw-divide-y-reverse: 0;border-bottom-style:var(--tw-border-style);border-top-style:var(--tw-border-style);border-top-width:calc(1px * var(--tw-divide-y-reverse));border-bottom-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)))}:where(.divide-slate-800\/50>:not(:last-child)){border-color:color-mix(in srgb,#1b2a3b 50%,transparent);@supports (color: color-mix(in lab,red,red)){border-color:color-mix(in oklab,var(--color-slate-800) 50%,transparent)}}.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.overscroll-contain{overscroll-behavior:contain}.rounded{border-radius:.25rem}.rounded-2xl{border-radius:var(--radius-2xl)}.rounded-full{border-radius:calc(infinity * 1px)}.rounded-lg{border-radius:var(--radius-lg)}.rounded-md{border-radius:var(--radius-md)}.rounded-xl{border-radius:var(--radius-xl)}.rounded-t{border-top-left-radius:.25rem;border-top-right-radius:.25rem}.border{border-style:var(--tw-border-style);border-width:1px}.border-t{border-top-style:var(--tw-border-style);border-top-width:1px}.border-b{border-bottom-style:var(--tw-border-style);border-bottom-width:1px}.border-amber-400{border-color:var(--color-amber-400)}.border-amber-500{border-color:var(--color-amber-500)}.border-amber-500\/20{border-color:color-mix(in srgb,#e0a526 20%,transparent);@supports (color: color-mix(in lab,red,red)){border-color:color-mix(in oklab,var(--color-amber-500) 20%,transparent)}}.border-amber-500\/25{border-color:color-mix(in srgb,#e0a526 25%,transparent);@supports (color: color-mix(in lab,red,red)){border-color:color-mix(in oklab,var(--color-amber-500) 25%,transparent)}}.border-amber-500\/30{border-color:color-mix(in srgb,#e0a526 30%,transparent);@supports (color: color-mix(in lab,red,red)){border-color:color-mix(in oklab,var(--color-amber-500) 30%,transparent)}}.border-amber-500\/40{border-color:color-mix(in srgb,#e0a526 40%,transparent);@supports (color: color-mix(in lab,red,red)){border-color:color-mix(in oklab,var(--color-amber-500) 40%,transparent)}}.border-amber-500\/50{border-color:color-mix(in srgb,#e0a526 50%,transparent);@supports (color: color-mix(in lab,red,red)){border-color:color-mix(in oklab,var(--color-amber-500) 50%,transparent)}}.border-emerald-500\/20{border-color:color-mix(in srgb,#12b383 20%,transparent);@supports (color: color-mix(in lab,red,red)){border-color:color-mix(in oklab,var(--color-emerald-500) 20%,transparent)}}.border-emerald-500\/30{border-color:color-mix(in srgb,#12b383 30%,transparent);@supports (color: color-mix(in lab,red,red)){border-color:color-mix(in oklab,var(--color-emerald-500) 30%,transparent)}}.border-emerald-500\/40{border-color:color-mix(in srgb,#12b383 40%,transparent);@supports (color: color-mix(in lab,red,red)){border-color:color-mix(in oklab,var(--color-emerald-500) 40%,transparent)}}.border-indigo-400{border-color:var(--color-indigo-400)}.border-indigo-500{border-color:var(--color-indigo-500)}.border-indigo-500\/20{border-color:color-mix(in srgb,#12b383 20%,transparent);@supports (color: color-mix(in lab,red,red)){border-color:color-mix(in oklab,var(--color-indigo-500) 20%,transparent)}}.border-indigo-500\/30{border-color:color-mix(in srgb,#12b383 30%,transparent);@supports (color: color-mix(in lab,red,red)){border-color:color-mix(in oklab,var(--color-indigo-500) 30%,transparent)}}.border-indigo-500\/40{border-color:color-mix(in srgb,#12b383 40%,transparent);@supports (color: color-mix(in lab,red,red)){border-color:color-mix(in oklab,var(--color-indigo-500) 40%,transparent)}}.border-indigo-500\/60{border-color:color-mix(in srgb,#12b383 60%,transparent);@supports (color: color-mix(in lab,red,red)){border-color:color-mix(in oklab,var(--color-indigo-500) 60%,transparent)}}.border-rose-500\/20{border-color:color-mix(in srgb,#d4625c 20%,transparent);@supports (color: color-mix(in lab,red,red)){border-color:color-mix(in oklab,var(--color-rose-500) 20%,transparent)}}.border-rose-500\/25{border-color:color-mix(in srgb,#d4625c 25%,transparent);@supports (color: color-mix(in lab,red,red)){border-color:color-mix(in oklab,var(--color-rose-500) 25%,transparent)}}.border-rose-500\/30{border-color:color-mix(in srgb,#d4625c 30%,transparent);@supports (color: color-mix(in lab,red,red)){border-color:color-mix(in oklab,var(--color-rose-500) 30%,transparent)}}.border-rose-500\/40{border-color:color-mix(in srgb,#d4625c 40%,transparent);@supports (color: color-mix(in lab,red,red)){border-color:color-mix(in oklab,var(--color-rose-500) 40%,transparent)}}.border-rose-900\/60{border-color:color-mix(in srgb,#5a2523 60%,transparent);@supports (color: color-mix(in lab,red,red)){border-color:color-mix(in oklab,var(--color-rose-900) 60%,transparent)}}.border-slate-600{border-color:var(--color-slate-600)}.border-slate-700{border-color:var(--color-slate-700)}.border-slate-700\/80{border-color:color-mix(in srgb,#2a3b50 80%,transparent);@supports (color: color-mix(in lab,red,red)){border-color:color-mix(in oklab,var(--color-slate-700) 80%,transparent)}}.border-slate-800{border-color:var(--color-slate-800)}.border-slate-800\/60{border-color:color-mix(in srgb,#1b2a3b 60%,transparent);@supports (color: color-mix(in lab,red,red)){border-color:color-mix(in oklab,var(--color-slate-800) 60%,transparent)}}.border-slate-800\/80{border-color:color-mix(in srgb,#1b2a3b 80%,transparent);@supports (color: color-mix(in lab,red,red)){border-color:color-mix(in oklab,var(--color-slate-800) 80%,transparent)}}.border-transparent{border-color:transparent}.bg-amber-500{background-color:var(--color-amber-500)}.bg-amber-500\/5{background-color:color-mix(in srgb,#e0a526 5%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-amber-500) 5%,transparent)}}.bg-amber-500\/10{background-color:color-mix(in srgb,#e0a526 10%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-amber-500) 10%,transparent)}}.bg-amber-500\/15{background-color:color-mix(in srgb,#e0a526 15%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-amber-500) 15%,transparent)}}.bg-amber-500\/20{background-color:color-mix(in srgb,#e0a526 20%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-amber-500) 20%,transparent)}}.bg-amber-600{background-color:var(--color-amber-600)}.bg-dark-700{background-color:var(--color-dark-700)}.bg-dark-800{background-color:var(--color-dark-800)}.bg-dark-800\/60{background-color:color-mix(in srgb,#0f1b27 60%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-dark-800) 60%,transparent)}}.bg-dark-800\/70{background-color:color-mix(in srgb,#0f1b27 70%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-dark-800) 70%,transparent)}}.bg-dark-800\/80{background-color:color-mix(in srgb,#0f1b27 80%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-dark-800) 80%,transparent)}}.bg-dark-900{background-color:var(--color-dark-900)}.bg-dark-900\/30{background-color:color-mix(in srgb,#0a121b 30%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-dark-900) 30%,transparent)}}.bg-dark-900\/40{background-color:color-mix(in srgb,#0a121b 40%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-dark-900) 40%,transparent)}}.bg-dark-900\/60{background-color:color-mix(in srgb,#0a121b 60%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-dark-900) 60%,transparent)}}.bg-dark-900\/80{background-color:color-mix(in srgb,#0a121b 80%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-dark-900) 80%,transparent)}}.bg-dark-900\/90{background-color:color-mix(in srgb,#0a121b 90%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-dark-900) 90%,transparent)}}.bg-dark-950{background-color:var(--color-dark-950)}.bg-dark-950\/60{background-color:color-mix(in srgb,#060c13 60%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-dark-950) 60%,transparent)}}.bg-dark-950\/80{background-color:color-mix(in srgb,#060c13 80%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-dark-950) 80%,transparent)}}.bg-dark-950\/90{background-color:color-mix(in srgb,#060c13 90%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-dark-950) 90%,transparent)}}.bg-dark-950\/95{background-color:color-mix(in srgb,#060c13 95%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-dark-950) 95%,transparent)}}.bg-emerald-500{background-color:var(--color-emerald-500)}.bg-emerald-500\/10{background-color:color-mix(in srgb,#12b383 10%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-emerald-500) 10%,transparent)}}.bg-emerald-500\/15{background-color:color-mix(in srgb,#12b383 15%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-emerald-500) 15%,transparent)}}.bg-emerald-500\/20{background-color:color-mix(in srgb,#12b383 20%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-emerald-500) 20%,transparent)}}.bg-emerald-600{background-color:var(--color-emerald-600)}.bg-emerald-600\/20{background-color:color-mix(in srgb,#08895f 20%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-emerald-600) 20%,transparent)}}.bg-indigo-500{background-color:var(--color-indigo-500)}.bg-indigo-500\/5{background-color:color-mix(in srgb,#12b383 5%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-indigo-500) 5%,transparent)}}.bg-indigo-500\/10{background-color:color-mix(in srgb,#12b383 10%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-indigo-500) 10%,transparent)}}.bg-indigo-500\/15{background-color:color-mix(in srgb,#12b383 15%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-indigo-500) 15%,transparent)}}.bg-indigo-500\/20{background-color:color-mix(in srgb,#12b383 20%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-indigo-500) 20%,transparent)}}.bg-indigo-500\/70{background-color:color-mix(in srgb,#12b383 70%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-indigo-500) 70%,transparent)}}.bg-indigo-600{background-color:var(--color-indigo-600)}.bg-indigo-600\/20{background-color:color-mix(in srgb,#08895f 20%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-indigo-600) 20%,transparent)}}.bg-rose-500\/10{background-color:color-mix(in srgb,#d4625c 10%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-rose-500) 10%,transparent)}}.bg-rose-500\/15{background-color:color-mix(in srgb,#d4625c 15%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-rose-500) 15%,transparent)}}.bg-rose-600{background-color:var(--color-rose-600)}.bg-rose-600\/30{background-color:color-mix(in srgb,#bd4d48 30%,transparent);@supports (color: color-mix(in lab,red,red)){background-color:color-mix(in oklab,var(--color-rose-600) 30%,transparent)}}.bg-slate-700{background-color:var(--color-slate-700)}.bg-gradient-to-b{--tw-gradient-position: to bottom in oklab;background-image:linear-gradient(var(--tw-gradient-stops))}.bg-gradient-to-r{--tw-gradient-position: to right in oklab;background-image:linear-gradient(var(--tw-gradient-stops))}.from-amber-500\/15{--tw-gradient-from: color-mix(in srgb, #e0a526 15%, transparent);@supports (color: color-mix(in lab,red,red)){--tw-gradient-from: color-mix(in oklab, var(--color-amber-500) 15%, transparent)}--tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position))}.from-dark-900{--tw-gradient-from: var(--color-dark-900);--tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position))}.via-orange-500\/10{--tw-gradient-via: color-mix(in srgb, oklch(70.5% .213 47.604) 10%, transparent);@supports (color: color-mix(in lab,red,red)){--tw-gradient-via: color-mix(in oklab, var(--color-orange-500) 10%, transparent)}--tw-gradient-via-stops: var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-via) var(--tw-gradient-via-position), var(--tw-gradient-to) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-via-stops)}.to-dark-950{--tw-gradient-to: var(--color-dark-950);--tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position))}.to-rose-500\/15{--tw-gradient-to: color-mix(in srgb, #d4625c 15%, transparent);@supports (color: color-mix(in lab,red,red)){--tw-gradient-to: color-mix(in oklab, var(--color-rose-500) 15%, transparent)}--tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position))}.p-1{padding:var(--spacing)}.p-1\.5{padding:calc(var(--spacing) * 1.5)}.p-2{padding:calc(var(--spacing) * 2)}.p-2\.5{padding:calc(var(--spacing) * 2.5)}.p-3{padding:calc(var(--spacing) * 3)}.p-3\.5{padding:calc(var(--spacing) * 3.5)}.p-4{padding:calc(var(--spacing) * 4)}.p-5{padding:calc(var(--spacing) * 5)}.p-6{padding:calc(var(--spacing) * 6)}.px-1\.5{padding-inline:calc(var(--spacing) * 1.5)}.px-2{padding-inline:calc(var(--spacing) * 2)}.px-2\.5{padding-inline:calc(var(--spacing) * 2.5)}.px-3{padding-inline:calc(var(--spacing) * 3)}.px-3\.5{padding-inline:calc(var(--spacing) * 3.5)}.px-4{padding-inline:calc(var(--spacing) * 4)}.px-5{padding-inline:calc(var(--spacing) * 5)}.px-6{padding-inline:calc(var(--spacing) * 6)}.px-8{padding-inline:calc(var(--spacing) * 8)}.py-0\.5{padding-block:calc(var(--spacing) * .5)}.py-1{padding-block:var(--spacing)}.py-1\.5{padding-block:calc(var(--spacing) * 1.5)}.py-2{padding-block:calc(var(--spacing) * 2)}.py-2\.5{padding-block:calc(var(--spacing) * 2.5)}.py-3{padding-block:calc(var(--spacing) * 3)}.py-3\.5{padding-block:calc(var(--spacing) * 3.5)}.py-6{padding-block:calc(var(--spacing) * 6)}.py-8{padding-block:calc(var(--spacing) * 8)}.py-12{padding-block:calc(var(--spacing) * 12)}.pt-1{padding-top:var(--spacing)}.pt-2{padding-top:calc(var(--spacing) * 2)}.pt-3{padding-top:calc(var(--spacing) * 3)}.pt-4{padding-top:calc(var(--spacing) * 4)}.pr-1{padding-right:var(--spacing)}.pr-2{padding-right:calc(var(--spacing) * 2)}.pb-2{padding-bottom:calc(var(--spacing) * 2)}.pb-3{padding-bottom:calc(var(--spacing) * 3)}.pb-4{padding-bottom:calc(var(--spacing) * 4)}.text-center{text-align:center}.text-left{text-align:left}.text-right{text-align:right}.font-mono{font-family:var(--font-mono)}.font-sans{font-family:var(--font-sans)}.text-2xl{font-size:var(--text-2xl);line-height:var(--tw-leading, var(--text-2xl--line-height))}.text-5xl{font-size:var(--text-5xl);line-height:var(--tw-leading, var(--text-5xl--line-height))}.text-base{font-size:var(--text-base);line-height:var(--tw-leading, var(--text-base--line-height))}.text-lg{font-size:var(--text-lg);line-height:var(--tw-leading, var(--text-lg--line-height))}.text-sm{font-size:var(--text-sm);line-height:var(--tw-leading, var(--text-sm--line-height))}.text-xl{font-size:var(--text-xl);line-height:var(--tw-leading, var(--text-xl--line-height))}.text-xs{font-size:var(--text-xs);line-height:var(--tw-leading, var(--text-xs--line-height))}.text-\[9px\]{font-size:9px}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.font-bold{--tw-font-weight: var(--font-weight-bold);font-weight:var(--font-weight-bold)}.font-medium{--tw-font-weight: var(--font-weight-medium);font-weight:var(--font-weight-medium)}.font-semibold{--tw-font-weight: var(--font-weight-semibold);font-weight:var(--font-weight-semibold)}.tracking-tight{--tw-tracking: var(--tracking-tight);letter-spacing:var(--tracking-tight)}.tracking-wider{--tw-tracking: var(--tracking-wider);letter-spacing:var(--tracking-wider)}.tracking-widest{--tw-tracking: var(--tracking-widest);letter-spacing:var(--tracking-widest)}.text-amber-200{color:var(--color-amber-200)}.text-amber-300{color:var(--color-amber-300)}.text-amber-300\/80{color:color-mix(in srgb,#f2cd78 80%,transparent);@supports (color: color-mix(in lab,red,red)){color:color-mix(in oklab,var(--color-amber-300) 80%,transparent)}}.text-amber-400{color:var(--color-amber-400)}.text-dark-800{color:var(--color-dark-800)}.text-dark-950{color:var(--color-dark-950)}.text-emerald-200{color:var(--color-emerald-200)}.text-emerald-300{color:var(--color-emerald-300)}.text-emerald-400{color:var(--color-emerald-400)}.text-indigo-200{color:var(--color-indigo-200)}.text-indigo-300{color:var(--color-indigo-300)}.text-indigo-400{color:var(--color-indigo-400)}.text-indigo-500{color:var(--color-indigo-500)}.text-indigo-600{color:var(--color-indigo-600)}.text-rose-300{color:var(--color-rose-300)}.text-rose-300\/80{color:color-mix(in srgb,#ee9f9a 80%,transparent);@supports (color: color-mix(in lab,red,red)){color:color-mix(in oklab,var(--color-rose-300) 80%,transparent)}}.text-rose-400{color:var(--color-rose-400)}.text-rose-500\/80{color:color-mix(in srgb,#d4625c 80%,transparent);@supports (color: color-mix(in lab,red,red)){color:color-mix(in oklab,var(--color-rose-500) 80%,transparent)}}.text-rose-600{color:var(--color-rose-600)}.text-sky-400{color:var(--color-sky-400)}.text-slate-100{color:var(--color-slate-100)}.text-slate-200{color:var(--color-slate-200)}.text-slate-300{color:var(--color-slate-300)}.text-slate-400{color:var(--color-slate-400)}.text-slate-500{color:var(--color-slate-500)}.text-slate-600{color:var(--color-slate-600)}.text-white{color:var(--color-white)}.uppercase{text-transform:uppercase}.italic{font-style:italic}.line-through{text-decoration-line:line-through}.underline{text-decoration-line:underline}.placeholder-slate-500::placeholder{color:var(--color-slate-500)}.opacity-0{opacity:0%}.opacity-20{opacity:20%}.opacity-100{opacity:100%}.shadow{--tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / .1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / .1));box-shadow:var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)}.shadow-2xl{--tw-shadow: 0 25px 50px -12px var(--tw-shadow-color, rgb(0 0 0 / .25));box-shadow:var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)}.shadow-inner{--tw-shadow: inset 0 2px 4px 0 var(--tw-shadow-color, rgb(0 0 0 / .05));box-shadow:var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)}.shadow-lg{--tw-shadow: 0 10px 15px -3px var(--tw-shadow-color, rgb(0 0 0 / .1)), 0 4px 6px -4px var(--tw-shadow-color, rgb(0 0 0 / .1));box-shadow:var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)}.shadow-md{--tw-shadow: 0 4px 6px -1px var(--tw-shadow-color, rgb(0 0 0 / .1)), 0 2px 4px -2px var(--tw-shadow-color, rgb(0 0 0 / .1));box-shadow:var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)}.shadow-sm{--tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / .1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / .1));box-shadow:var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)}.shadow-xl{--tw-shadow: 0 20px 25px -5px var(--tw-shadow-color, rgb(0 0 0 / .1)), 0 8px 10px -6px var(--tw-shadow-color, rgb(0 0 0 / .1));box-shadow:var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)}.ring{--tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);box-shadow:var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)}.shadow-amber-950\/10{--tw-shadow-color: color-mix(in srgb, #2b1f09 10%, transparent);@supports (color: color-mix(in lab,red,red)){--tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-amber-950) 10%, transparent) var(--tw-shadow-alpha), transparent)}}.shadow-emerald-600\/30{--tw-shadow-color: color-mix(in srgb, #08895f 30%, transparent);@supports (color: color-mix(in lab,red,red)){--tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-emerald-600) 30%, transparent) var(--tw-shadow-alpha), transparent)}}.shadow-indigo-600\/20{--tw-shadow-color: color-mix(in srgb, #08895f 20%, transparent);@supports (color: color-mix(in lab,red,red)){--tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-indigo-600) 20%, transparent) var(--tw-shadow-alpha), transparent)}}.shadow-indigo-600\/25{--tw-shadow-color: color-mix(in srgb, #08895f 25%, transparent);@supports (color: color-mix(in lab,red,red)){--tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-indigo-600) 25%, transparent) var(--tw-shadow-alpha), transparent)}}.shadow-indigo-600\/30{--tw-shadow-color: color-mix(in srgb, #08895f 30%, transparent);@supports (color: color-mix(in lab,red,red)){--tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-indigo-600) 30%, transparent) var(--tw-shadow-alpha), transparent)}}.shadow-indigo-950\/20{--tw-shadow-color: color-mix(in srgb, #022c22 20%, transparent);@supports (color: color-mix(in lab,red,red)){--tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-indigo-950) 20%, transparent) var(--tw-shadow-alpha), transparent)}}.shadow-rose-600\/25{--tw-shadow-color: color-mix(in srgb, #bd4d48 25%, transparent);@supports (color: color-mix(in lab,red,red)){--tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-rose-600) 25%, transparent) var(--tw-shadow-alpha), transparent)}}.blur{--tw-blur: blur(8px);filter:var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,)}.blur-xl{--tw-blur: blur(var(--blur-xl));filter:var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,)}.filter{filter:var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,)}.backdrop-blur-md{--tw-backdrop-blur: blur(var(--blur-md));-webkit-backdrop-filter:var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);backdrop-filter:var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,)}.backdrop-blur-sm{--tw-backdrop-blur: blur(var(--blur-sm));-webkit-backdrop-filter:var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);backdrop-filter:var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,)}.transition{transition-property:color,background-color,border-color,outline-color,text-decoration-color,fill,stroke,--tw-gradient-from,--tw-gradient-via,--tw-gradient-to,opacity,box-shadow,transform,translate,scale,rotate,filter,-webkit-backdrop-filter,backdrop-filter,display,content-visibility,overlay,pointer-events;transition-timing-function:var(--tw-ease, var(--default-transition-timing-function));transition-duration:var(--tw-duration, var(--default-transition-duration))}.transition-all{transition-property:all;transition-timing-function:var(--tw-ease, var(--default-transition-timing-function));transition-duration:var(--tw-duration, var(--default-transition-duration))}.transition-colors{transition-property:color,background-color,border-color,outline-color,text-decoration-color,fill,stroke,--tw-gradient-from,--tw-gradient-via,--tw-gradient-to;transition-timing-function:var(--tw-ease, var(--default-transition-timing-function));transition-duration:var(--tw-duration, var(--default-transition-duration))}.transition-opacity{transition-property:opacity;transition-timing-function:var(--tw-ease, var(--default-transition-timing-function));transition-duration:var(--tw-duration, var(--default-transition-duration))}.duration-300{--tw-duration: .3s;transition-duration:.3s}.duration-500{--tw-duration: .5s;transition-duration:.5s}.duration-1000{--tw-duration: 1s;transition-duration:1s}.ease-in-out{--tw-ease: var(--ease-in-out);transition-timing-function:var(--ease-in-out)}.select-none{-webkit-user-select:none;user-select:none}@media(hover:hover){.group-hover\:translate-x-0\.5:is(:where(.group):hover *){--tw-translate-x: calc(var(--spacing) * .5);translate:var(--tw-translate-x) var(--tw-translate-y)}}.selection\:bg-indigo-500 ::selection{background-color:var(--color-indigo-500)}.selection\:bg-indigo-500::selection{background-color:var(--color-indigo-500)}.selection\:text-white ::selection{color:var(--color-white)}.selection\:text-white::selection{color:var(--color-white)}@media(hover:hover){.hover\:border-amber-500\/40:hover{border-color:color-mix(in srgb,#e0a526 40%,transparent)}@supports (color: color-mix(in lab,red,red)){.hover\:border-amber-500\/40:hover{border-color:color-mix(in oklab,var(--color-amber-500) 40%,transparent)}}.hover\:border-indigo-500:hover{border-color:var(--color-indigo-500)}.hover\:border-slate-500:hover{border-color:var(--color-slate-500)}.hover\:border-slate-800:hover{border-color:var(--color-slate-800)}.hover\:bg-amber-400:hover{background-color:var(--color-amber-400)}.hover\:bg-amber-500\/10:hover{background-color:color-mix(in srgb,#e0a526 10%,transparent)}@supports (color: color-mix(in lab,red,red)){.hover\:bg-amber-500\/10:hover{background-color:color-mix(in oklab,var(--color-amber-500) 10%,transparent)}}.hover\:bg-amber-500\/20:hover{background-color:color-mix(in srgb,#e0a526 20%,transparent)}@supports (color: color-mix(in lab,red,red)){.hover\:bg-amber-500\/20:hover{background-color:color-mix(in oklab,var(--color-amber-500) 20%,transparent)}}.hover\:bg-amber-600:hover{background-color:var(--color-amber-600)}.hover\:bg-dark-800:hover{background-color:var(--color-dark-800)}.hover\:bg-dark-800\/40:hover{background-color:color-mix(in srgb,#0f1b27 40%,transparent)}@supports (color: color-mix(in lab,red,red)){.hover\:bg-dark-800\/40:hover{background-color:color-mix(in oklab,var(--color-dark-800) 40%,transparent)}}.hover\:bg-emerald-500:hover{background-color:var(--color-emerald-500)}.hover\:bg-emerald-500\/10:hover{background-color:color-mix(in srgb,#12b383 10%,transparent)}@supports (color: color-mix(in lab,red,red)){.hover\:bg-emerald-500\/10:hover{background-color:color-mix(in oklab,var(--color-emerald-500) 10%,transparent)}}.hover\:bg-emerald-600:hover{background-color:var(--color-emerald-600)}.hover\:bg-indigo-500:hover{background-color:var(--color-indigo-500)}.hover\:bg-indigo-600:hover{background-color:var(--color-indigo-600)}.hover\:bg-rose-500:hover{background-color:var(--color-rose-500)}.hover\:bg-slate-800:hover{background-color:var(--color-slate-800)}.hover\:from-amber-500\/25:hover{--tw-gradient-from: color-mix(in srgb, #e0a526 25%, transparent)}@supports (color: color-mix(in lab,red,red)){.hover\:from-amber-500\/25:hover{--tw-gradient-from: color-mix(in oklab, var(--color-amber-500) 25%, transparent)}}.hover\:from-amber-500\/25:hover{--tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position))}.hover\:to-rose-500\/25:hover{--tw-gradient-to: color-mix(in srgb, #d4625c 25%, transparent)}@supports (color: color-mix(in lab,red,red)){.hover\:to-rose-500\/25:hover{--tw-gradient-to: color-mix(in oklab, var(--color-rose-500) 25%, transparent)}}.hover\:to-rose-500\/25:hover{--tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position))}.hover\:text-amber-300:hover{color:var(--color-amber-300)}.hover\:text-amber-400:hover{color:var(--color-amber-400)}.hover\:text-blue-400:hover{color:var(--color-blue-400)}.hover\:text-emerald-400:hover{color:var(--color-emerald-400)}.hover\:text-indigo-300:hover{color:var(--color-indigo-300)}.hover\:text-indigo-400:hover{color:var(--color-indigo-400)}.hover\:text-rose-400:hover{color:var(--color-rose-400)}.hover\:text-slate-200:hover{color:var(--color-slate-200)}.hover\:text-white:hover{color:var(--color-white)}.hover\:underline:hover{text-decoration-line:underline}}.focus\:border-amber-500:focus{border-color:var(--color-amber-500)}.focus\:border-emerald-400:focus{border-color:var(--color-emerald-400)}.focus\:border-emerald-500:focus{border-color:var(--color-emerald-500)}.focus\:border-indigo-500:focus{border-color:var(--color-indigo-500)}.focus\:border-rose-500:focus{border-color:var(--color-rose-500)}.focus\:ring-indigo-500\/20:focus{--tw-ring-color: color-mix(in srgb, #12b383 20%, transparent);@supports (color: color-mix(in lab,red,red)){--tw-ring-color: color-mix(in oklab, var(--color-indigo-500) 20%, transparent)}}.focus\:ring-rose-500\/20:focus{--tw-ring-color: color-mix(in srgb, #d4625c 20%, transparent);@supports (color: color-mix(in lab,red,red)){--tw-ring-color: color-mix(in oklab, var(--color-rose-500) 20%, transparent)}}.focus\:outline-none:focus{--tw-outline-style: none;outline-style:none}.active\:scale-95:active{--tw-scale-x: 95%;--tw-scale-y: 95%;--tw-scale-z: 95%;scale:var(--tw-scale-x) var(--tw-scale-y)}.disabled\:opacity-40:disabled{opacity:40%}@media(width>=40rem){.sm\:col-span-1{grid-column:span 1 / span 1}.sm\:block{display:block}.sm\:inline{display:inline}.sm\:h-76{height:calc(var(--spacing) * 76)}.sm\:w-76{width:calc(var(--spacing) * 76)}.sm\:max-w-\[13rem\]{max-width:13rem}.sm\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.sm\:grid-cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}.sm\:grid-cols-5{grid-template-columns:repeat(5,minmax(0,1fr))}.sm\:gap-4{gap:calc(var(--spacing) * 4)}:where(.sm\:space-x-2>:not(:last-child)){--tw-space-x-reverse: 0;margin-inline-start:calc(calc(var(--spacing) * 2) * var(--tw-space-x-reverse));margin-inline-end:calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-x-reverse)))}.sm\:p-5{padding:calc(var(--spacing) * 5)}.sm\:text-6xl{font-size:var(--text-6xl);line-height:var(--tw-leading, var(--text-6xl--line-height))}.sm\:text-base{font-size:var(--text-base);line-height:var(--tw-leading, var(--text-base--line-height))}.sm\:text-sm{font-size:var(--text-sm);line-height:var(--tw-leading, var(--text-sm--line-height))}}@media(width>=48rem){.md\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}}}@layer base{*,:after,:before,::backdrop,::file-selector-button{border-color:var(--color-slate-800)}button:not(:disabled),[role=button]:not(:disabled){cursor:pointer}}@property --tw-translate-x{syntax: "*"; inherits: false; initial-value: 0;}@property --tw-translate-y{syntax: "*"; inherits: false; initial-value: 0;}@property --tw-translate-z{syntax: "*"; inherits: false; initial-value: 0;}@property --tw-rotate-x{syntax: "*"; inherits: false;}@property --tw-rotate-y{syntax: "*"; inherits: false;}@property --tw-rotate-z{syntax: "*"; inherits: false;}@property --tw-skew-x{syntax: "*"; inherits: false;}@property --tw-skew-y{syntax: "*"; inherits: false;}@property --tw-space-y-reverse{syntax: "*"; inherits: false; initial-value: 0;}@property --tw-space-x-reverse{syntax: "*"; inherits: false; initial-value: 0;}@property --tw-divide-y-reverse{syntax: "*"; inherits: false; initial-value: 0;}@property --tw-border-style{syntax: "*"; inherits: false; initial-value: solid;}@property --tw-gradient-position{syntax: "*"; inherits: false;}@property --tw-gradient-from{syntax: "<color>"; inherits: false; initial-value: #0000;}@property --tw-gradient-via{syntax: "<color>"; inherits: false; initial-value: #0000;}@property --tw-gradient-to{syntax: "<color>"; inherits: false; initial-value: #0000;}@property --tw-gradient-stops{syntax: "*"; inherits: false;}@property --tw-gradient-via-stops{syntax: "*"; inherits: false;}@property --tw-gradient-from-position{syntax: "<length-percentage>"; inherits: false; initial-value: 0%;}@property --tw-gradient-via-position{syntax: "<length-percentage>"; inherits: false; initial-value: 50%;}@property --tw-gradient-to-position{syntax: "<length-percentage>"; inherits: false; initial-value: 100%;}@property --tw-font-weight{syntax: "*"; inherits: false;}@property --tw-tracking{syntax: "*"; inherits: false;}@property --tw-shadow{syntax: "*"; inherits: false; initial-value: 0 0 #0000;}@property --tw-shadow-color{syntax: "*"; inherits: false;}@property --tw-shadow-alpha{syntax: "<percentage>"; inherits: false; initial-value: 100%;}@property --tw-inset-shadow{syntax: "*"; inherits: false; initial-value: 0 0 #0000;}@property --tw-inset-shadow-color{syntax: "*"; inherits: false;}@property --tw-inset-shadow-alpha{syntax: "<percentage>"; inherits: false; initial-value: 100%;}@property --tw-ring-color{syntax: "*"; inherits: false;}@property --tw-ring-shadow{syntax: "*"; inherits: false; initial-value: 0 0 #0000;}@property --tw-inset-ring-color{syntax: "*"; inherits: false;}@property --tw-inset-ring-shadow{syntax: "*"; inherits: false; initial-value: 0 0 #0000;}@property --tw-ring-inset{syntax: "*"; inherits: false;}@property --tw-ring-offset-width{syntax: "<length>"; inherits: false; initial-value: 0px;}@property --tw-ring-offset-color{syntax: "*"; inherits: false; initial-value: #fff;}@property --tw-ring-offset-shadow{syntax: "*"; inherits: false; initial-value: 0 0 #0000;}@property --tw-blur{syntax: "*"; inherits: false;}@property --tw-brightness{syntax: "*"; inherits: false;}@property --tw-contrast{syntax: "*"; inherits: false;}@property --tw-grayscale{syntax: "*"; inherits: false;}@property --tw-hue-rotate{syntax: "*"; inherits: false;}@property --tw-invert{syntax: "*"; inherits: false;}@property --tw-opacity{syntax: "*"; inherits: false;}@property --tw-saturate{syntax: "*"; inherits: false;}@property --tw-sepia{syntax: "*"; inherits: false;}@property --tw-drop-shadow{syntax: "*"; inherits: false;}@property --tw-drop-shadow-color{syntax: "*"; inherits: false;}@property --tw-drop-shadow-alpha{syntax: "<percentage>"; inherits: false; initial-value: 100%;}@property --tw-drop-shadow-size{syntax: "*"; inherits: false;}@property --tw-backdrop-blur{syntax: "*"; inherits: false;}@property --tw-backdrop-brightness{syntax: "*"; inherits: false;}@property --tw-backdrop-contrast{syntax: "*"; inherits: false;}@property --tw-backdrop-grayscale{syntax: "*"; inherits: false;}@property --tw-backdrop-hue-rotate{syntax: "*"; inherits: false;}@property --tw-backdrop-invert{syntax: "*"; inherits: false;}@property --tw-backdrop-opacity{syntax: "*"; inherits: false;}@property --tw-backdrop-saturate{syntax: "*"; inherits: false;}@property --tw-backdrop-sepia{syntax: "*"; inherits: false;}@property --tw-duration{syntax: "*"; inherits: false;}@property --tw-ease{syntax: "*"; inherits: false;}@property --tw-scale-x{syntax: "*"; inherits: false; initial-value: 1;}@property --tw-scale-y{syntax: "*"; inherits: false; initial-value: 1;}@property --tw-scale-z{syntax: "*"; inherits: false; initial-value: 1;}@keyframes pulse{50%{opacity:.5}}@layer properties{@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))){*,:before,:after,::backdrop{--tw-translate-x: 0;--tw-translate-y: 0;--tw-translate-z: 0;--tw-rotate-x: initial;--tw-rotate-y: initial;--tw-rotate-z: initial;--tw-skew-x: initial;--tw-skew-y: initial;--tw-space-y-reverse: 0;--tw-space-x-reverse: 0;--tw-divide-y-reverse: 0;--tw-border-style: solid;--tw-gradient-position: initial;--tw-gradient-from: #0000;--tw-gradient-via: #0000;--tw-gradient-to: #0000;--tw-gradient-stops: initial;--tw-gradient-via-stops: initial;--tw-gradient-from-position: 0%;--tw-gradient-via-position: 50%;--tw-gradient-to-position: 100%;--tw-font-weight: initial;--tw-tracking: initial;--tw-shadow: 0 0 #0000;--tw-shadow-color: initial;--tw-shadow-alpha: 100%;--tw-inset-shadow: 0 0 #0000;--tw-inset-shadow-color: initial;--tw-inset-shadow-alpha: 100%;--tw-ring-color: initial;--tw-ring-shadow: 0 0 #0000;--tw-inset-ring-color: initial;--tw-inset-ring-shadow: 0 0 #0000;--tw-ring-inset: initial;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-offset-shadow: 0 0 #0000;--tw-blur: initial;--tw-brightness: initial;--tw-contrast: initial;--tw-grayscale: initial;--tw-hue-rotate: initial;--tw-invert: initial;--tw-opacity: initial;--tw-saturate: initial;--tw-sepia: initial;--tw-drop-shadow: initial;--tw-drop-shadow-color: initial;--tw-drop-shadow-alpha: 100%;--tw-drop-shadow-size: initial;--tw-backdrop-blur: initial;--tw-backdrop-brightness: initial;--tw-backdrop-contrast: initial;--tw-backdrop-grayscale: initial;--tw-backdrop-hue-rotate: initial;--tw-backdrop-invert: initial;--tw-backdrop-opacity: initial;--tw-backdrop-saturate: initial;--tw-backdrop-sepia: initial;--tw-duration: initial;--tw-ease: initial;--tw-scale-x: 1;--tw-scale-y: 1;--tw-scale-z: 1}}}
+</style>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script>window.lucide = window.lucide || { createIcons: function () {} };</script>
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #090a0f;
-            color: #f8fafc;
+            font-family: Inter, 'Noto Sans Bengali', 'Hind Siliguri', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--color-dark-950, #060c13);
+            color: var(--color-slate-100, #e4ecf3);
             overflow-x: hidden;
         }
         .font-mono {
@@ -63,18 +42,18 @@
             height: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #0f111a;
+            background: var(--color-dark-900, #0a121b);
         }
         ::-webkit-scrollbar-thumb {
-            background: #232738;
+            background: var(--color-slate-800, #1b2a3b);
             border-radius: 3px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #333a52;
+            background: var(--color-slate-700, #2a3b50);
         }
         @keyframes alarmFlash {
-            0%, 100% { box-shadow: inset 0 0 0 0px rgba(225, 29, 72, 0); background-color: #090a0f; }
-            50% { box-shadow: inset 0 0 120px 30px rgba(225, 29, 72, 0.45); background-color: #1f070e; }
+            0%, 100% { box-shadow: inset 0 0 0 0px rgba(212, 88, 79, 0); background-color: var(--color-dark-950, #060c13); }
+            50% { box-shadow: inset 0 0 90px 16px rgba(212, 98, 92, 0.26); background-color: color-mix(in srgb, var(--color-rose-500, #d4625c) 16%, var(--color-dark-950, #060c13)); }
         }
         .alarm-flash {
             animation: alarmFlash 0.6s ease-in-out 3;
@@ -89,7 +68,7 @@
             height: 14px;
             width: 14px;
             border-radius: 50%;
-            background: #6366f1;
+            background: var(--color-indigo-500, #12b383);
             cursor: pointer;
             margin-top: -5px;
         }
@@ -97,8 +76,46 @@
             width: 100%;
             height: 4px;
             cursor: pointer;
-            background: #232738;
+            background: var(--color-slate-800, #1b2a3b);
             border-radius: 2px;
+        }
+        html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+        button, [role=button] { cursor: pointer; touch-action: manipulation; }
+        input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(--color-indigo-500, #12b383); }
+        #toast { pointer-events: none; }
+        html { color-scheme: dark; }
+        :root[data-mode="light"] { color-scheme: light;
+            --color-dark-950:#eaf0f5; --color-dark-900:#ffffff; --color-dark-800:#f0f4f8; --color-dark-700:#dfe7ef;
+            --color-slate-50:#06111c; --color-slate-100:#0d1b29; --color-slate-200:#1a2b3c; --color-slate-300:#2f4256; --color-slate-400:#4d6177; --color-slate-500:#6d8196; --color-slate-600:#93a5b8; --color-slate-700:#c4d0dc; --color-slate-800:#d6dfe8; --color-slate-900:#e6edf3; --color-slate-950:#f3f6fa;
+            --color-indigo-200:#065f46; --color-indigo-300:#087a58; --color-indigo-400:#0a8a63; --color-emerald-200:#065f46; --color-emerald-300:#087a58; --color-emerald-400:#0a8a63;
+            --color-amber-200:#7a5410; --color-amber-300:#946510; --color-amber-400:#a9740f;
+            --color-rose-200:#8f3a36; --color-rose-300:#a8423d; --color-rose-400:#b94843; }
+        /* splash */
+        #splash { position: fixed; inset: 0; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; background: var(--color-dark-950, #060c13); animation: spOut .5s ease 2.9s forwards; }
+        #splash svg { overflow: visible; }
+        #splash .seg, #splash .dot { transform-box: view-box; transform-origin: 60px 60px; animation: spSeg 2.7s cubic-bezier(.65,0,.35,1) both; }
+        #splash .dot { animation-name: spDot; }
+        @keyframes spSeg { 0%,14% { transform: none; opacity: 1; } 36%,50% { transform: translate(var(--dx),var(--dy)) rotate(var(--r)); opacity: .35; } 76%,100% { transform: none; opacity: 1; } }
+        @keyframes spDot { 0%,14% { transform: none; opacity: 1; } 36%,50% { transform: translate(0,-36px) scale(.5); opacity: .3; } 76%,100% { transform: none; opacity: 1; } }
+        .sp-w { opacity: 0; margin: 0; font-weight: 600; font-size: 20px; letter-spacing: .01em; animation: spUp .55s ease both; }
+        .sp1 { color: var(--color-slate-100, #e4ecf3); animation-delay: 1s; }
+        .sp2 { color: var(--color-indigo-400, #34d399); animation-delay: 1.35s; }
+        .sp3 { font-size: 12px; font-weight: 400; color: var(--color-slate-400, #7b8ea3); animation-delay: 2.05s; margin-top: 6px; }
+        @keyframes spUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+        @keyframes spOut { to { opacity: 0; visibility: hidden; } }
+        @media (prefers-reduced-motion: reduce) { #splash .seg, #splash .dot { animation: none; } .sp-w { animation-duration: .01s; } #splash { animation-delay: .9s; } }
+        .tracking-widest { letter-spacing: .06em; } .tracking-wider { letter-spacing: .03em; }
+        @media (max-width: 640px) {
+            html { font-size: 15px; }
+            input, select, textarea { font-size: 16px !important; }
+            body { padding-bottom: 4.5rem; }
+            #main-header { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: var(--color-dark-900, #0a121b) !important; padding-top: env(safe-area-inset-top); }
+            #main-header > div { height: 3.25rem; }
+            #main-nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 45; border-radius: 0; border-width: 1px 0 0 0; justify-content: space-around; background: var(--color-dark-900, #0a121b) !important; padding: .3rem .5rem calc(.3rem + env(safe-area-inset-bottom)); }
+            #main-nav button { flex-direction: column; gap: 2px; font-size: 10px; padding: .35rem .6rem; }
+            #main-nav button span.hidden { display: inline !important; }
+            #toast { bottom: 5rem; left: 1rem; right: 1rem; }
+            #main-nav button .rounded-full { display: none; }
         }
     </style>
     <script>
@@ -108,17 +125,19 @@
     </script>
 </head>
 <body id="app-body" class="min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white transition-colors duration-300">
+    <div style="position:fixed;top:4px;left:50%;transform:translateX(-50%);z-index:60;pointer-events:none;font:600 10px/1 system-ui,sans-serif;padding:4px 10px;border-radius:999px;background:#25a77c;color:#fff">New-user preview. Starts fresh every time.</div>
+    <div id="splash" aria-hidden="true"><svg viewBox="0 0 120 120" width="132" height="132"><g class="seg" style="--dx:18px;--dy:-36px;--r:38deg"><circle cx="60" cy="60" r="40" fill="none" style="stroke:var(--color-indigo-500)" stroke-width="7" stroke-linecap="round" stroke-dasharray="36 215.3" transform="rotate(-90 60 60)"/></g><g class="seg" style="--dx:40px;--dy:-3px;--r:-38deg"><circle cx="60" cy="60" r="40" fill="none" style="stroke:var(--color-indigo-500)" stroke-width="7" stroke-linecap="round" stroke-dasharray="36 215.3" transform="rotate(-30 60 60)"/></g><g class="seg" style="--dx:22px;--dy:33px;--r:38deg"><circle cx="60" cy="60" r="40" fill="none" style="stroke:var(--color-indigo-500)" stroke-width="7" stroke-linecap="round" stroke-dasharray="36 215.3" transform="rotate(30 60 60)"/></g><g class="seg" style="--dx:-18px;--dy:36px;--r:-38deg"><circle cx="60" cy="60" r="40" fill="none" style="stroke:var(--color-indigo-500)" stroke-width="7" stroke-linecap="round" stroke-dasharray="36 215.3" transform="rotate(90 60 60)"/></g><g class="seg" style="--dx:-40px;--dy:3px;--r:38deg"><circle cx="60" cy="60" r="40" fill="none" style="stroke:var(--color-indigo-500)" stroke-width="7" stroke-linecap="round" stroke-dasharray="36 215.3" transform="rotate(150 60 60)"/></g><g class="seg" style="--dx:-22px;--dy:-33px;--r:-38deg"><circle cx="60" cy="60" r="40" fill="none" style="stroke:var(--color-indigo-500)" stroke-width="7" stroke-linecap="round" stroke-dasharray="36 215.3" transform="rotate(210 60 60)"/></g><circle class="dot" cx="60" cy="60" r="7" style="fill:var(--color-slate-100)"/></svg><p class="sp-w sp1">Consistency</p><p class="sp-w sp2">+ Action</p><p class="sp-w sp3">Start now.</p></div>
+    <script>(function(){var s=document.getElementById("splash");try{if(sessionStorage.getItem("lockin_splash")){s.remove();return}sessionStorage.setItem("lockin_splash","1")}catch(e){}function go(){if(s&&s.parentNode)s.remove()}setTimeout(go,3500);s.addEventListener("click",go)})();</script>
 
     <!-- Top Navigation / Header -->
     <header id="main-header" class="w-full border-b border-slate-800/60 bg-dark-900/80 backdrop-blur-md sticky top-0 z-40 transition-all">
         <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div id="brand-icon" class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 transition-all">
-                    <i data-lucide="target" class="w-5 h-5 text-white"></i>
-                </div>
+                <button id="btn-mode" type="button" onclick="toggleMode()" title="Brightness" aria-label="Brightness" class="p-2 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-dark-800 border border-transparent hover:border-slate-800"><svg id="mode-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></button>
+                <div id="brand-icon" class="w-9 h-9 rounded-xl bg-dark-800 border border-slate-700 flex items-center justify-center"><svg viewBox="0 0 32 32" width="22" height="22" aria-hidden="true"><circle cx="16" cy="16" r="10" fill="none" style="stroke:var(--color-indigo-500)" stroke-width="3" stroke-linecap="round" stroke-dasharray="47 16" transform="rotate(-90 16 16)"/><circle cx="16" cy="16" r="3.2" style="fill:var(--color-slate-100)"/></svg></div>
                 <div>
                     <h1 class="font-bold tracking-tight text-lg text-slate-100 flex items-center gap-2">
-                        LockIn <span id="mode-badge" class="text-[11px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-mono">DEEP WORK</span>
+                        LockIn <span id="mode-badge" class="text-[11px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-mono">Focus</span>
                     </h1>
                 </div>
             </div>
@@ -128,6 +147,10 @@
                 <button onclick="switchTab('timer')" id="tab-btn-timer" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 bg-indigo-600 text-white shadow-sm">
                     <i data-lucide="timer" class="w-4 h-4"></i>
                     <span class="hidden sm:inline">Timer</span>
+                </button>
+                <button onclick="switchTab('today')" id="tab-btn-today" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800">
+                    <i data-lucide="calendar-check" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Today</span>
                 </button>
                 <button onclick="switchTab('defiance')" id="tab-btn-defiance" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800">
                     <i data-lucide="zap" class="w-4 h-4 text-amber-400"></i>
@@ -145,14 +168,15 @@
                 </button>
                 <button onclick="switchTab('stats')" id="tab-btn-stats" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800">
                     <i data-lucide="bar-chart-2" class="w-4 h-4"></i>
-                    <span class="hidden sm:inline">Accountability</span>
+                    <span class="hidden sm:inline">Progress</span>
                 </button>
             </nav>
 
             <!-- Quick Actions -->
             <div class="flex items-center space-x-2">
+                <button onclick="toggleLang()" id="btn-lang" title="Language" class="px-2.5 py-2 text-xs font-bold text-slate-300 border border-slate-800 rounded-xl hover:bg-dark-800">বাং</button>
                 <button onclick="installApp()" id="btn-install" title="Install app" class="hidden px-3 py-2 text-xs font-semibold text-emerald-400 border border-emerald-500/30 rounded-xl hover:bg-emerald-500/10 flex items-center gap-1.5"><i data-lucide="download" class="w-4 h-4"></i><span class="hidden sm:inline">Install</span></button>
-                <button onclick="toggleFullscreen()" title="Toggle Fullscreen" class="p-2 text-slate-400 hover:text-slate-200 hover:bg-dark-800 rounded-xl transition border border-transparent hover:border-slate-800">
+                <button onclick="toggleFullscreen()" title="Toggle Fullscreen" class="hidden sm:block p-2 text-slate-400 hover:text-slate-200 hover:bg-dark-800 rounded-xl transition border border-transparent hover:border-slate-800">
                     <i data-lucide="maximize" class="w-4 h-4"></i>
                 </button>
                 <button onclick="openSettingsModal()" id="btn-settings" title="Settings" class="p-2 text-slate-400 hover:text-slate-200 hover:bg-dark-800 rounded-xl transition border border-transparent hover:border-slate-800">
@@ -215,17 +239,17 @@
 
                 <!-- Sessions in a row (auto-continue) -->
                 <div class="flex flex-wrap items-center justify-center gap-2 bg-dark-900 border border-slate-800 rounded-xl px-3 py-2">
-                    <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Sessions in a row</span>
+                    <span title="Pick how many focus blocks to run back to back. Breaks and the next block start automatically." class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider cursor-help">Sessions in a row</span>
                     <div id="session-picker" class="flex gap-1"></div>
-                    <span class="text-[10px] text-slate-500 w-full text-center">Breaks and next blocks start by themselves</span>
+                    <span id="session-hint" class="text-[10px] text-slate-400 w-full text-center"></span>
                 </div>
 
                 <!-- Hardcore Lockdown & Break Switcher -->
                 <div class="flex flex-wrap items-center justify-center gap-3">
                     <!-- Hardcore Toggle -->
-                    <label class="flex items-center space-x-2.5 bg-dark-900 border border-slate-800 px-3.5 py-2 rounded-xl cursor-pointer hover:border-rose-500/40 transition select-none">
+                    <label class="flex items-center space-x-2.5 bg-dark-900 border border-slate-800 px-3.5 py-2 rounded-xl cursor-pointer hover:border-amber-500/40 transition select-none">
                         <input type="checkbox" id="hardcore-toggle" checked onchange="toggleHardcoreUI()" class="w-4 h-4 rounded border-slate-700 bg-dark-800 text-rose-600 focus:ring-rose-500/20">
-                        <span class="text-xs font-semibold text-rose-400 flex items-center gap-1.5">
+                        <span class="text-xs font-semibold text-amber-300 flex items-center gap-1.5">
                             <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Hardcore Lockdown
                         </span>
                     </label>
@@ -277,7 +301,7 @@
 
                 <!-- Time readout -->
                 <div class="text-center z-10 px-4">
-                    <span id="timer-display" class="font-mono text-5xl sm:text-6xl font-bold tracking-tight text-white drop-shadow-md">25:00</span>
+                    <span id="timer-display" class="font-mono text-5xl sm:text-6xl font-bold tracking-tight text-slate-100">25:00</span>
                     <p id="timer-status-text" class="text-[11px] uppercase tracking-widest text-slate-400 font-semibold mt-2">Ready to Lock In</p>
                 </div>
 
@@ -287,7 +311,7 @@
 
             <!-- Timer Action Controls -->
             <div id="standard-controls" class="flex items-center space-x-3">
-                <button onclick="initiateStartFlow()" id="btn-start" class="px-8 py-3.5 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-sm sm:text-base shadow-lg shadow-rose-600/30 flex items-center gap-2 transition-all transform active:scale-95">
+                <button onclick="initiateStartFlow()" id="btn-start" class="px-8 py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm sm:text-base shadow-lg shadow-indigo-600/20 flex items-center gap-2 transition-all transform active:scale-95">
                     <i data-lucide="lock" id="btn-start-icon" class="w-4 h-4"></i>
                     <span id="btn-start-text">Enter Lockdown</span>
                 </button>
@@ -340,7 +364,7 @@
                         class="relative overflow-hidden px-5 py-2.5 rounded-xl bg-dark-900 border border-rose-900/60 text-rose-500/80 hover:text-rose-400 text-xs font-mono uppercase tracking-wider select-none transition">
                         <div id="abandon-progress-bar" class="absolute inset-y-0 left-0 bg-rose-600/30 w-0 pointer-events-none"></div>
                         <span id="abandon-btn-label" class="relative z-10 flex items-center gap-1.5">
-                            <i data-lucide="skull" class="w-3.5 h-3.5"></i> Hold 10s to Abandon Session
+                            <i data-lucide="flag" class="w-3.5 h-3.5"></i> Hold 10s to Abandon Session
                         </span>
                     </button>
                 </div>
@@ -379,12 +403,12 @@
                     </div>
 
                     <div class="flex flex-wrap gap-1.5">
-                        <button type="button" onclick="selectLazyTrigger('Scroll phone / Reels instead of studying', 'Open my book & complete a 15m Hardcore Sprint', true)" class="px-2.5 py-1.5 rounded-lg text-xs bg-dark-800 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-slate-700 hover:border-amber-500/40 transition">📱 Scroll phone / Reels</button>
+                        <button type="button" onclick="selectLazyTrigger('Scroll phone / Reels instead of studying', 'Open my book & complete a 15m Hardcore Sprint', true)" class="px-2.5 py-1.5 rounded-lg text-xs bg-dark-800 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-slate-700 hover:border-amber-500/40 transition">Scroll phone / Reels</button>
                         <button type="button" onclick="selectLazyTrigger('Snooze alarm & stay in bed', 'Feet on the floor immediately + wash face + start 15m study block', true)" class="px-2.5 py-1.5 rounded-lg text-xs bg-dark-800 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-slate-700 hover:border-amber-500/40 transition">⏰ Snooze / stay in bed</button>
-                        <button type="button" onclick="selectLazyTrigger('I do not feel like studying today', 'Lock into a 25m Hardcore Focus block right now anyway', true)" class="px-2.5 py-1.5 rounded-lg text-xs bg-dark-800 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-slate-700 hover:border-amber-500/40 transition">📚 Skip today's study</button>
-                        <button type="button" onclick="selectLazyTrigger('This chapter feels too hard, I will quit', 'Solve 5 problems from this exact chapter in Lockdown', true)" class="px-2.5 py-1.5 rounded-lg text-xs bg-dark-800 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-slate-700 hover:border-amber-500/40 transition">🧠 Chapter feels too hard</button>
+                        <button type="button" onclick="selectLazyTrigger('I do not feel like studying today', 'Lock into a 25m Hardcore Focus block right now anyway', true)" class="px-2.5 py-1.5 rounded-lg text-xs bg-dark-800 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-slate-700 hover:border-amber-500/40 transition">Skip today's study</button>
+                        <button type="button" onclick="selectLazyTrigger('This chapter feels too hard, I will quit', 'Solve 5 problems from this exact chapter in Lockdown', true)" class="px-2.5 py-1.5 rounded-lg text-xs bg-dark-800 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-slate-700 hover:border-amber-500/40 transition">Chapter feels too hard</button>
                         <button type="button" onclick="selectLazyTrigger('I will start in 10 minutes (procrastinating)', 'Zero delay — enter Hardcore Lockdown this exact second', true)" class="px-2.5 py-1.5 rounded-lg text-xs bg-dark-800 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-slate-700 hover:border-amber-500/40 transition">⏳ "I'll start in 10 mins"</button>
-                        <button type="button" onclick="selectLazyTrigger('Skip workout / physical exercise', 'Do 20 pushups / 15-min workout right now', false)" class="px-2.5 py-1.5 rounded-lg text-xs bg-dark-800 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-slate-700 hover:border-amber-500/40 transition">💪 Skip workout</button>
+                        <button type="button" onclick="selectLazyTrigger('Skip workout / physical exercise', 'Do 20 pushups / 15-min workout right now', false)" class="px-2.5 py-1.5 rounded-lg text-xs bg-dark-800 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-slate-700 hover:border-amber-500/40 transition">Skip workout</button>
                     </div>
 
                     <input type="text" id="defiance-excuse-input" oninput="autoFlipDefianceText()" placeholder="What lazy thought just popped into your head? (e.g., I'm too tired to revise Accounting...)"
@@ -444,6 +468,8 @@
         </div>
 
         <!-- TAB 2: TASKS VIEW -->
+        <div id="view-today" class="tab-content hidden flex-col space-y-5"><div id="today-root" class="space-y-5"></div></div>
+
         <div id="view-tasks" class="tab-content hidden flex-col space-y-6">
             <div class="flex items-center justify-between">
                 <div>
@@ -469,12 +495,13 @@
 
             <!-- Subject editor -->
             <details class="bg-dark-900/60 border border-slate-800 rounded-2xl p-4">
-                <summary class="text-xs font-semibold text-slate-300 cursor-pointer select-none">Edit my 13 subjects (rename for your group)</summary>
+                <summary class="text-xs font-semibold text-slate-300 cursor-pointer select-none">Edit my subjects (rename for your group)</summary>
                 <div class="mt-3 space-y-3">
                     <select id="subject-preset" onchange="applySubjectPreset(this.value)" class="bg-dark-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-indigo-500">
                         <option value="">Load a preset...</option>
                         <option value="commerce">Commerce (HSC)</option>
                         <option value="science">Science (HSC)</option>
+                        <option value="humanities">Humanities (HSC)</option>
                     </select>
                     <div id="subject-editor" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
                     <div class="flex justify-end gap-2">
@@ -494,7 +521,7 @@
         <div id="view-ambient" class="tab-content hidden flex-col space-y-6">
             <div>
                 <h2 class="text-xl font-bold text-slate-100">Neuro-Audio & Distraction Parking Lot</h2>
-                <p class="text-xs text-slate-400">Synthesized acoustic entrainment & intrusive urge quarantine.</p>
+                <p class="text-xs text-slate-400">Focus sounds and a place to park distracting thoughts.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -520,7 +547,7 @@
                                 </div>
                                 <div>
                                     <p class="text-sm font-medium text-slate-200">40Hz Gamma Binaural</p>
-                                    <p class="text-[11px] text-slate-400">200Hz L / 240Hz R peak cognitive focus</p>
+                                    <p class="text-[11px] text-slate-400">200Hz L / 240Hz R. Use headphones; effects vary</p>
                                 </div>
                             </div>
                             <button onclick="toggleSound('gamma')" id="sound-btn-gamma" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-dark-700 text-slate-300 hover:bg-indigo-600 hover:text-white transition">
@@ -599,7 +626,7 @@
         <!-- TAB 4: ACCOUNTABILITY & STATS VIEW -->
         <div id="view-stats" class="tab-content hidden flex-col space-y-6">
             <div>
-                <h2 class="text-xl font-bold text-slate-100">Accountability & Discipline Ledger</h2>
+                <h2 class="text-xl font-bold text-slate-100">Progress & Ledger</h2>
                 <p class="text-xs text-slate-400">Permanent record of deep work blocks, clean streaks, distraction strikes, and abandoned sessions.</p>
             </div>
 
@@ -637,7 +664,7 @@
 
                 <div class="bg-dark-900/60 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
                     <div class="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center mb-3">
-                        <i data-lucide="skull" class="w-5 h-5"></i>
+                        <i data-lucide="flag" class="w-5 h-5"></i>
                     </div>
                     <div>
                         <p class="text-[11px] text-slate-400 font-medium">Failed / Abandoned</p>
@@ -662,10 +689,13 @@
                     <div class="flex items-center gap-3">
                         <span id="week-summary" class="text-xs font-mono text-emerald-400"></span>
                         <button onclick="exportData()" class="text-xs text-slate-400 hover:text-indigo-400 flex items-center gap-1"><i data-lucide="download" class="w-3.5 h-3.5"></i> Export JSON</button>
+                        <button onclick="document.getElementById('import-file').click()" class="text-xs text-slate-400 hover:text-indigo-400 flex items-center gap-1"><i data-lucide="upload" class="w-3.5 h-3.5"></i> Import JSON</button>
+                        <input type="file" id="import-file" accept=".json,application/json" class="hidden" onchange="importData(this)">
                     </div>
                 </div>
                 <div id="week-chart" class="flex items-end gap-2"></div>
             </div>
+            <div id="progress-extra" class="space-y-6"></div>
             <!-- History Table -->
             <div class="bg-dark-900/60 border border-slate-800 rounded-2xl p-5 space-y-4">
                 <div class="flex items-center justify-between">
@@ -699,15 +729,16 @@
     <footer id="main-footer" class="w-full border-t border-slate-800/60 bg-dark-900/40 py-3.5 mt-6">
         <div class="max-w-4xl mx-auto px-4 text-center">
             <p id="motivational-quote" class="text-xs text-slate-400 italic">"Discipline is choosing between what you want now and what you want most."</p>
+            <a href="privacy.html" target="_blank" class="inline-block mt-1 text-[11px] text-slate-500 hover:text-indigo-400">Privacy and limits</a>
         </div>
     </footer>
 
     <!-- MODAL 1: PRE-SESSION COMMITMENT CONTRACT -->
     <div id="commitment-modal" class="fixed inset-0 bg-dark-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-dark-900 border border-rose-500/30 rounded-2xl w-full max-w-lg p-6 space-y-5 shadow-2xl shadow-rose-950/30">
+        <div class="bg-dark-900 border border-amber-500/30 rounded-2xl w-full max-w-lg p-6 space-y-5 shadow-2xl">
             <div class="flex items-center justify-between border-b border-slate-800 pb-4">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-9 h-9 rounded-xl bg-rose-500/15 text-rose-400 flex items-center justify-center">
+                    <div class="w-9 h-9 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center">
                         <i data-lucide="file-signature" class="w-5 h-5"></i>
                     </div>
                     <div>
@@ -741,15 +772,16 @@
                     <p id="contract-error-msg" class="text-xs text-rose-400 mt-1.5 hidden">Phrase does not match exactly. Type every word accurately.</p>
                 </div>
 
-                <div class="bg-rose-500/5 border border-rose-500/20 rounded-xl p-3 text-xs text-slate-400 space-y-1">
-                    <p class="font-semibold text-rose-300 flex items-center gap-1.5"><i data-lucide="alert-octagon" class="w-3.5 h-3.5"></i> Lockdown Rules:</p>
+                <div class="bg-amber-500/5 border border-amber-500/20 rounded-xl p-3 text-xs text-slate-400 space-y-1">
+                    <p class="font-semibold text-amber-300 flex items-center gap-1.5"><i data-lucide="alert-octagon" class="w-3.5 h-3.5"></i> Lockdown Rules:</p>
                     <p>• Exiting fullscreen or switching tabs triggers an alarm, adds a strike, and penalizes your timer.</p>
                     <p>• Standard pause is disabled. Quitting requires a 10-second hold + permanent Shame Log.</p>
+                    <p>• LockIn detects when you leave the app; it cannot block other apps.</p>
                 </div>
 
                 <div class="flex justify-end space-x-3 pt-2">
                     <button type="button" onclick="closeCommitmentModal()" class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-dark-800 text-slate-300 hover:bg-slate-800 transition">Cancel</button>
-                    <button type="submit" class="px-6 py-2.5 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white transition shadow-lg shadow-rose-600/30 flex items-center gap-1.5">
+                    <button type="submit" class="px-6 py-2.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition flex items-center gap-1.5">
                         <i data-lucide="lock" class="w-3.5 h-3.5"></i> Sign & Lock In
                     </button>
                 </div>
@@ -758,19 +790,23 @@
     </div>
 
     <!-- MODAL 2: VIOLATION / BREACH OVERLAY (Triggered on Tab Blur or Fullscreen Exit) -->
-    <div id="breach-modal" class="fixed inset-0 bg-rose-950/95 backdrop-blur-lg z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-dark-950 border-2 border-rose-500 rounded-2xl w-full max-w-md p-6 text-center space-y-5 shadow-2xl">
-            <div class="w-16 h-16 rounded-full bg-rose-500/20 text-rose-500 flex items-center justify-center mx-auto animate-bounce">
-                <i data-lucide="siren" class="w-9 h-9"></i>
+    <div id="breach-modal" class="fixed inset-0 bg-dark-950/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-dark-900 border border-amber-500/40 rounded-2xl w-full max-w-md p-6 text-center space-y-4 shadow-2xl">
+            <div class="w-12 h-12 rounded-full bg-amber-500/15 text-amber-400 flex items-center justify-center mx-auto">
+                <i data-lucide="alert-triangle" class="w-6 h-6"></i>
             </div>
             <div>
-                <h3 class="text-xl font-extrabold text-white tracking-tight uppercase">Lockdown Breach Detected!</h3>
-                <p id="breach-reason-text" class="text-sm text-rose-300 mt-1">You left the focus environment during an active block.</p>
+                <h3 class="text-lg font-semibold text-slate-100">You left the focus session</h3>
+                <p id="breach-reason-text" class="text-sm text-slate-400 mt-1">You left the focus environment during an active block.</p>
             </div>
-            <div class="bg-rose-500/10 border border-rose-500/30 rounded-xl p-3 text-xs text-rose-200 font-mono">
+            <div class="bg-rose-500/10 border border-rose-500/25 rounded-xl p-3 text-xs text-rose-300 font-mono">
                 +1 Distraction Strike Recorded • Penalty Applied (<span id="breach-penalty-label">+5m</span>)
             </div>
-            <button onclick="acknowledgeBreachAndRelock()" class="w-full py-3.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow-lg shadow-rose-600/40 transition flex items-center justify-center gap-2">
+            <div>
+                <p class="text-xs text-slate-400 mb-2">What pulled you away? (optional)</p>
+                <div id="breach-kinds" class="flex flex-wrap justify-center gap-1.5"></div>
+            </div>
+            <button onclick="acknowledgeBreachAndRelock()" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition flex items-center justify-center gap-2">
                 <i data-lucide="maximize" class="w-4 h-4"></i> Return to Fullscreen & Resume
             </button>
         </div>
@@ -780,8 +816,8 @@
     <div id="shame-modal" class="fixed inset-0 bg-dark-950/95 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-dark-900 border border-rose-500/40 rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl">
             <div class="flex items-center gap-3 text-rose-400">
-                <i data-lucide="skull" class="w-6 h-6"></i>
-                <h3 class="text-lg font-bold text-white">Abandon Session — Shame Log</h3>
+                <i data-lucide="flag" class="w-6 h-6"></i>
+                <h3 class="text-lg font-bold text-slate-100">Abandon Session — Shame Log</h3>
             </div>
             <p class="text-xs text-slate-400">
                 You are breaking your commitment contract before zero. State honestly why you succumbed to distraction. This will be permanently logged as a <span class="text-rose-400 font-bold">FAILED</span> block.
@@ -816,6 +852,35 @@
                 <button type="submit" class="px-5 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white">Save</button>
             </div>
         </form>
+    </div>
+
+    <!-- Welcome setup -->
+    <div id="onboard-modal" class="fixed inset-0 bg-dark-950/95 z-50 flex items-center justify-center p-3 hidden">
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl w-full max-w-md shadow-2xl flex flex-col max-h-[94dvh]">
+            <div class="p-5 pb-2 shrink-0"><div id="ob-progress" class="flex gap-1"></div></div>
+            <div class="px-5 py-2 overflow-y-auto overscroll-contain flex-1 min-h-0">
+                <h3 id="ob-q" class="text-lg font-semibold text-slate-100"></h3>
+                <p id="ob-hint" class="text-xs text-slate-400 mt-1 mb-3"></p>
+                <div id="ob-body" class="space-y-2 pb-2"></div>
+            </div>
+            <div class="flex items-center justify-between p-4 pt-3 shrink-0 border-t border-slate-800">
+                <button type="button" id="ob-back" onclick="obBack()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 bg-dark-800 border border-slate-700"></button>
+                <button type="button" id="ob-next" onclick="obNext()" class="px-6 py-2.5 rounded-xl text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white disabled:opacity-40"></button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Gentle restart -->
+    <div id="restart-modal" class="fixed inset-0 bg-dark-950/90 z-50 flex items-center justify-center p-3 hidden">
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl w-full max-w-md shadow-2xl flex flex-col max-h-[94dvh]">
+            <div class="p-5 overflow-y-auto overscroll-contain flex-1 min-h-0">
+                <h3 id="rs-title" class="text-lg font-semibold text-slate-100"></h3>
+                <p id="rs-text" class="text-sm text-slate-400 mt-1 mb-4"></p>
+                <div id="rs-body" class="space-y-2"></div>
+            </div>
+            <div id="rs-foot" class="flex items-center justify-between gap-3 p-4 border-t border-slate-800 shrink-0"></div>
+        </div>
     </div>
 
     <!-- Settings Modal -->
@@ -866,6 +931,12 @@
                 <div><label class="block text-xs font-medium text-slate-400 mb-1.5">Study Pass per Hardcore block (minutes, 0 = off)</label><input type="number" id="setting-pass" min="0" max="120" class="w-full bg-dark-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"></div>
                 <div><label class="block text-xs font-medium text-slate-400 mb-1.5">Study links, one per line: Name | https://link | app (optional: brave, chrome, edge, firefox, youtube, whatsapp)</label><textarea id="setting-links" rows="4" class="w-full bg-dark-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"></textarea></div>
             </div>
+            <div class="space-y-2 border-t border-slate-800 pt-4">
+                <label class="flex items-center gap-2 text-xs text-slate-300"><input type="checkbox" id="setting-gentle" class="rounded border-slate-700 bg-dark-800"> Gentle wording (no "shame/failed" language)</label>
+                <label class="flex items-center gap-2 text-xs text-slate-300"><input type="checkbox" id="setting-siren" class="rounded border-slate-700 bg-dark-800"> Breach siren sound</label>
+                <a href="privacy.html" target="_blank" class="text-xs text-indigo-400 hover:underline">Privacy policy and limits</a>
+                <div class="flex flex-wrap gap-4 pt-1"><button type="button" onclick="replaySetup()" class="text-xs text-indigo-400 hover:underline">Replay welcome setup</button><button type="button" onclick="eraseAllData()" class="text-xs text-rose-400 hover:underline">Erase all data on this device</button></div>
+            </div>
             <div class="flex justify-end space-x-3 pt-2">
                 <button onclick="closeSettingsModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-dark-800 text-slate-300 hover:bg-slate-800 transition">Cancel</button>
                 <button onclick="saveSettings()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition shadow-lg shadow-indigo-600/20">Save Changes</button>
@@ -895,8 +966,8 @@
             longBreak: 15,
             penaltyType: 'add5', // 'add5' or 'reset'
             escalateMinutes: 25,
-            dailyGoal: 120, examName: 'HSC Exam', examDate: '2027-06-01', passMinutes: 15, sessions: 1,
-            studyLinks: [{ name: '10 Minute School', url: 'https://10minuteschool.com' }, { name: 'NCTB Books', url: 'https://nctb.gov.bd' }, { name: 'YouTube', url: 'https://www.youtube.com' }]
+            dailyGoal: 120, examName: 'HSC Exam', examDate: '2027-06-01', passMinutes: 15, sessions: 1, gentle: true, siren: true,
+            studyLinks: [{ name: '10 Minute School', url: 'https://10minuteschool.com' }, { name: 'NCTB Books', url: 'https://nctb.gov.bd' }]
         };
 
         let timerState = {
@@ -962,13 +1033,16 @@
             updateTimerDisplay();
             toggleHardcoreUI();
             setupAntiDistractionListeners();
+            initI18n();
+            initOnboarding();
+            applyMode();
             lucide.createIcons();
 
             const quotes = [
-                "\"Active Defiance: Every lazy thought is just a trigger to do the exact opposite.\"",
-                "\"Comfort is the enemy of achievement. Stay locked in.\"",
-                "\"Every urge you resist rewires your brain for deeper focus.\"",
-                "\"Don't negotiate with laziness—flip the trigger and start immediately.\""
+                "Small, steady blocks beat long, rare ones.",
+                "Start with the next small step.",
+                "Rest is part of the plan.",
+                "One focused block is a good day."
             ];
             document.getElementById('motivational-quote').innerText = quotes[Math.floor(Math.random() * quotes.length)];
         };
@@ -1005,8 +1079,10 @@
 
         function triggerLockdownBreach(reason) {
             if (timerState.breachActive || timerState.passActive) return;
+            if (document.hidden && isIOS) timerState.replayAlarm = true;
             timerState.breachActive = true;
 
+            timerState.lastBreachId = logDistraction('left app', reason);
             // 1. Increment Strikes
             timerState.sessionStrikes++;
             accountability.totalStrikes++;
@@ -1038,11 +1114,13 @@
 
             // 4. Show Breach Overlay
             document.getElementById('breach-reason-text').innerText = reason;
+            renderBreachKinds();
             document.getElementById('breach-modal').classList.remove('hidden');
             lucide.createIcons();
         }
 
         function acknowledgeBreachAndRelock() {
+            timerState.lastTick = Date.now(); timerState.leftAt = null;
             document.getElementById('breach-modal').classList.add('hidden');
             timerState.breachActive = false;
             enterFullscreenSafe();
@@ -1083,6 +1161,7 @@
             const duration = tier === 'escalate' ? (settings.escalateMinutes || 25) : mins;
             timerState.plannedMinutes = duration;
             timerState.workMinutes = duration;
+            renderSessionPicker();
             timerState.totalSeconds = duration * 60;
             timerState.timeLeft = duration * 60;
             updateTimerDisplay();
@@ -1093,6 +1172,7 @@
         function toggleHardcoreUI() {
             const isHardcore = document.getElementById('hardcore-toggle').checked;
             timerState.hardcore = isHardcore;
+            if (!window.__noPersist && settings.hardcore !== isHardcore) { settings.hardcore = isHardcore; localStorage.setItem('lockin_settings', JSON.stringify(settings)); }
 
             const btnStart = document.getElementById('btn-start');
             const btnStartText = document.getElementById('btn-start-text');
@@ -1108,16 +1188,16 @@
             }
 
             if (isHardcore) {
-                btnStart.className = "px-8 py-3.5 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-sm sm:text-base shadow-lg shadow-rose-600/30 flex items-center gap-2 transition-all transform active:scale-95";
+                btnStart.className = "px-8 py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm sm:text-base shadow-lg shadow-indigo-600/20 flex items-center gap-2 transition-all transform active:scale-95";
                 btnStartText.innerText = "Enter Lockdown";
                 btnStartIcon.setAttribute('data-lucide', 'lock');
-                badge.innerText = "HARDCORE";
-                badge.className = "text-[11px] px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-400 border border-rose-500/30 font-mono";
+                badge.innerText = "Hardcore";
+                badge.className = "text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30 font-mono";
             } else {
                 btnStart.className = "px-8 py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm sm:text-base shadow-lg shadow-indigo-600/30 flex items-center gap-2 transition-all transform active:scale-95";
                 btnStartText.innerText = "Start Focus";
                 btnStartIcon.setAttribute('data-lucide', 'play');
-                badge.innerText = "STANDARD";
+                badge.innerText = "Standard";
                 badge.className = "text-[11px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-mono";
             }
             lucide.createIcons();
@@ -1212,6 +1292,7 @@
 
         function startTimer() {
             timerState.isRunning = true;
+            timerState.lastTick = Date.now();
             timerState.endAt = Date.now() + timerState.timeLeft * 1000;
             if (timerState.mode === 'work' && !timerState.seriesActive) {
                 timerState.seriesActive = true; timerState.seriesDone = 0; timerState.seriesTotal = settings.sessions || 1;
@@ -1233,8 +1314,8 @@
                 document.getElementById('hardcore-active-panel').classList.remove('hidden');
                 document.getElementById('study-pass-box').classList.toggle('hidden', !(settings.passMinutes > 0));
                 updatePassUI(); renderStudyLinks();
-                document.getElementById('timer-status-text').innerText = "LOCKDOWN ACTIVE" + (timerState.seriesTotal > 1 ? ` • BLOCK ${timerState.seriesDone + 1}/${timerState.seriesTotal}` : " • DO NOT LEAVE");
-                document.getElementById('timer-status-text').className = "text-[11px] uppercase tracking-widest text-rose-400 font-bold mt-2 animate-pulse";
+                document.getElementById('timer-status-text').innerText = "Lockdown on" + (timerState.seriesTotal > 1 ? ` • Block ${timerState.seriesDone + 1}/${timerState.seriesTotal}` : " • Stay in the app");
+                document.getElementById('timer-status-text').className = "text-[11px] uppercase tracking-widest text-amber-300 font-semibold mt-2";
             } else {
                 document.getElementById('btn-start-text').innerText = "Pause";
                 document.getElementById('btn-start-icon').setAttribute('data-lucide', 'pause');
@@ -1244,7 +1325,10 @@
 
             timerState.interval = setInterval(() => {
                 if (timerState.timeLeft > 0) {
-                    timerState.timeLeft = Math.max(0, Math.ceil((timerState.endAt - Date.now()) / 1000));
+                    const _now = Date.now();
+                if (timerState.lastTick && _now - timerState.lastTick > 4000 && awayEligible() && !timerState.breachActive) triggerLockdownBreach('LockIn was paused while you were away.');
+                timerState.lastTick = _now;
+                timerState.timeLeft = Math.max(0, Math.ceil((timerState.endAt - Date.now()) / 1000));
                     updateTimerDisplay();
                 } else {
                     clearInterval(timerState.interval);
@@ -1305,9 +1389,9 @@
             ring.style.strokeDashoffset = offset;
             
             if (timerState.mode !== 'work') {
-                ring.className = "text-emerald-500 transition-all duration-1000";
+                ring.className = "text-sky-400 transition-all duration-1000";
             } else if (timerState.hardcore) {
-                ring.className = "text-rose-500 transition-all duration-1000";
+                ring.className = "text-indigo-500 transition-all duration-1000";
             } else {
                 ring.className = "text-indigo-500 transition-all duration-1000";
             }
@@ -1364,18 +1448,19 @@
                     ? ` Next Auto-Escalate block leveled up to ${settings.escalateMinutes}m!`
                     : "";
                 if (timerState.sessionDefiance) { const d = timerState.sessionDefiance; timerState.sessionDefiance = null; recordDefianceVictory(d.excuse, d.action, d.category); }
-                showToast("Lockdown Conquered!", `Completed ${completedMins}m (${timerState.sessionStrikes} strikes).${escalateNotice}`);
+                showToast("Block complete", `Completed ${completedMins}m (${timerState.sessionStrikes} strikes).${escalateNotice}`);
                 timerState.seriesDone = (timerState.seriesDone || 0) + 1;
                 setMode('shortBreak');
                 if (timerState.seriesActive && timerState.seriesDone < timerState.seriesTotal) {
                     showToast(`Block ${timerState.seriesDone}/${timerState.seriesTotal} done`, 'Your break starts automatically.');
                     setTimeout(autoStartBreak, 1500);
                 } else {
+                    const wasRestart = timerState.restartActive;
                     endSeries();
-                    openReflection();
+                    if (wasRestart) openRestartDone(); else openReflection();
                 }
             } else {
-                showToast("Break Over", "Time to re-enter the comfort-zone crusher.");
+                showToast("Break Over", "Break over. Start the next block when you are ready.");
                 if (timerState.seriesActive && timerState.seriesDone < timerState.seriesTotal) setTimeout(autoNextBlock, 1500);
                 selectTier(timerState.tier, timerState.workMinutes || timerState.plannedMinutes);
             }
@@ -1396,7 +1481,7 @@
                 bar.style.width = `${pct}%`;
                 
                 const remainingSecs = Math.ceil((ABANDON_HOLD_DURATION - elapsed) / 1000);
-                label.innerHTML = `<i data-lucide="skull" class="w-3.5 h-3.5"></i> Keep holding... ${remainingSecs}s`;
+                label.innerHTML = `<i data-lucide="flag" class="w-3.5 h-3.5"></i> Keep holding... ${remainingSecs}s`;
 
                 if (elapsed >= ABANDON_HOLD_DURATION) {
                     cancelAbandonHold();
@@ -1414,7 +1499,7 @@
             const label = document.getElementById('abandon-btn-label');
             if (bar) bar.style.width = '0%';
             if (label) {
-                label.innerHTML = `<i data-lucide="skull" class="w-3.5 h-3.5"></i> Hold 10s to Abandon Session`;
+                label.innerHTML = `<i data-lucide="flag" class="w-3.5 h-3.5"></i> Hold 10s to Abandon Session`;
                 lucide.createIcons();
             }
         }
@@ -1451,6 +1536,7 @@
 
             // Record Permanent Failure
             accountability.failedSessions++;
+            logDistraction('quit', shameReason);
             endSeries();
             timerState.sessionDefiance = null;
             accountability.cleanStreak = 0;
@@ -1473,6 +1559,7 @@
             restoreNormalUI();
             selectTier(timerState.tier, timerState.workMinutes || timerState.plannedMinutes);
             showToast("Session Abandoned", "Failure permanently recorded in Accountability Ledger.");
+            setTimeout(() => openRestart('quit'), 700);
         }
 
         // --- Rapid Distraction Parking Lot & Urge Resisted Counter ---
@@ -1500,6 +1587,7 @@
         function recordParkedUrge(text) {
             const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             parkedUrges.unshift({ id: Date.now(), text, time: now });
+            logDistraction('urge', text);
             localStorage.setItem('lockin_urges', JSON.stringify(parkedUrges));
 
             timerState.sessionUrges++;
@@ -1642,7 +1730,7 @@
                     return `
                         <div title="${key}: ${wins} defiance wins" class="rounded-xl p-2 text-center border ${wins > 0 ? 'bg-amber-500/20 border-amber-500/50 text-amber-300' : isToday ? 'bg-dark-800 border-slate-600 text-slate-300' : 'bg-dark-950/60 border-slate-800/80 text-slate-600'}">
                             <p class="text-[9px] font-mono uppercase">D${idx + 1}</p>
-                            <p class="text-xs font-bold mt-0.5">${wins > 0 ? '⚡' + wins : '·'}</p>
+                            <p class="text-xs font-bold mt-0.5">${wins > 0 ? '+' + wins : '·'}</p>
                         </div>
                     `;
                 }).join('');
@@ -1679,7 +1767,7 @@
         function switchTab(tabName) {
             if (timerState.isRunning && timerState.hardcore && timerState.mode === 'work') return;
 
-            ['timer', 'defiance', 'tasks', 'ambient', 'stats'].forEach(t => {
+            ['timer', 'today', 'defiance', 'tasks', 'ambient', 'stats'].forEach(t => {
                 document.getElementById(`view-${t}`).classList.add('hidden');
                 document.getElementById(`view-${t}`).classList.remove('flex');
                 
@@ -1690,6 +1778,7 @@
             const activeView = document.getElementById(`view-${tabName}`);
             activeView.classList.remove('hidden');
             activeView.classList.add('flex');
+            if (tabName === 'today') renderToday();
 
             const activeBtn = document.getElementById(`tab-btn-${tabName}`);
             activeBtn.className = "px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 bg-indigo-600 text-white shadow-sm";
@@ -1797,7 +1886,7 @@
                     </div>
                     <div class="flex items-center space-x-2 shrink-0 ml-3">
                         <span class="text-xs font-mono bg-dark-800 px-2.5 py-1 rounded-lg text-indigo-400 border border-slate-700">
-                            🔥 ${task.completedPomodoros || 0}
+                            ${task.completedPomodoros || 0} blocks
                         </span>
                         ${task.id !== timerState.activeTaskId && !task.completed ? `
                             <button onclick="setActiveTask(${task.id})" title="Load as Micro-Goal" class="p-1.5 text-slate-400 hover:text-indigo-400 hover:bg-dark-800 rounded-lg transition">
@@ -1952,8 +2041,9 @@
 
         // --- Loud Breach Warning Siren & Completion Bell ---
         function playAlarmSiren() {
+            if (settings.siren === false) return;
             try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const ctx = getCtx();
                 const now = ctx.currentTime;
                 
                 for (let i = 0; i < 3; i++) {
@@ -1976,7 +2066,7 @@
 
         function playBellChime() {
             try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const ctx = getCtx();
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
 
@@ -2014,6 +2104,7 @@
             document.getElementById('stat-clean-streak').innerText = accountability.cleanStreak || 0;
             document.getElementById('stat-total-strikes').innerText = accountability.totalStrikes || 0;
             document.getElementById('stat-failed-sessions').innerText = accountability.failedSessions || 0;
+            renderProgressExtra();
             const defStatEl = document.getElementById('stat-defiance-wins');
             if (defStatEl) defStatEl.innerText = accountability.defianceWins || defianceLogs.length || 0;
             renderHud();
@@ -2085,6 +2176,9 @@
             settings.examName = document.getElementById('setting-exam-name').value.trim();
             settings.examDate = document.getElementById('setting-exam-date').value;
             settings.passMinutes = Math.max(0, parseInt(document.getElementById('setting-pass').value) || 0);
+            settings.gentle = document.getElementById('setting-gentle').checked;
+            settings.siren = document.getElementById('setting-siren').checked;
+            applyLang();
             settings.studyLinks = document.getElementById('setting-links').value.split('\n').map(l => { const [n, u, a] = l.split('|').map(s => s.trim()); const k = (a || '').toLowerCase(); return { name: n, url: u, app: APPS[k] ? k : '' }; }).filter(l => l.name && /^https?:\/\//i.test(l.url));
             renderHud();
 
@@ -2108,7 +2202,7 @@
         };
         let SUBJECTS = PRESETS.commerce.slice();
         function loadSubjects() {
-            SUBJECTS = (Array.isArray(settings.subjects) && settings.subjects.length === 13) ? settings.subjects.slice() : PRESETS.commerce.slice();
+            SUBJECTS = (Array.isArray(settings.subjects) && settings.subjects.length >= 5) ? settings.subjects.slice() : PRESETS.commerce.slice();
             fillSubjectSelect();
             fillSubjectEditor(SUBJECTS);
         }
@@ -2152,14 +2246,17 @@
             document.getElementById('setting-exam-name').value = settings.examName || '';
             document.getElementById('setting-exam-date').value = settings.examDate || '';
             document.getElementById('setting-pass').value = settings.passMinutes ?? 15;
+            document.getElementById('setting-gentle').checked = settings.gentle !== false;
+            document.getElementById('hardcore-toggle').checked = settings.hardcore !== false;
+            document.getElementById('setting-siren').checked = settings.siren !== false;
             document.getElementById('setting-links').value = (settings.studyLinks || []).map(l => l.name + ' | ' + l.url + (l.app ? ' | ' + l.app : '')).join('\n');
             renderHud();
         }
         function renderHud() {
             const el = document.getElementById('hud-exam');
             if (!el) return;
-            const d = settings.examDate ? Math.ceil((new Date(settings.examDate + 'T00:00:00') - new Date(todayKey() + 'T00:00:00')) / 864e5) : null;
-            el.innerText = (settings.examName || 'Exam') + ': ' + (d === null ? 'set date' : d > 0 ? d + ' days' : d === 0 ? 'TODAY' : 'passed');
+            const nx = nextDeadline();
+            el.innerText = nx ? nx.name + ': ' + daysText(nx.days) : obL('Set a deadline', 'ডেডলাইন দিন');
             const t = minsOn(todayKey()), g = settings.dailyGoal || 120;
             document.getElementById('hud-today').innerText = t + ' / ' + g + 'm';
             document.getElementById('hud-bar').style.width = Math.min(100, t / g * 100) + '%';
@@ -2203,7 +2300,7 @@
             showToast("Reflection saved", s && s.next ? "Next block starts with: " + s.next : "Take your break.");
         }
         function exportData() {
-            const blob = new Blob([JSON.stringify({ settings, tasks, sessions, parkedUrges, defianceLogs, accountability }, null, 2)], { type: 'application/json' });
+            const blob = new Blob([JSON.stringify({ settings, tasks, sessions, parkedUrges, defianceLogs, accountability, missions, journal, distractions }, null, 2)], { type: 'application/json' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
             a.download = 'lockin-backup-' + todayKey() + '.json';
@@ -2240,7 +2337,7 @@
             }
         }
         if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-            navigator.serviceWorker.register('sw.js').catch(() => {});
+            
         }
 
         // --- Study Pass: leave the lockdown for study material, within a time budget ---
@@ -2270,6 +2367,7 @@
         }
         function endStudyPass(expired) {
             if (!timerState.passActive) return;
+            timerState.lastTick = Date.now(); timerState.leftAt = null;
             timerState.passUsed = (timerState.passUsed || 0) + Math.floor((Date.now() - timerState.passStart) / 1000);
             timerState.passActive = false;
             clearInterval(timerState.passTick);
@@ -2328,7 +2426,7 @@
         }
 
         // --- Auto-continue: N sessions in a row with automatic breaks ---
-        function endSeries() { timerState.seriesActive = false; timerState.seriesDone = 0; }
+        function endSeries() { timerState.seriesActive = false; timerState.seriesDone = 0; restoreAfterRestart(); }
         function autoStartBreak() {
             if (!timerState.isRunning && timerState.mode === 'shortBreak') startTimer();
         }
@@ -2352,8 +2450,587 @@
             const box = document.getElementById('session-picker');
             if (!box) return;
             const cur = settings.sessions || 1;
-            box.innerHTML = [1, 2, 3, 4, 5, 6].map(n => `<button type="button" onclick="setSessions(${n})" class="w-7 h-7 rounded-lg text-xs font-bold transition ${n === cur ? 'bg-indigo-600 text-white' : 'bg-dark-800 text-slate-400 hover:text-slate-200'}">${n}</button>`).join('');
+            const hint = document.getElementById('session-hint');
+            if (hint) {
+                const w = timerState.workMinutes || settings.work, b = settings.shortBreak;
+                hint.innerText = cur === 1
+                    ? '1 session: a single block, then you choose your break.'
+                    : `${cur} sessions: ${w}m focus, ${b}m break, repeat. Breaks and next blocks start automatically.`;
+            }
+            box.innerHTML = [1, 2, 3, 4, 5, 6].map(n => `<button type="button" onclick="setSessions(${n})" title="Run ${n} session${n > 1 ? 's' : ''} in a row" class="w-7 h-7 rounded-lg text-xs font-bold transition ${n === cur ? 'bg-indigo-600 text-white' : 'bg-dark-800 text-slate-400 hover:text-slate-200'}">${n}</button>`).join('');
         }
+
+        // --- Language (English / Bangla), gentle wording, onboarding, import ---
+        const GENTLE = {
+            'Abandon Session — Shame Log': 'End Session Early — Reflection',
+            'Hold 10s to Abandon Session': 'Hold 10s to End Session',
+            'Record Failure & Quit': 'Save & End Session',
+            'Keep Fighting (Resume)': 'Keep Going (Resume)',
+            'Failed / Abandoned': 'Ended Early',
+            'FAILED': 'ENDED EARLY',
+            'Micro-Goal / Shame Reason': 'Micro-Goal / Reason',
+            'You are breaking your commitment contract before zero. State honestly why you succumbed to distraction. This will be permanently logged as a': 'You are ending your block before zero. Note honestly what pulled you away. It will be saved in your ledger as an',
+            '• Standard pause is disabled. Quitting requires a 10-second hold + permanent Shame Log.': '• Standard pause is disabled. Ending early needs a 10-second hold and a short reflection.',
+            'Session Abandoned': 'Session Ended Early',
+            'Failure permanently recorded in Accountability Ledger.': 'Saved as ended early in your ledger.'
+        };
+        const HAS_FS = !!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen);
+        const NOFS = HAS_FS ? null : {
+            'Return to Fullscreen & Resume': 'Resume',
+            'Fullscreen lockdown will engage immediately upon signing.': 'Lockdown starts as soon as you sign.',
+            '• Exiting fullscreen or switching tabs triggers an alarm, adds a strike, and penalizes your timer.': '• Leaving the app triggers an alarm, adds a strike, and penalizes your timer.'
+        };
+        const BN = {};
+        `Timer|টাইমার
+Defiance|ডিফায়েন্স
+Tasks|টাস্ক
+Audio|অডিও
+Progress|অগ্রগতি
+Today|আজ
+You left the focus session|আপনি ফোকাস সেশন ছেড়ে গেছেন
+What pulled you away? (optional)|কী আপনাকে সরিয়ে নিল? (ঐচ্ছিক)
+Countdown|কাউন্টডাউন
+Today's Focus|আজকের ফোকাস
+Feeling Lazy or Tempted to Scroll?|অলস লাগছে বা স্ক্রল করতে ইচ্ছে করছে?
+Defy Now →|এখনই ঠেকাও →
+Standard (25m)|স্ট্যান্ডার্ড (২৫মি)
+Deep (50m)|ডিপ (৫০মি)
+Monk Mode (90m)|মঙ্ক মোড (৯০মি)
+Sessions in a row|পরপর সেশন
+Hardcore Lockdown|হার্ডকোর লকডাউন
+5m Break|৫মি বিরতি
+15m Break|১৫মি বিরতি
+Locked Micro-Goal|লক করা ছোট লক্ষ্য
+Set goal before starting session...|সেশন শুরুর আগে লক্ষ্য ঠিক করুন...
+Ready to Lock In|লক-ইন করতে প্রস্তুত
+Enter Lockdown|লকডাউনে ঢুকুন
+Start Focus|ফোকাস শুরু
+Start Break|বিরতি শুরু
+Pause|থামান
+Resume|আবার শুরু
+Recovery Break|বিশ্রামের বিরতি
+Study Pass (no strike)|স্টাডি পাস (স্ট্রাইক ছাড়া)
+Start pass (then switch to any app or tab)|পাস শুরু করুন (তারপর যেকোনো অ্যাপ বা ট্যাবে যান)
+End pass and return to lockdown|পাস শেষ করে লকডাউনে ফিরুন
+Park Urge|ইচ্ছেটা জমা রাখুন
+Hold 10s to Abandon Session|সেশন ছাড়তে ১০ সেকেন্ড ধরে রাখুন
+Hold 10s to End Session|সেশন শেষ করতে ১০ সেকেন্ড ধরে রাখুন
+Tasks & Backlog|টাস্ক ও ব্যাকলগ
+Organize your study backlog and select a focus task.|পড়ার তালিকা সাজান আর একটি ফোকাস টাস্ক বেছে নিন।
+Clear Finished|শেষ হওয়াগুলো মুছুন
+Add Task|টাস্ক যোগ করুন
+Subject...|বিষয়...
+Edit my subjects (rename for your group)|আমার বিষয়গুলো এডিট করুন (নিজের গ্রুপ অনুযায়ী)
+Save subjects|বিষয় সেভ করুন
+Reset to Commerce|কমার্সে রিসেট
+No tasks in your backlog yet.|এখনো কোনো টাস্ক নেই।
+Add your study topics above to get started.|শুরু করতে উপরে পড়ার বিষয় যোগ করুন।
+Neuro-Audio & Distraction Parking Lot|ফোকাস সাউন্ড ও মনোযোগ-পার্কিং
+Distraction Parking Lot|মনোযোগ-পার্কিং
+Play|চালান
+Playing|চলছে
+Deep Brown Noise|ডিপ ব্রাউন নয়েজ
+Heavy Rainfall|ভারী বৃষ্টি
+Progress & Ledger|অগ্রগতি ও খাতা
+Deep Work Minutes|ডিপ ওয়ার্ক মিনিট
+Distraction Strikes|বিক্ষেপ স্ট্রাইক
+Failed / Abandoned|ব্যর্থ / ছেড়ে দেওয়া
+Ended Early|আগে শেষ
+Defiance Wins|ডিফায়েন্স জয়
+Last 7 Days (focus minutes)|গত ৭ দিন (ফোকাস মিনিট)
+Export JSON|JSON এক্সপোর্ট
+Import JSON|JSON ইমপোর্ট
+Permanent Session Ledger|সেশনের স্থায়ী খাতা
+Status|অবস্থা
+Duration|সময়কাল
+Strikes|স্ট্রাইক
+Time|সময়
+FAILED|ব্যর্থ
+ENDED EARLY|আগে শেষ
+Hardcore Commitment Contract|হার্ডকোর প্রতিশ্রুতি চুক্তি
+Sign & Lock In|সই করে লক-ইন
+Cancel|বাতিল
+Save|সেভ
+Skip|বাদ দিন
+Block complete. 60-second reflection|ব্লক শেষ। ৬০ সেকেন্ডের রিফ্লেকশন
+Enforcement & Timer Settings|কড়াকড়ি ও টাইমার সেটিংস
+Save Changes|পরিবর্তন সেভ করুন
+Daily goal (m)|দৈনিক লক্ষ্য (মি)
+Exam name|পরীক্ষার নাম
+Exam date|পরীক্ষার তারিখ
+Standard (m)|স্ট্যান্ডার্ড (মি)
+Short Break|ছোট বিরতি
+Long Break|বড় বিরতি
+Return to Fullscreen & Resume|ফুলস্ক্রিনে ফিরে চালিয়ে যান
+Lockdown Breach Detected!|লকডাউন ভঙ্গ ধরা পড়েছে!
+Welcome to LockIn|LockIn-এ স্বাগতম
+Your group|আপনার গ্রুপ
+Commerce|কমার্স
+Science|বিজ্ঞান
+Humanities|মানবিক
+Start|শুরু করুন
+Gentle wording (no "shame/failed" language)|নরম ভাষা ("লজ্জা/ব্যর্থ" শব্দ ছাড়া)
+Breach siren sound|লকডাউন ভঙ্গের সাইরেন
+Privacy and limits|গোপনীয়তা ও সীমাবদ্ধতা
+Privacy policy and limits|গোপনীয়তা নীতি ও সীমাবদ্ধতা
+Next action, e.g. Open Physics Ch.3 and write key formulas|পরের কাজ, যেমন: পদার্থ ৩য় অধ্যায় খুলে সূত্র লিখুন
+Win: what got done?|জয়: কী শেষ হলো?
+Blocker: what slowed you down?|বাধা: কী আটকে দিল?
+Next action: the very next step|পরের কাজ: ঠিক পরের ধাপ
+Active recall: 1 thing you remember without looking|অ্যাক্টিভ রিকল: না দেখে মনে আছে এমন ১টি জিনিস
+Replay welcome setup|স্বাগত সেটআপ আবার চালান
+Erase all data on this device|এই ডিভাইসের সব ডেটা মুছুন
+Hardcore|হার্ডকোর
+Standard|স্ট্যান্ডার্ড
+Focus|ফোকাস
+Block complete|ব্লক সম্পন্ন
+Resume|চালিয়ে যান
+Lockdown starts as soon as you sign.|সই করলেই লকডাউন শুরু হবে।
+Lockdown on|লকডাউন চালু
+`.split('\n').forEach(l => { const i = l.indexOf('|'); if (i > 0) BN[l.slice(0, i).trim()] = l.slice(i + 1).trim(); });
+        let lang = localStorage.getItem('lockin_lang') || 'en';
+        const i18nOrig = new WeakMap(), i18nWritten = new WeakMap();
+        function tr(s) {
+            const t = s.trim();
+            if (!t) return s;
+            let o = (settings.gentle !== false && GENTLE[t]) || (NOFS && NOFS[t]) || t;
+            if (lang === 'bn') o = BN[o] || BN[t] || o;
+            return o === t ? s : s.replace(t, o);
+        }
+        function trNode(n) {
+            if (!i18nOrig.has(n) || i18nWritten.get(n) !== n.nodeValue) i18nOrig.set(n, n.nodeValue);
+            const v = tr(i18nOrig.get(n));
+            if (v !== n.nodeValue) n.nodeValue = v;
+            i18nWritten.set(n, n.nodeValue);
+        }
+        function trWalk(root) {
+            if (root.nodeType === 3) { trNode(root); return; }
+            const tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+            let n;
+            while ((n = tw.nextNode())) { if (!/^(SCRIPT|STYLE|TEXTAREA)$/.test(n.parentNode.nodeName)) trNode(n); }
+        }
+        function applyLang() {
+            document.documentElement.lang = lang === 'bn' ? 'bn' : 'en';
+            const b = document.getElementById('btn-lang'); if (b) b.innerText = lang === 'bn' ? 'EN' : 'বাং';
+            trWalk(document.body);
+            document.querySelectorAll('[placeholder],[title]').forEach(el => ['placeholder', 'title'].forEach(a => {
+                if (!el.hasAttribute(a)) return;
+                const k = 'o' + a;
+                if (el.dataset[k] === undefined) el.dataset[k] = el.getAttribute(a);
+                el.setAttribute(a, tr(el.dataset[k]));
+            }));
+        }
+        function toggleLang() { lang = lang === 'bn' ? 'en' : 'bn'; localStorage.setItem('lockin_lang', lang); applyLang(); renderToday(); renderProgressExtra(); renderHud(); }
+        function initI18n() {
+            applyLang();
+            new MutationObserver(ms => ms.forEach(m => {
+                if (m.type === 'characterData') trNode(m.target);
+                else m.addedNodes.forEach(n => { if (n.nodeType === 3 || n.nodeType === 1) trWalk(n); });
+            })).observe(document.body, { childList: true, characterData: true, subtree: true });
+        }
+
+        PRESETS.humanities = ['Bangla 1st Paper', 'Bangla 2nd Paper', 'English 1st Paper', 'English 2nd Paper',
+            'Economics 1st Paper', 'Economics 2nd Paper', 'Civics & Good Governance 1st Paper', 'Civics & Good Governance 2nd Paper',
+            'Sociology 1st Paper', 'Sociology 2nd Paper', 'Islamic History & Culture 1st Paper', 'Islamic History & Culture 2nd Paper', ICT_NAME];
+        // --- Welcome setup: tap only, no typing ---
+        const OB_CLASSES = [
+            { id: 'hsc2', en: 'HSC 2nd year', bn: 'এইচএসসি ২য় বর্ষ', exam: 'HSC 2027', date: '2027-06-01' },
+            { id: 'hsc1', en: 'HSC 1st year', bn: 'এইচএসসি ১ম বর্ষ', exam: 'HSC 2028', date: '2028-06-01' },
+            { id: 'adm', en: 'Admission test prep', bn: 'ভর্তি পরীক্ষার প্রস্তুতি', exam: 'Admission test', date: '' },
+            { id: 'other', en: 'Something else', bn: 'অন্য কিছু', exam: '', date: '' }
+        ];
+        const S = (en, bn) => [en, bn];
+        const OB_GROUPS = {
+            commerce: { en: 'Commerce', bn: 'ব্যবসায় শিক্ষা', maxMain: 4, pre: true,
+                main: [S('Accounting', 'হিসাববিজ্ঞান'), S('Finance, Banking & Insurance', 'ফিন্যান্স, ব্যাংকিং ও বীমা'), S('Business Organization & Management', 'ব্যবসায় সংগঠন ও ব্যবস্থাপনা'), S('Production Management & Marketing', 'উৎপাদন ব্যবস্থাপনা ও বিপণন')],
+                opt: [S('Statistics', 'পরিসংখ্যান'), S('Economics', 'অর্থনীতি'), S('Geography', 'ভূগোল'), S('Agriculture', 'কৃষিশিক্ষা'), S('Home Science', 'গার্হস্থ্য বিজ্ঞান')] },
+            science: { en: 'Science', bn: 'বিজ্ঞান', maxMain: 4, pre: true,
+                main: [S('Physics', 'পদার্থবিজ্ঞান'), S('Chemistry', 'রসায়ন'), S('Biology', 'জীববিজ্ঞান'), S('Higher Math', 'উচ্চতর গণিত')],
+                opt: [S('Statistics', 'পরিসংখ্যান'), S('Geography', 'ভূগোল'), S('Psychology', 'মনোবিজ্ঞান'), S('Agriculture', 'কৃষিশিক্ষা'), S('Home Science', 'গার্হস্থ্য বিজ্ঞান')] },
+            humanities: { en: 'Humanities', bn: 'মানবিক', maxMain: 3, pre: false,
+                main: [S('Economics', 'অর্থনীতি'), S('Civics & Good Governance', 'পৌরনীতি ও সুশাসন'), S('Social Work', 'সমাজকর্ম'), S('Sociology', 'সমাজবিজ্ঞান'), S('Logic', 'যুক্তিবিদ্যা'), S('Islamic History & Culture', 'ইসলামের ইতিহাস ও সংস্কৃতি'), S('History', 'ইতিহাস'), S('Geography', 'ভূগোল'), S('Psychology', 'মনোবিজ্ঞান'), S('Islamic Studies', 'ইসলাম শিক্ষা')],
+                opt: [S('Statistics', 'পরিসংখ্যান'), S('Agriculture', 'কৃষিশিক্ষা'), S('Home Science', 'গার্হস্থ্য বিজ্ঞান'), S('Geography', 'ভূগোল'), S('Psychology', 'মনোবিজ্ঞান')] }
+        };
+        const OB_WHY = [['phone', 'Stay off my phone while studying', 'পড়ার সময় ফোন থেকে দূরে থাকতে'], ['routine', 'Build a daily study routine', 'প্রতিদিনের পড়ার রুটিন গড়তে'], ['exam', 'Prepare for my exam', 'পরীক্ষার প্রস্তুতি নিতে'], ['longer', 'Study longer without burning out', 'ক্লান্ত না হয়ে বেশি সময় পড়তে'], ['organize', 'Keep my subjects and tasks organized', 'বিষয় ও টাস্ক গুছিয়ে রাখতে']];
+        const OB_GOALS = [[60, '1 hour', '১ ঘণ্টা'], [120, '2 hours', '২ ঘণ্টা'], [180, '3 hours', '৩ ঘণ্টা'], [240, '4 hours', '৪ ঘণ্টা']];
+        const OB_STRICT = [['light', 'Light', 'Normal timer, no lockdown', 'হালকা', 'সাধারণ টাইমার, লকডাউন নেই'], ['balanced', 'Balanced', 'Lockdown with a 15-minute study pass', 'মাঝারি', 'লকডাউন, ১৫ মিনিটের স্টাডি পাস'], ['strict', 'Strict', 'Lockdown with a 5-minute study pass', 'কড়া', 'লকডাউন, ৫ মিনিটের স্টাডি পাস']];
+        const OB_STEPS = ['lang', 'cls', 'group', 'subjects', 'why', 'goal', 'strict'];
+        const ob = { i: 0, cls: 'hsc2', group: '', picks: [], opt: -1, extra: '', why: ['phone', 'exam'], goal: 120, custom: false, customHours: '', strict: 'balanced' };
+        const obL = (en, bn) => lang === 'bn' ? bn : en;
+        function obChip(on, label, fn, sub, compact) {
+            return `<button type="button" onclick="${fn}" class="w-full text-left px-4 ${compact ? 'py-2.5' : 'py-3'} rounded-xl border text-sm transition ${on ? 'border-indigo-500 bg-indigo-500/10 text-slate-100' : 'border-slate-700 bg-dark-800 text-slate-300 hover:border-slate-500'}"><span class="font-medium">${escapeHtml(label)}</span>${sub ? `<span class="block text-xs text-slate-400 mt-0.5">${escapeHtml(sub)}</span>` : ''}</button>`;
+        }
+        function obRender() {
+            const s = OB_STEPS[ob.i], g = OB_GROUPS[ob.group];
+            let q = '', hint = '', body = '', ok = obValid();
+            if (s === 'lang') { q = 'Choose your language / ভাষা বেছে নিন'; body = obChip(lang === 'en', 'English', "obSet('lang','en')") + obChip(lang === 'bn', 'বাংলা', "obSet('lang','bn')"); }
+            if (s === 'cls') { q = obL('Which class are you in?', 'আপনি কোন ক্লাসে পড়েন?'); body = OB_CLASSES.map(c => obChip(ob.cls === c.id, obL(c.en, c.bn), `obSet('cls','${c.id}')`)).join(''); }
+            if (s === 'group') { q = obL('Which group are you in?', 'আপনি কোন গ্রুপে পড়েন?'); body = Object.keys(OB_GROUPS).map(k => obChip(ob.group === k, obL(OB_GROUPS[k].en, OB_GROUPS[k].bn), `obSet('group','${k}')`)).join(''); ok = obValid(); }
+            if (s === 'subjects') {
+                const sec = t => `<p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 pt-2">${escapeHtml(t)}</p>`;
+                q = obL('Pick your subjects', 'আপনার বিষয়গুলো বেছে নিন');
+                hint = obL('Bangla, English and ICT are added for you. Subject lists can differ by college, so you can add your own below.', 'বাংলা, ইংরেজি ও আইসিটি আগে থেকেই যোগ করা আছে। কলেজভেদে বিষয় আলাদা হতে পারে, তাই নিচে নিজেরটাও যোগ করতে পারবেন।');
+                body = sec(obL(`Main subjects (up to ${g.maxMain})`, `মূল বিষয় (সর্বোচ্চ ${g.maxMain}টি)`))
+                    + g.main.map((p, i) => obChip(ob.picks.includes(i), obL(p[0], p[1]), `obPick(${i})`, '', true)).join('')
+                    + sec(obL('Optional 4th subject (pick 1, or skip)', 'ঐচ্ছিক ৪র্থ বিষয় (১টি বেছে নিন, বা বাদ দিন)'))
+                    + g.opt.map((p, i) => obChip(ob.opt === i, obL(p[0], p[1]), `obOpt(${i})`, '', true)).join('')
+                    + sec(obL('Not listed? Add your own (optional)', 'তালিকায় নেই? নিজেরটা যোগ করুন (ঐচ্ছিক)'))
+                    + `<input id="ob-extra" maxlength="40" value="${escapeHtml(ob.extra)}" oninput="ob.extra = this.value" placeholder="${obL('Subject name', 'বিষয়ের নাম')}" class="w-full bg-dark-800 border border-slate-700 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:border-indigo-500">`;
+            }
+            if (s === 'why') { q = obL('Why are you here?', 'আপনি কেন LockIn ব্যবহার করছেন?'); hint = obL('Pick any that fit.', 'যেগুলো মেলে সেগুলো বেছে নিন।'); body = OB_WHY.map(w => obChip(ob.why.includes(w[0]), obL(w[1], w[2]), `obWhy('${w[0]}')`)).join(''); }
+            if (s === 'goal') {
+                q = obL('How long do you want to focus each day?', 'প্রতিদিন কতক্ষণ ফোকাস করতে চান?');
+                body = OB_GOALS.map(x => obChip(!ob.custom && ob.goal === x[0], obL(x[1], x[2]), `obSet('goal',${x[0]})`)).join('')
+                    + obChip(ob.custom, obL('Custom hours', 'নিজের মতো ঘণ্টা'), "obSet('custom',true)")
+                    + (ob.custom ? `<div class="flex items-center gap-3 pt-1"><input id="ob-custom" type="number" inputmode="decimal" min="0.5" max="12" step="0.5" value="${escapeHtml(ob.customHours)}" oninput="obCustom(this.value)" placeholder="${obL('e.g. 2.5', 'যেমন ২.৫')}" class="w-28 bg-dark-800 border border-slate-700 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:border-indigo-500"><span class="text-sm text-slate-400">${obL('hours a day (0.5 to 12)', 'ঘণ্টা প্রতিদিন (০.৫ থেকে ১২)')}</span></div>` : '');
+                ok = obValid();
+            }
+            if (s === 'strict') { q = obL('How strict should LockIn be?', 'LockIn কতটা কড়া হবে?'); hint = obL('LockIn notices when you leave the app. It cannot block other apps.', 'অ্যাপ ছাড়লে LockIn তা টের পায়। অন্য অ্যাপ আটকাতে পারে না।'); body = OB_STRICT.map(x => obChip(ob.strict === x[0], obL(x[1], x[3]), `obSet('strict','${x[0]}')`, obL(x[2], x[4]))).join(''); }
+            document.getElementById('ob-progress').innerHTML = OB_STEPS.map((_, k) => `<span class="h-1 flex-1 rounded-full ${k <= ob.i ? 'bg-indigo-500' : 'bg-slate-700'}"></span>`).join('');
+            document.getElementById('ob-q').innerText = q;
+            document.getElementById('ob-hint').innerText = hint;
+            document.getElementById('ob-body').innerHTML = body;
+            const back = document.getElementById('ob-back'), next = document.getElementById('ob-next');
+            back.innerText = obL('Back', 'পেছনে'); back.style.visibility = ob.i ? 'visible' : 'hidden';
+            next.innerText = ob.i === OB_STEPS.length - 1 ? obL('Finish', 'শেষ করুন') : obL('Next', 'পরবর্তী');
+            next.disabled = !ok;
+        }
+        function obValid() {
+            const s = OB_STEPS[ob.i];
+            if (s === 'group') return !!ob.group;
+            if (s === 'subjects') return ob.picks.length > 0 || ob.opt > -1 || ob.extra.trim().length > 0;
+            if (s === 'goal') return ob.goal >= 30 && ob.goal <= 720;
+            return true;
+        }
+        function obSet(k, v) {
+            if (k === 'lang') { lang = v; localStorage.setItem('lockin_lang', v); applyLang(); }
+            else if (k === 'group') { ob.group = v; ob.opt = -1; ob.picks = OB_GROUPS[v].pre ? OB_GROUPS[v].main.map((_, i) => i) : []; }
+            else if (k === 'goal') { ob.goal = v; ob.custom = false; }
+            else if (k === 'custom') { ob.custom = true; const h = parseFloat(ob.customHours); ob.goal = isFinite(h) ? Math.round(h * 60) : 0; }
+            else ob[k] = v;
+            obRender();
+            if (k === 'custom') setTimeout(() => { const el = document.getElementById('ob-custom'); if (el) el.focus(); }, 60);
+        }
+        function obCustom(v) {
+            ob.customHours = v;
+            const h = parseFloat(v);
+            ob.goal = isFinite(h) ? Math.round(h * 60) : 0;
+            document.getElementById('ob-next').disabled = !obValid();
+        }
+        function obPick(i) {
+            const at = ob.picks.indexOf(i);
+            if (at > -1) ob.picks.splice(at, 1); else if (ob.picks.length < OB_GROUPS[ob.group].maxMain) ob.picks.push(i);
+            obRender();
+        }
+        function obOpt(i) { ob.opt = ob.opt === i ? -1 : i; obRender(); }
+        function obWhy(id) { const at = ob.why.indexOf(id); if (at > -1) ob.why.splice(at, 1); else ob.why.push(id); obRender(); }
+        function obBack() { if (ob.i > 0) { ob.i--; obRender(); } }
+        function obNext() { if (ob.i < OB_STEPS.length - 1) { ob.i++; obRender(); } else finishOnboarding(); }
+        function initOnboarding() {
+            if (localStorage.getItem('lockin_onboarded')) return;
+            if (tasks.length || sessions.length) { localStorage.setItem('lockin_onboarded', '1'); return; }
+            document.getElementById('onboard-modal').classList.remove('hidden');
+            obRender();
+        }
+        function replaySetup() {
+            if (!confirm(obL('Replay the welcome setup? Your subjects and choices will be replaced. Tasks and history stay.', 'স্বাগত সেটআপ আবার চালাবেন? আপনার বিষয় ও পছন্দ বদলে যাবে। টাস্ক ও ইতিহাস থাকবে।'))) return;
+            closeSettingsModal(); ob.i = 0; ob.group = ''; ob.picks = [];
+            document.getElementById('onboard-modal').classList.remove('hidden'); obRender();
+        }
+        function eraseAllData() {
+            if (!confirm(obL('Erase all LockIn data on this device? This cannot be undone.', 'এই ডিভাইসের সব LockIn ডেটা মুছবেন? এটি ফেরানো যাবে না।'))) return;
+            ['tasks', 'sessions', 'urges', 'defiance', 'accountability', 'settings', 'onboarded', 'lang', 'missions', 'journal', 'distractions'].forEach(k => localStorage.removeItem('lockin_' + k));
+            location.reload();
+        }
+        function finishOnboarding() {
+            const c = OB_CLASSES.find(x => x.id === ob.cls), g = OB_GROUPS[ob.group], bn = lang === 'bn';
+            const paper = (n, k) => bn ? `${n[1]} ${k === 1 ? '১ম' : '২য়'} পত্র` : `${n[0]} ${k === 1 ? '1st' : '2nd'} Paper`;
+            const pairs = [['Bangla', 'বাংলা'], ['English', 'ইংরেজি']].concat(ob.picks.map(i => g.main[i]));
+            if (ob.opt > -1 && !pairs.some(p => p[0] === g.opt[ob.opt][0])) pairs.push(g.opt[ob.opt]);
+            const list = [];
+            pairs.forEach(n => list.push(paper(n, 1), paper(n, 2)));
+            list.push(bn ? 'তথ্য ও যোগাযোগ প্রযুক্তি' : ICT_NAME);
+            if (ob.extra.trim()) list.push(ob.extra.trim());
+            settings.subjects = list;
+            settings.examName = c.exam; settings.examDate = c.date;
+            settings.dailyGoal = Math.max(30, Math.min(720, ob.goal));
+            settings.reasons = ob.why.slice();
+            settings.hardcore = ob.strict !== 'light';
+            settings.passMinutes = ob.strict === 'strict' ? 5 : 15;
+            if (ob.why.includes('longer')) settings.sessions = 2;
+            localStorage.setItem('lockin_settings', JSON.stringify(settings));
+            localStorage.setItem('lockin_onboarded', '1');
+            document.getElementById('onboard-modal').classList.add('hidden');
+            initExtras(); toggleHardcoreUI(); applyLang();
+            showToast(obL('All set', 'সব ঠিক আছে'), obL('Your subjects and exam countdown are ready.', 'আপনার বিষয় ও পরীক্ষার কাউন্টডাউন তৈরি।'));
+        }
+        function importData(inp) {
+            const f = inp.files[0]; if (!f) return;
+            const r = new FileReader();
+            r.onload = () => {
+                try {
+                    const d = JSON.parse(r.result);
+                    if (!d || !Array.isArray(d.tasks) || !Array.isArray(d.sessions)) throw new Error('bad file');
+                    if (!confirm('Replace the data on this device with this backup?')) return;
+                    const set = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+                    set('lockin_tasks', d.tasks); set('lockin_sessions', d.sessions);
+                    set('lockin_urges', d.parkedUrges || []); set('lockin_missions', d.missions || { date: '', items: [] }); set('lockin_journal', d.journal || {}); set('lockin_distractions', d.distractions || []); set('lockin_defiance', d.defianceLogs || []);
+                    if (d.accountability) set('lockin_accountability', d.accountability);
+                    if (d.settings) set('lockin_settings', d.settings);
+                    localStorage.setItem('lockin_onboarded', '1');
+                    location.reload();
+                } catch (e) { showToast('Import failed', 'This is not a LockIn backup file.'); }
+            };
+            r.readAsText(f); inp.value = '';
+        }
+
+                // --- Leave detection that also works on iPhone, shared audio ---
+        function awayEligible() { return timerState.isRunning && timerState.mode === 'work' && timerState.hardcore && !timerState.passActive; }
+        function flashScreen() { const b = document.getElementById('app-body'); b.classList.remove('alarm-flash'); void b.offsetWidth; b.classList.add('alarm-flash'); }
+        function markLeft() { if (awayEligible()) timerState.leftAt = Date.now(); }
+        function onReturn() {
+            if (timerState.leftAt && awayEligible() && !timerState.breachActive) { timerState.leftAt = null; triggerLockdownBreach('You left LockIn during a lockdown block.'); return; }
+            timerState.leftAt = null;
+            if (timerState.replayAlarm && timerState.breachActive) { timerState.replayAlarm = false; playAlarmSiren(); flashScreen(); }
+        }
+        document.addEventListener('visibilitychange', () => { if (document.hidden) markLeft(); else onReturn(); });
+        window.addEventListener('pagehide', markLeft);
+        window.addEventListener('pageshow', onReturn);
+        window.addEventListener('focus', onReturn);
+        let sirenCtx = null;
+        function getCtx() {
+            const AC = window.AudioContext || window.webkitAudioContext;
+            if (!sirenCtx) sirenCtx = new AC();
+            if (sirenCtx.state !== 'running') sirenCtx.resume().catch(() => {});
+            return sirenCtx;
+        }
+        ['click', 'touchend', 'keydown'].forEach(ev => document.addEventListener(ev, () => { try { if (!sirenCtx || sirenCtx.state !== 'running') getCtx(); } catch (e) {} }));
+
+                // --- Brightness (light / dark) ---
+        const SUN = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>';
+        const MOON = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+        function applyMode() {
+            const m = localStorage.getItem('lockin_mode') === 'light' ? 'light' : 'dark';
+            document.documentElement.dataset.mode = m;
+            const meta = document.querySelector('meta[name=theme-color]'); if (meta) meta.content = m === 'light' ? '#eaf0f5' : '#060c13';
+            const ic = document.getElementById('mode-icon'); if (ic) ic.innerHTML = m === 'light' ? MOON : SUN;
+        }
+        function toggleMode() { localStorage.setItem('lockin_mode', document.documentElement.dataset.mode === 'light' ? 'dark' : 'light'); applyMode(); }
+
+        // --- Data: missions, journal, distractions ---
+        function loadJSON(k, fb) { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? fb : v; } catch (e) { return fb; } }
+        let missions = loadJSON('lockin_missions', { date: '', items: [] });
+        let journal = loadJSON('lockin_journal', {});
+        let distractions = loadJSON('lockin_distractions', []);
+        const jd = { date: '', mood: '', win: '', improve: '' };
+        const CARD = 'bg-dark-900/60 border border-slate-800 rounded-2xl p-4 sm:p-5';
+        const FIELD = 'w-full bg-dark-800 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500';
+        const BTN = 'px-4 py-2.5 rounded-xl text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition';
+        const CHIP = 'px-3 py-1.5 rounded-lg text-xs font-medium border transition';
+        const saveJ = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+        const dayKey = off => { const d = new Date(); d.setDate(d.getDate() + off); return todayKey(d); };
+        const fmtDay = k => new Date(k + 'T00:00:00').toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+        const KINDS = [['Phone or social', 'ফোন বা সোশ্যাল'], ['Message or call', 'মেসেজ বা কল'], ['Noise or people', 'শব্দ বা মানুষ'], ['Tired', 'ক্লান্ত'], ['Other', 'অন্য কিছু']];
+        const SRC = { 'left app': ['Left the app', 'অ্যাপ ছেড়েছেন'], urge: ['Urge parked', 'ইচ্ছে জমা রেখেছেন'], quit: ['Ended early', 'আগে শেষ করেছেন'] };
+        const kindLabel = k => { const f = KINDS.find(x => x[0] === k); return f ? obL(f[0], f[1]) : k; };
+        const streakMin = () => settings.streakMin || 10;
+
+        function missionsToday() {
+            if (missions.date !== todayKey()) { missions = { date: todayKey(), items: [] }; saveJ('lockin_missions', missions); }
+            return missions.items;
+        }
+        function addMissionText(text) {
+            const items = missionsToday(); text = (text || '').trim();
+            if (!text || items.length >= 3) return;
+            items.push({ id: Date.now(), text, done: false }); saveJ('lockin_missions', missions); renderToday();
+        }
+        function addMission(e) { e.preventDefault(); addMissionText(document.getElementById('mission-input').value); }
+        function toggleMission(id) {
+            const m = missionsToday().find(x => x.id === id); if (!m) return;
+            m.done = !m.done; saveJ('lockin_missions', missions);
+            if (missions.items.length === 3 && missions.items.every(x => x.done)) showToast(obL('Daily mission complete', 'আজকের মিশন সম্পন্ন'), obL('All three done. Well done.', 'তিনটিই শেষ। দারুণ।'));
+            renderToday();
+        }
+        function delMission(id) { missions.items = missionsToday().filter(x => x.id !== id); saveJ('lockin_missions', missions); renderToday(); }
+        function useMission(id) {
+            const m = missionsToday().find(x => x.id === id); if (!m) return;
+            timerState.microGoal = m.text; timerState.activeTaskId = null;
+            document.getElementById('current-task-title').innerText = m.text; switchTab('timer');
+        }
+
+        // --- Streak (one rest day does not break it) ---
+        const isProd = d => minsOn(todayKey(d)) >= streakMin();
+        function streakInfo() {
+            let cur = 0, miss = 0, d = new Date();
+            if (!isProd(d)) d.setDate(d.getDate() - 1);
+            for (let i = 0; i < 400; i++) { if (isProd(d)) { cur++; miss = 0; } else if (++miss >= 2) break; d.setDate(d.getDate() - 1); }
+            const dates = sessions.filter(s => s.status === 'COMPLETED' && s.date).map(s => s.date).sort();
+            let best = 0, run = 0; miss = 0;
+            if (dates.length) for (let x = new Date(dates[0] + 'T00:00:00'), end = new Date(); x <= end; x.setDate(x.getDate() + 1)) {
+                if (isProd(x)) { run++; miss = 0; best = Math.max(best, run); } else if (++miss >= 2) { run = 0; miss = 0; }
+            }
+            return { cur, best: Math.max(best, cur) };
+        }
+
+        // --- Deadlines ---
+        function allDeadlines() {
+            const l = []; if (settings.examDate) l.push({ id: 'primary', name: settings.examName || obL('Exam', 'পরীক্ষা'), date: settings.examDate });
+            (settings.deadlines || []).forEach(x => l.push(x));
+            return l.map(x => ({ ...x, days: Math.ceil((new Date(x.date + 'T00:00:00') - new Date(todayKey() + 'T00:00:00')) / 864e5) })).sort((a, b) => (a.days < 0) - (b.days < 0) || a.days - b.days);
+        }
+        function nextDeadline() { return allDeadlines()[0] || null; }
+        function addDeadline(e) {
+            e.preventDefault();
+            const name = document.getElementById('dl-name').value.trim(), date = document.getElementById('dl-date').value;
+            if (!name || !date) return;
+            settings.deadlines = (settings.deadlines || []).concat({ id: 'd' + Date.now(), name, date });
+            localStorage.setItem('lockin_settings', JSON.stringify(settings)); renderToday(); renderHud();
+        }
+        function delDeadline(id) {
+            settings.deadlines = (settings.deadlines || []).filter(x => x.id !== id);
+            localStorage.setItem('lockin_settings', JSON.stringify(settings)); renderToday(); renderHud();
+        }
+        const daysText = n => n > 0 ? n + ' ' + obL('days', 'দিন') : n === 0 ? obL('Today', 'আজ') : obL('passed', 'শেষ');
+
+        // --- Journal ---
+        function setMood(m) { jd.mood = m; renderToday(); }
+        function saveJournal() {
+            journal[todayKey()] = { mood: jd.mood, win: jd.win.trim(), improve: jd.improve.trim() };
+            saveJ('lockin_journal', journal); showToast(obL('Journal saved', 'জার্নাল সেভ হয়েছে'), obL('Small notes add up.', 'ছোট নোটই জমে বড় হয়।')); renderToday();
+        }
+
+        // --- Today view ---
+        function renderToday() {
+            const root = document.getElementById('today-root'); if (!root) return;
+            const items = missionsToday(), done = items.filter(m => m.done).length, st = streakInfo(), tm = minsOn(todayKey()), goal = settings.dailyGoal || 120;
+            const quiet = sessions.some(s => s.status === 'COMPLETED') && minsOn(dayKey(-1)) === 0 && tm === 0;
+            const sugg = tasks.filter(t => !t.completed && !items.some(m => m.text === t.text)).slice(0, 3);
+            if (jd.date !== todayKey()) { const j = journal[todayKey()] || {}; Object.assign(jd, { date: todayKey(), mood: j.mood || '', win: j.win || '', improve: j.improve || '' }); }
+            const moods = [['great', 'Great', 'ভালো'], ['okay', 'Okay', 'মোটামুটি'], ['hard', 'Hard', 'কঠিন']];
+            const recent = Object.keys(journal).filter(k => k !== todayKey()).sort().reverse().slice(0, 3);
+            const dl = allDeadlines();
+            root.innerHTML = `
+            <div><h2 class="text-xl font-semibold text-slate-100">${obL('Today', 'আজ')}</h2><p class="text-xs text-slate-400">${fmtDay(todayKey())}</p></div>
+            ${quiet ? `<div class="bg-amber-500/5 border border-amber-500/25 rounded-2xl p-4 flex items-center justify-between gap-3"><div><p class="text-sm font-medium text-slate-100">${obL('Fresh start available', 'নতুন করে শুরু করার সুযোগ')}</p><p class="text-xs text-slate-400 mt-0.5">${obL('Yesterday was quiet. That is okay. Five minutes is enough to begin again.', 'গতকাল শান্ত ছিল, ঠিক আছে। আবার শুরু করতে পাঁচ মিনিটই যথেষ্ট।')}</p></div><button type="button" onclick="openRestart('quiet')" class="${BTN} shrink-0">${obL('Restart', 'আবার শুরু')}</button></div>` : ''}
+            <div class="grid grid-cols-2 gap-3">
+                <div class="${CARD}"><p class="text-[11px] text-slate-400">${obL('Focus streak', 'ফোকাস স্ট্রিক')}</p><p class="text-2xl font-semibold text-indigo-400 font-mono mt-1">${st.cur} <span class="text-sm text-slate-400 font-sans">${obL('days', 'দিন')}</span></p><p class="text-[11px] text-slate-500 mt-1">${obL('Best', 'সেরা')} ${st.best}. ${obL('One rest day will not reset it.', 'একদিন বিশ্রামে রিসেট হয় না।')}</p></div>
+                <div class="${CARD}"><p class="text-[11px] text-slate-400">${obL('Focus today', 'আজকের ফোকাস')}</p><p class="text-2xl font-semibold text-slate-100 font-mono mt-1">${tm}<span class="text-sm text-slate-400 font-sans"> / ${goal}${obL('m', 'মি')}</span></p><p class="text-[11px] text-slate-500 mt-1">${obL(`A day counts after ${streakMin()} focused minutes.`, `${streakMin()} মিনিট ফোকাসে দিনটি গণ্য হয়।`)}</p></div>
+            </div>
+            <div class="${CARD} space-y-3">
+                <div class="flex items-center justify-between"><h3 class="text-sm font-semibold text-slate-200">${obL('Daily mission', 'আজকের মিশন')}</h3><span class="text-xs font-mono text-slate-400">${done}/3</span></div>
+                <p class="text-xs text-slate-400">${obL('Pick up to three things that matter most today.', 'আজ সবচেয়ে জরুরি সর্বোচ্চ তিনটি কাজ বেছে নিন।')}</p>
+                <div class="space-y-2">${items.map(m => `<div class="flex items-center gap-3 bg-dark-800/60 border border-slate-800 rounded-xl px-3 py-2.5"><input type="checkbox" ${m.done ? 'checked' : ''} onchange="toggleMission(${m.id})" class="w-4 h-4"><span class="flex-1 text-sm ${m.done ? 'line-through text-slate-500' : 'text-slate-100'}">${escapeHtml(m.text)}</span>${m.done ? '' : `<button type="button" onclick="useMission(${m.id})" class="text-xs text-indigo-400 hover:underline">${obL('Focus', 'ফোকাস')}</button>`}<button type="button" onclick="delMission(${m.id})" class="text-xs text-slate-500 hover:text-rose-400" aria-label="Remove">&times;</button></div>`).join('')}</div>
+                ${items.length < 3 ? `<form onsubmit="addMission(event)" class="flex gap-2"><input id="mission-input" maxlength="80" placeholder="${obL('Add a mission', 'একটি মিশন যোগ করুন')}" class="${FIELD}"><button type="submit" class="${BTN} shrink-0">${obL('Add', 'যোগ')}</button></form>
+                ${sugg.length ? `<div class="flex flex-wrap gap-1.5">${sugg.map(t => `<button type="button" onclick="addMissionText(tasks.find(x => x.id === ${t.id}).text)" class="${CHIP} border-slate-700 text-slate-300 hover:border-indigo-500 hover:text-indigo-300 max-w-full truncate">+ ${escapeHtml(t.text)}</button>`).join('')}</div>` : ''}` : ''}
+            </div>
+            <div class="${CARD} space-y-3">
+                <h3 class="text-sm font-semibold text-slate-200">${obL('Goal countdown', 'লক্ষ্যের কাউন্টডাউন')}</h3>
+                <div class="space-y-2">${dl.length ? dl.map(x => `<div class="flex items-center justify-between bg-dark-800/60 border border-slate-800 rounded-xl px-3 py-2.5"><div><p class="text-sm text-slate-100">${escapeHtml(x.name)}</p><p class="text-[11px] text-slate-500">${fmtDay(x.date)}</p></div><div class="flex items-center gap-3"><span class="text-sm font-mono ${x.days >= 0 && x.days <= 30 ? 'text-amber-300' : 'text-indigo-400'}">${daysText(x.days)}</span>${x.id === 'primary' ? '' : `<button type="button" onclick="delDeadline('${x.id}')" class="text-xs text-slate-500 hover:text-rose-400" aria-label="Remove">&times;</button>`}</div></div>`).join('') : `<p class="text-xs text-slate-500">${obL('No deadlines yet.', 'এখনো কোনো ডেডলাইন নেই।')}</p>`}</div>
+                <form onsubmit="addDeadline(event)" class="grid grid-cols-[1fr_auto] gap-2"><input id="dl-name" maxlength="40" placeholder="${obL('Deadline name', 'ডেডলাইনের নাম')}" class="${FIELD}"><input id="dl-date" type="date" class="${FIELD}"><button type="submit" class="${BTN} col-span-2">${obL('Add deadline', 'ডেডলাইন যোগ করুন')}</button></form>
+            </div>
+            <div class="${CARD} space-y-3">
+                <h3 class="text-sm font-semibold text-slate-200">${obL('Study journal', 'স্টাডি জার্নাল')}</h3>
+                <p class="text-xs text-slate-400">${obL('How did today go?', 'আজকের দিনটা কেমন গেল?')}</p>
+                <div class="flex gap-2">${moods.map(m => `<button type="button" onclick="setMood('${m[0]}')" class="${CHIP} ${jd.mood === m[0] ? 'border-indigo-500 bg-indigo-500/10 text-slate-100' : 'border-slate-700 text-slate-300'}">${obL(m[1], m[2])}</button>`).join('')}</div>
+                <input value="${escapeHtml(jd.win)}" oninput="jd.win = this.value" maxlength="120" placeholder="${obL('One win today', 'আজকের একটি অর্জন')}" class="${FIELD}">
+                <input value="${escapeHtml(jd.improve)}" oninput="jd.improve = this.value" maxlength="120" placeholder="${obL('One thing to try tomorrow', 'কাল যা করে দেখবেন')}" class="${FIELD}">
+                <button type="button" onclick="saveJournal()" class="${BTN}">${obL('Save entry', 'এন্ট্রি সেভ করুন')}</button>
+                ${recent.length ? `<div class="space-y-1.5 pt-1">${recent.map(k => `<p class="text-xs text-slate-400"><span class="font-mono text-slate-500">${fmtDay(k)}</span> ${escapeHtml(journal[k].win || '-')}</p>`).join('')}</div>` : ''}
+            </div>`;
+            if (typeof applyLang === 'function') applyLang();
+        }
+
+        // --- Distraction log + weekly review (Progress tab) ---
+        function logDistraction(source, text) {
+            const id = Date.now(), now = new Date();
+            distractions.unshift({ id, date: todayKey(), time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), source, kind: '', text: (text || '').slice(0, 120) });
+            distractions = distractions.slice(0, 200); saveJ('lockin_distractions', distractions); return id;
+        }
+        function renderBreachKinds(sel) {
+            const box = document.getElementById('breach-kinds'); if (!box) return;
+            box.innerHTML = KINDS.map((k, i) => `<button type="button" onclick="tagBreach(${i})" class="${CHIP} ${sel === i ? 'border-amber-500 bg-amber-500/10 text-amber-200' : 'border-slate-700 text-slate-300'}">${obL(k[0], k[1])}</button>`).join('');
+        }
+        function tagBreach(i) {
+            const e = distractions.find(x => x.id === timerState.lastBreachId);
+            if (e) { e.kind = KINDS[i][0]; saveJ('lockin_distractions', distractions); }
+            renderBreachKinds(i);
+        }
+        function weekStats(off) {
+            const days = [...Array(7)].map((_, i) => dayKey(-i - off * 7));
+            const ss = sessions.filter(s => s.status === 'COMPLETED' && days.includes(s.date));
+            let best = { k: '', m: 0 }; days.forEach(k => { const m = minsOn(k); if (m > best.m) best = { k, m }; });
+            const sc = { 'Locked in': 3, 'Decent': 2, 'Distracted': 1 }, rated = ss.filter(s => s.focus);
+            return { days, mins: ss.reduce((a, s) => a + (s.mins || 0), 0), blocks: ss.length, prod: days.filter(k => minsOn(k) >= streakMin()).length, best, avg: rated.length ? rated.reduce((a, s) => a + (sc[s.focus] || 0), 0) / rated.length : 0 };
+        }
+        function renderProgressExtra() {
+            const box = document.getElementById('progress-extra'); if (!box) return;
+            const w = weekStats(0), p = weekStats(1), diff = w.mins - p.mins;
+            const dws = distractions.filter(d => w.days.includes(d.date)), cnt = {};
+            dws.forEach(d => { const k = d.kind || (SRC[d.source] ? obL(SRC[d.source][0], SRC[d.source][1]) : d.source); cnt[k] = (cnt[k] || 0) + 1; });
+            const top = Object.entries(cnt).sort((a, b) => b[1] - a[1]).slice(0, 3);
+            const mood = w.avg >= 2.5 ? obL('Locked in', 'মনোযোগী') : w.avg >= 1.75 ? obL('Decent', 'মোটামুটি') : w.avg > 0 ? obL('Distracted', 'বিক্ষিপ্ত') : '-';
+            const tip = w.prod >= 5 ? obL('Strong week. Keep the same rhythm.', 'দারুণ সপ্তাহ। একই ছন্দ ধরে রাখুন।') : w.prod >= 3 ? obL('Good base. Add one short block on your quietest day.', 'ভালো ভিত। সবচেয়ে শান্ত দিনে একটি ছোট ব্লক যোগ করুন।') : obL('Start small: one 10-minute block a day is enough.', 'ছোট করে শুরু করুন: দিনে একটি ১০ মিনিটের ব্লকই যথেষ্ট।');
+            const stat = (a, b) => `<div class="bg-dark-800/60 border border-slate-800 rounded-xl p-3"><p class="text-[11px] text-slate-400">${a}</p><p class="text-lg font-semibold text-slate-100 font-mono mt-0.5">${b}</p></div>`;
+            box.innerHTML = `
+            <div class="${CARD} space-y-3">
+                <div class="flex items-center justify-between"><h3 class="text-sm font-semibold text-slate-200">${obL('Weekly review', 'সাপ্তাহিক রিভিউ')}</h3><span class="text-xs font-mono ${diff >= 0 ? 'text-indigo-400' : 'text-amber-300'}">${diff >= 0 ? '+' : ''}${diff}${obL('m vs last week', 'মি গত সপ্তাহের চেয়ে')}</span></div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    ${stat(obL('Focus minutes', 'ফোকাস মিনিট'), w.mins)}${stat(obL('Blocks', 'ব্লক'), w.blocks)}${stat(obL('Active days', 'সক্রিয় দিন'), w.prod + '/7')}${stat(obL('Focus quality', 'ফোকাসের মান'), mood)}
+                </div>
+                <p class="text-xs text-slate-400">${w.best.m ? obL(`Best day: ${fmtDay(w.best.k)} (${w.best.m} min).`, `সেরা দিন: ${fmtDay(w.best.k)} (${w.best.m} মিনিট)।`) + ' ' : ''}${tip}</p>
+            </div>
+            <div class="${CARD} space-y-3">
+                <h3 class="text-sm font-semibold text-slate-200">${obL('Distraction log', 'বিক্ষেপের খাতা')}</h3>
+                <p class="text-xs text-slate-400">${top.length ? obL('Most common this week: ', 'এ সপ্তাহে সবচেয়ে বেশি: ') + top.map(t => `${escapeHtml(t[0])} (${t[1]})`).join(', ') : obL('Nothing logged this week.', 'এ সপ্তাহে কিছু লেখা হয়নি।')}</p>
+                <div class="space-y-1.5">${distractions.slice(0, 6).map(d => `<div class="flex items-center justify-between text-xs"><span class="text-slate-300 truncate pr-2">${escapeHtml(d.kind ? kindLabel(d.kind) : (SRC[d.source] ? obL(SRC[d.source][0], SRC[d.source][1]) : d.source))}${d.text ? ' - ' + escapeHtml(d.text) : ''}</span><span class="font-mono text-slate-500 shrink-0">${fmtDay(d.date)} ${d.time}</span></div>`).join('')}</div>
+            </div>`;
+        }
+
+        // --- Gentle restart (replaces guilt after an abandoned session) ---
+        const rs = { stage: 'pick', reason: '', sel: '', opts: [], prev: null };
+        const TINY = [['Open your book to today\'s topic', 'আজকের পড়ার বই খুলে বসুন'], ['Read one page and underline 3 key points', 'এক পাতা পড়ে ৩টি মূল পয়েন্ট দাগান'], ['Solve one problem', 'একটি সমস্যা সমাধান করুন'], ['Write what you remember from yesterday', 'গতকালের যা মনে আছে লিখুন']];
+        function openRestart(reason) {
+            rs.stage = 'pick'; rs.reason = reason || ''; rs.sel = '';
+            const mt = missionsToday().filter(m => !m.done).map(m => m.text), bt = tasks.filter(t => !t.completed).map(t => t.text);
+            rs.opts = [...new Set(mt.concat(bt))].slice(0, 3).concat(TINY.map(t => obL(t[0], t[1])));
+            document.getElementById('restart-modal').classList.remove('hidden'); renderRestart();
+        }
+        function closeRestart() { document.getElementById('restart-modal').classList.add('hidden'); }
+        function rsPick(i) { rs.sel = rs.opts[i]; renderRestart(); }
+        function renderRestart() {
+            const ti = document.getElementById('rs-title'), tx = document.getElementById('rs-text'), bd = document.getElementById('rs-body'), ft = document.getElementById('rs-foot');
+            const sec = 'px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-300 bg-dark-800 border border-slate-700';
+            if (rs.stage === 'done') {
+                ti.innerText = obL('Nice restart', 'দারুণ শুরু'); tx.innerText = obL('You showed up and finished five minutes. Keep going with a full block, or take a break.', 'আপনি এসেছেন, পাঁচ মিনিট শেষ করেছেন। পুরো ব্লক চালিয়ে যান, বা একটু বিরতি নিন।'); bd.innerHTML = '';
+                ft.innerHTML = `<button type="button" onclick="closeRestart()" class="${sec}">${obL('Take a break', 'বিরতি নিন')}</button><button type="button" onclick="closeRestart(); initiateStartFlow()" class="${BTN}">${obL('One full block', 'একটি পুরো ব্লক')}</button>`; return;
+            }
+            ti.innerText = obL('Let us restart gently', 'চলুন নরমভাবে আবার শুরু করি');
+            tx.innerText = rs.reason === 'quit' ? obL('That block ended early. No problem. Pick one tiny task and give it five minutes.', 'ব্লকটি আগে শেষ হয়েছে, সমস্যা নেই। একটি ছোট কাজ বেছে ৫ মিনিট দিন।') : obL('Pick one tiny task and give it five minutes. That is all.', 'একটি ছোট কাজ বেছে ৫ মিনিট দিন। ব্যস।');
+            bd.innerHTML = `<p class="text-xs font-semibold text-slate-400 mb-1">${obL('Pick one tiny task', 'একটি ছোট কাজ বেছে নিন')}</p>` + rs.opts.map((o, i) => `<button type="button" onclick="rsPick(${i})" class="w-full text-left px-4 py-2.5 rounded-xl border text-sm transition ${rs.sel === o ? 'border-indigo-500 bg-indigo-500/10 text-slate-100' : 'border-slate-700 bg-dark-800 text-slate-300'}">${escapeHtml(o)}</button>`).join('')
+                + `<input maxlength="80" placeholder="${obL('Or write your own', 'অথবা নিজে লিখুন')}" oninput="rs.sel = this.value; document.getElementById('rs-go').disabled = !rs.sel.trim()" class="${FIELD}">`;
+            ft.innerHTML = `<button type="button" onclick="closeRestart()" class="${sec}">${obL('Not now', 'এখন না')}</button><button type="button" id="rs-go" onclick="startRestart()" ${rs.sel.trim() ? '' : 'disabled'} class="${BTN} disabled:opacity-40">${obL('Start 5 minutes', '৫ মিনিট শুরু')}</button>`;
+        }
+        function startRestart() {
+            const task = rs.sel.trim(); if (!task || timerState.isRunning) return;
+            closeRestart(); switchTab('timer');
+            rs.prev = { tier: timerState.tier, mins: timerState.workMinutes || settings.work };
+            timerState.restartActive = true;
+            const hc = document.getElementById('hardcore-toggle'); window.__noPersist = true; hc.checked = false; toggleHardcoreUI();
+            selectTier('standard', 5);
+            timerState.microGoal = task; document.getElementById('current-task-title').innerText = task;
+            timerState.seriesActive = true; timerState.seriesDone = 0; timerState.seriesTotal = 1;
+            startTimer();
+        }
+        function restoreAfterRestart() {
+            if (!timerState.restartActive) return;
+            timerState.restartActive = false;
+            document.getElementById('hardcore-toggle').checked = settings.hardcore !== false;
+            const was = timerState.isRunning; timerState.isRunning = false;
+            if (rs.prev) { const pv = rs.prev; rs.prev = null; selectTier(pv.tier, pv.mins); } else toggleHardcoreUI();
+            timerState.isRunning = was;
+            window.__noPersist = false;
+        }
+        function openRestartDone() { rs.stage = 'done'; document.getElementById('restart-modal').classList.remove('hidden'); renderRestart(); }
 
         // --- Fullscreen Toggle ---
         function toggleFullscreen() {
