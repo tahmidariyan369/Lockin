@@ -3054,5 +3054,230 @@ Lockdown on|লকডাউন চালু
             return String(text).replace(/[&<>"']/g, m => map[m]);
         }
     </script>
+    <style>
+.water-fill{position:absolute;left:0;right:0;bottom:0;height:100%;transition:height 1s linear}
+.water-body{position:absolute;inset:0;background:var(--wc,#12b383);opacity:.38}
+.wave{position:absolute;left:0;top:-13px;width:200%;height:14px;fill:var(--wc,#12b383);opacity:.38;animation:waveMove 5s linear infinite}
+.wave.w2{top:-9px;opacity:.25;animation-duration:8s;animation-direction:reverse}
+@keyframes waveMove{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.wave{animation:none}}
+</style>
+<script>
+function __lockinAddon() {
+  'use strict';
+  if (window.__lockinAddonLoaded) return;
+  const card = document.getElementById('timer-card');
+  const hp = document.getElementById('hardcore-active-panel');
+  const sirenEl = document.getElementById('setting-siren');
+  const miss = [!card && '#timer-card', !hp && '#hardcore-active-panel', !sirenEl && '#setting-siren', typeof timerState === 'undefined' && 'timerState (main script)', typeof settings === 'undefined' && 'settings (main script)', typeof updateTimerDisplay !== 'function' && 'updateTimerDisplay()'].filter(Boolean);
+  if (miss.length) { console.warn('LockIn add-on skipped. Missing: ' + miss.join(', ')); return; }
+  window.__lockinAddonLoaded = true;
+
+  /* ---------- Water effect inside the timer circle ---------- */
+  const wave = '<svg class="wave%C" viewBox="0 0 200 14" preserveAspectRatio="none"><path d="M0 7 Q25 0 50 7 T100 7 T150 7 T200 7 V14 H0Z"/></svg>';
+  const water = document.createElement('div');
+  water.style.cssText = 'position:absolute;inset:12%;border-radius:9999px;overflow:hidden;pointer-events:none';
+  water.innerHTML = '<div class="water-fill" id="water-fill">' + wave.replace('%C', '') + wave.replace('%C', ' w2') + '<div class="water-body"></div></div>';
+  card.insertBefore(water, card.firstChild);
+  function updateWater() {
+    const p = timerState.totalSeconds > 0 ? Math.min(1, timerState.timeLeft / timerState.totalSeconds) : 0;
+    const f = document.getElementById('water-fill');
+    f.style.height = (p * 100) + '%';
+    f.style.opacity = p <= 0.003 ? 0 : 1;
+    f.style.setProperty('--wc', timerState.mode === 'work' ? '#12b383' : '#38bdf8');
+  }
+
+  /* ---------- Sound effects ---------- */
+  function sfx(n) {
+    if (settings.sfx === false) return;
+    try {
+      const c = getCtx(), t = c.currentTime;
+      const o = (f, s, d, ty, v, f2) => {
+        const a = c.createOscillator(), g = c.createGain();
+        a.type = ty || 'sine'; a.frequency.setValueAtTime(f, t + s);
+        if (f2) a.frequency.exponentialRampToValueAtTime(f2, t + s + d);
+        g.gain.setValueAtTime(0.0001, t + s);
+        g.gain.exponentialRampToValueAtTime(v || .12, t + s + .01);
+        g.gain.exponentialRampToValueAtTime(.0001, t + s + d);
+        a.connect(g); g.connect(c.destination); a.start(t + s); a.stop(t + s + d + .02);
+      };
+      const S = {
+        tap: () => o(900, 0, .05, 'sine', .05),
+        tick: () => o(1400, 0, .03, 'sine', .03),
+        beep: () => o(880, 0, .12, 'sine', .12),
+        start: () => [392, 523, 659].forEach((f, i) => o(f, i * .09, .18, 'triangle', .14)),
+        breakStart: () => { o(660, 0, .2, 'sine', .12); o(494, .14, .3, 'sine', .12); },
+        complete: () => [523, 659, 784, 1047].forEach((f, i) => o(f, i * .12, .5, 'triangle', .15)),
+        breakEnd: () => { o(784, 0, .18, 'sine', .14); o(988, .16, .3, 'sine', .14); },
+        pause: () => o(500, 0, .12, 'sine', .1, 300),
+        park: () => o(800, 0, .18, 'sine', .1, 300),
+        add: () => { o(600, 0, .07, 'sine', .09); o(900, .07, .1, 'sine', .09); },
+        done: () => { o(880, 0, .08, 'sine', .1); o(1320, .08, .18, 'sine', .1); },
+        del: () => o(350, 0, .14, 'triangle', .1, 180),
+        win: () => [659, 880, 1109].forEach((f, i) => o(f, i * .08, .25, 'triangle', .13)),
+        error: () => { o(220, 0, .15, 'square', .07); o(165, .14, .2, 'square', .07); },
+        pass: () => { o(520, 0, .1, 'sine', .1); o(780, .1, .15, 'sine', .1); }
+      };
+      (S[n] || S.tap)();
+    } catch (e) {}
+  }
+  window.sfx = sfx;
+  document.addEventListener('click', e => {
+    if (e.target.closest && e.target.closest('button,a,summary,input[type=checkbox]')) sfx('tap');
+  }, true);
+
+  /* ---------- helper: wrap an existing global function ---------- */
+  const wrap = (name, before, after) => {
+    const orig = window[name]; if (typeof orig !== 'function') return;
+    window[name] = function () {
+      if (before) before.apply(this, arguments);
+      const r = orig.apply(this, arguments);
+      if (after) after.call(this, r, arguments);
+      return r;
+    };
+  };
+
+  /* ---------- Floating timer ---------- */
+  let pipWin = null, pipVid = null, pipCv = null;
+  const floatOpen = () => !!(pipWin || pipVid);
+  const st = () => timerState.mode === 'work' ? (timerState.isRunning ? 'Focus' : 'Ready') : 'Break';
+  function updateFloatBtn() {
+    const b = document.getElementById('btn-float');
+    if (b) b.querySelector('span').innerText = floatOpen() ? 'Close floating timer' : 'Floating timer';
+  }
+  function drawFloat(ts) {
+    const c = pipCv.getContext('2d'), W = 320, H = 180;
+    const p = timerState.totalSeconds > 0 ? timerState.timeLeft / timerState.totalSeconds : 0;
+    c.fillStyle = '#060c13'; c.fillRect(0, 0, W, H);
+    c.fillStyle = timerState.mode === 'work' ? 'rgba(18,179,131,.35)' : 'rgba(56,189,248,.35)';
+    c.fillRect(0, H * (1 - p), W, H * p);
+    c.fillStyle = '#e4ecf3'; c.textAlign = 'center';
+    c.font = '700 64px ui-monospace,monospace'; c.fillText(ts, W / 2, H / 2 + 18);
+    c.font = '600 14px system-ui'; c.fillStyle = '#a3b4c5'; c.fillText(st().toUpperCase(), W / 2, H - 22);
+  }
+  function updateFloat() {
+    if (!floatOpen()) return;
+    const ts = fmtSec(timerState.timeLeft), p = timerState.totalSeconds > 0 ? timerState.timeLeft / timerState.totalSeconds : 0;
+    if (pipWin) {
+      const d = pipWin.document, t = d.getElementById('t');
+      if (t) { t.textContent = ts; d.getElementById('s').textContent = st(); d.getElementById('f').style.width = (p * 100) + '%'; }
+    } else if (pipCv) drawFloat(ts);
+  }
+  function closeFloat() {
+    try { if (pipWin) pipWin.close(); } catch (e) {}
+    try { if (pipVid) { if (document.pictureInPictureElement === pipVid) document.exitPictureInPicture(); pipVid.remove(); } } catch (e) {}
+    pipWin = null; pipVid = null; pipCv = null; updateFloatBtn();
+  }
+  async function openFloatTimer() {
+    if (floatOpen()) return;
+    timerState.ignoreBreachUntil = Date.now() + 3000;
+    try {
+      if ('documentPictureInPicture' in window) {
+        const w = await documentPictureInPicture.requestWindow({ width: 260, height: 150 });
+        w.document.head.insertAdjacentHTML('beforeend', '<style>body{margin:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#060c13;color:#e4ecf3;font-family:system-ui,sans-serif}#t{font:700 52px ui-monospace,monospace}#s{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#7b8ea3;margin-top:4px}#b{width:80%;height:6px;background:#16283a;border-radius:3px;margin-top:12px;overflow:hidden}#f{height:100%;background:#12b383;transition:width 1s linear}</style>');
+        w.document.body.innerHTML = '<div id="t"></div><div id="s"></div><div id="b"><div id="f"></div></div>';
+        w.addEventListener('pagehide', () => { pipWin = null; updateFloatBtn(); });
+        pipWin = w;
+      } else {
+        pipCv = document.createElement('canvas'); pipCv.width = 320; pipCv.height = 180;
+        drawFloat(fmtSec(timerState.timeLeft));
+        const v = document.createElement('video');
+        v.muted = true; v.playsInline = true; v.setAttribute('playsinline', '');
+        v.style.cssText = 'position:fixed;width:2px;height:2px;opacity:0;pointer-events:none';
+        v.srcObject = pipCv.captureStream(2); document.body.appendChild(v); await v.play();
+        if (v.requestPictureInPicture) await v.requestPictureInPicture();
+        else if (v.webkitSupportsPresentationMode && v.webkitSupportsPresentationMode('picture-in-picture')) v.webkitSetPresentationMode('picture-in-picture');
+        else throw new Error('no pip');
+        v.addEventListener('leavepictureinpicture', closeFloat);
+        v.addEventListener('webkitpresentationmodechanged', () => { if (v.webkitPresentationMode !== 'picture-in-picture') closeFloat(); });
+        pipVid = v;
+      }
+    } catch (e) {
+      closeFloat();
+      showToast('Floating timer not supported', 'Try Chrome or Edge on PC/Android, or Safari on iPhone.');
+    }
+    updateFloatBtn(); updateFloat();
+  }
+  window.toggleFloatTimer = () => floatOpen() ? closeFloat() : openFloatTimer();
+  window.openFloatTimer = openFloatTimer;
+
+  const fb = document.createElement('button');
+  fb.type = 'button'; fb.id = 'btn-float'; fb.onclick = window.toggleFloatTimer;
+  fb.className = 'mt-3 px-4 py-2 rounded-xl text-xs font-semibold bg-dark-900 border border-slate-800 text-slate-300 hover:border-indigo-500 hover:text-indigo-300 transition flex items-center gap-1.5';
+  fb.innerHTML = '<i data-lucide="picture-in-picture-2" class="w-3.5 h-3.5"></i><span>Floating timer</span>';
+  hp.parentNode.insertBefore(fb, hp);
+  try { lucide.createIcons(); } catch (e) {}
+
+  /* ---------- notifications ---------- */
+  const askNotify = () => { try { if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission(); } catch (e) {} };
+  const notify = (t, b) => { try { if ('Notification' in window && Notification.permission === 'granted' && document.hidden) new Notification(t, { body: b }); } catch (e) {} };
+
+  /* ---------- hook everything ---------- */
+  let prevLeft = -1;
+  wrap('updateTimerDisplay', null, () => {
+    updateWater(); updateFloat();
+    if (timerState.timeLeft !== prevLeft) {
+      prevLeft = timerState.timeLeft;
+      if (timerState.isRunning) {
+        if (timerState.mode === 'work' && settings.tick) sfx('tick');
+        if (prevLeft > 0 && prevLeft <= 3) sfx('beep');
+      }
+    }
+  });
+  wrap('startTimer', () => sfx(timerState.mode === 'work' ? 'start' : 'breakStart'));
+  wrap('pauseTimer', () => { if (timerState.isRunning) sfx('pause'); });
+
+  const bell = window.playBellChime;
+  window.playBellChime = function () {
+    if (window.__muteBell) return;
+    notify('LockIn', timerState.mode === 'work' ? 'Block finished.' : 'Break is over.');
+    if (settings.sfx === false) bell(); else sfx(timerState.mode === 'work' ? 'complete' : 'breakEnd');
+  };
+  wrap('logLifestyleDefiance', () => { window.__muteBell = 1; }, () => { window.__muteBell = 0; });
+
+  wrap('recordParkedUrge', () => sfx('park'));
+  wrap('addTask', null, () => sfx('add'));
+  wrap('toggleTask', null, () => sfx('done'));
+  wrap('deleteTask', () => sfx('del'));
+  wrap('recordDefianceVictory', () => sfx('win'));
+  wrap('toggleMission', () => sfx('done'));
+  wrap('confirmAbandonSession', () => sfx('error'));
+  wrap('signContractAndStart', () => {
+    askNotify();
+    if (document.getElementById('contract-phrase-input').value.trim() !== COMMITMENT_PHRASE) sfx('error');
+  });
+  wrap('startStudyPass', () => { window.__passWas = timerState.passActive; }, r => {
+    if (r && !window.__passWas) { sfx('pass'); openFloatTimer(); }
+  });
+  const breach = window.triggerLockdownBreach;
+  window.triggerLockdownBreach = function (reason) {
+    if (Date.now() < (timerState.ignoreBreachUntil || 0)) return;
+    notify('LockIn', 'You left the focus session.');
+    return breach.apply(this, arguments);
+  };
+
+  /* ---------- settings: sound toggles ---------- */
+  const sirenLabel = sirenEl.parentElement;
+  const mk = (id, text) => {
+    const l = document.createElement('label'); l.className = sirenLabel.className;
+    l.innerHTML = '<input type="checkbox" id="' + id + '" class="rounded border-slate-700 bg-dark-800"> ' + text;
+    sirenLabel.parentNode.insertBefore(l, sirenLabel.nextSibling); return l;
+  };
+  mk('setting-tick', 'Ticking sound every second (focus blocks)');
+  mk('setting-sfx', 'Sound effects (buttons, start, finish, etc.)');
+  const initSet = () => {
+    document.getElementById('setting-sfx').checked = settings.sfx !== false;
+    document.getElementById('setting-tick').checked = settings.tick === true;
+    updateWater();
+  };
+  if (document.readyState === 'complete') setTimeout(initSet, 0); else window.addEventListener('load', () => setTimeout(initSet, 0));
+  wrap('saveSettings', () => {
+    settings.sfx = document.getElementById('setting-sfx').checked;
+    settings.tick = document.getElementById('setting-tick').checked;
+  });
+  updateWater();
+}
+if (document.readyState === 'complete') __lockinAddon(); else window.addEventListener('load', __lockinAddon);
+</script>
 </body>
 </html>
