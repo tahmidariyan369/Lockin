@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
-    <script>(function(){var P='lockin_demo:',g=Storage.prototype.getItem,s=Storage.prototype.setItem,r=Storage.prototype.removeItem;
-for(var i=localStorage.length-1;i>=0;i--){var k=localStorage.key(i);if(k&&k.indexOf(P)===0)r.call(localStorage,k)}
-Storage.prototype.getItem=function(k){return g.call(this,P+k)};Storage.prototype.setItem=function(k,v){return s.call(this,P+k,v)};Storage.prototype.removeItem=function(k){return r.call(this,P+k)};})();</script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -125,7 +122,6 @@ Storage.prototype.getItem=function(k){return g.call(this,P+k)};Storage.prototype
     </script>
 </head>
 <body id="app-body" class="min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white transition-colors duration-300">
-    <div style="position:fixed;top:4px;left:50%;transform:translateX(-50%);z-index:60;pointer-events:none;font:600 10px/1 system-ui,sans-serif;padding:4px 10px;border-radius:999px;background:#25a77c;color:#fff">New-user preview. Starts fresh every time.</div>
     <div id="splash" aria-hidden="true"><svg viewBox="0 0 120 120" width="132" height="132"><g class="seg" style="--dx:18px;--dy:-36px;--r:38deg"><circle cx="60" cy="60" r="40" fill="none" style="stroke:var(--color-indigo-500)" stroke-width="7" stroke-linecap="round" stroke-dasharray="36 215.3" transform="rotate(-90 60 60)"/></g><g class="seg" style="--dx:40px;--dy:-3px;--r:-38deg"><circle cx="60" cy="60" r="40" fill="none" style="stroke:var(--color-indigo-500)" stroke-width="7" stroke-linecap="round" stroke-dasharray="36 215.3" transform="rotate(-30 60 60)"/></g><g class="seg" style="--dx:22px;--dy:33px;--r:38deg"><circle cx="60" cy="60" r="40" fill="none" style="stroke:var(--color-indigo-500)" stroke-width="7" stroke-linecap="round" stroke-dasharray="36 215.3" transform="rotate(30 60 60)"/></g><g class="seg" style="--dx:-18px;--dy:36px;--r:-38deg"><circle cx="60" cy="60" r="40" fill="none" style="stroke:var(--color-indigo-500)" stroke-width="7" stroke-linecap="round" stroke-dasharray="36 215.3" transform="rotate(90 60 60)"/></g><g class="seg" style="--dx:-40px;--dy:3px;--r:38deg"><circle cx="60" cy="60" r="40" fill="none" style="stroke:var(--color-indigo-500)" stroke-width="7" stroke-linecap="round" stroke-dasharray="36 215.3" transform="rotate(150 60 60)"/></g><g class="seg" style="--dx:-22px;--dy:-33px;--r:-38deg"><circle cx="60" cy="60" r="40" fill="none" style="stroke:var(--color-indigo-500)" stroke-width="7" stroke-linecap="round" stroke-dasharray="36 215.3" transform="rotate(210 60 60)"/></g><circle class="dot" cx="60" cy="60" r="7" style="fill:var(--color-slate-100)"/></svg><p class="sp-w sp1">Consistency</p><p class="sp-w sp2">+ Action</p><p class="sp-w sp3">Start now.</p></div>
     <script>(function(){var s=document.getElementById("splash");try{if(sessionStorage.getItem("lockin_splash")){s.remove();return}sessionStorage.setItem("lockin_splash","1")}catch(e){}function go(){if(s&&s.parentNode)s.remove()}setTimeout(go,3500);s.addEventListener("click",go)})();</script>
 
